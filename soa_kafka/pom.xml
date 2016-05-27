@@ -37,6 +37,12 @@
             <!--</exclusions>-->
         <!--</dependency>-->
 
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_tools</artifactId>
+            <version>${global.version}</version>
+        </dependency>
+
         <!-- kafka -->
         <dependency>
             <groupId>org.apache.kafka</groupId>

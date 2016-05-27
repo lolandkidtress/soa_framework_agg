@@ -1,4 +1,4 @@
-import com.James.Configuration.Configuration;
+import com.James.kafka_Config.Configuration;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
 import org.slf4j.Logger;

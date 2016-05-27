@@ -1,7 +1,7 @@
 package com.James.Kafka_Tools;
 
-import com.James.Configuration.Configuration;
-import com.James.Basic.UtilsTools.Logger_Once;
+import com.James.kafka_Config.Configuration;
+import com.James.basic.UtilsTools.Logger_Once;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;

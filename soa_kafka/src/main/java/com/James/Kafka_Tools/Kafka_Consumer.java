@@ -1,6 +1,6 @@
 package com.James.Kafka_Tools;
 
-import com.James.Configuration.Configuration;
+import com.James.kafka_Config.Configuration;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;

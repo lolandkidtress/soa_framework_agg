@@ -33,11 +33,14 @@
 		<!--<module>./soa_authc</module>-->
 		<module>./soa_kafka</module>
 		<module>./soa_db</module>
-		<!--&lt;!&ndash; demo &ndash;&gt;-->
-		<!--<module>./soa_demo</module>-->
+
 
 		<module>soa_agent</module>
 		<module>soa_tools</module>
+		<module>soa_discovery</module>
+
+		<!-- demo -->
+		<module>./soa_demo</module>
 	</modules>
 	<dependencies>
 		<dependency>

@@ -41,6 +41,7 @@
 
 		<!-- demo -->
 		<module>./soa_demo</module>
+
 	</modules>
 	<dependencies>
 		<dependency>

@@ -1,0 +1,140 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.James</groupId>
+        <artifactId>soa_framework_agg</artifactId>
+        <version>V1.0</version>
+        <relativePath>../../soa_framework_agg</relativePath>
+    </parent>
+    <groupId>com.James</groupId>
+    <artifactId>soa_demo</artifactId>
+    <version>${global.version}</version>
+    <packaging>war</packaging>
+    <name>soa_demo</name>
+
+    <description>分布式服务框架</description>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_agent</artifactId>
+            <version>${global.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>soa_demo</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <compilerArguments>
+                        <extdirs>src/main/webapp/WEB-INF/lib</extdirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+            <!-- //配置 jar 包发布 1:拷贝依赖包,2:将源码打成 jar 包,3:拷贝配置文件和静态文件,4替换配置文件 -->
+            <!-- <plugin> -->
+            <!-- <groupId>org.apache.maven.plugins</groupId> -->
+            <!-- <artifactId>maven-dependency-plugin</artifactId> -->
+            <!-- <executions> -->
+            <!-- <execution> -->
+            <!-- <id>copy-dependencies</id> -->
+            <!-- <phase>package</phase> -->
+            <!-- <goals> -->
+            <!-- 将所有依赖的jar都拷贝出来 -->
+            <!-- <goal>copy-dependencies</goal> -->
+            <!-- </goals> -->
+            <!-- <configuration> -->
+            <!-- <outputDirectory>${project.build.directory}/lib</outputDirectory> -->
+            <!-- <overWriteReleases>false</overWriteReleases> -->
+            <!-- <overWriteSnapshots>false</overWriteSnapshots> -->
+            <!-- <overWriteIfNewer>true</overWriteIfNewer> -->
+            <!-- </configuration> -->
+            <!-- </execution> -->
+            <!-- </executions> -->
+            <!-- </plugin> -->
+            <!-- <plugin> -->
+            <!-- <groupId>org.apache.maven.plugins</groupId> -->
+            <!-- <artifactId>maven-jar-plugin</artifactId> -->
+            <!-- <version>2.6</version> -->
+            <!-- <configuration> -->
+            <!-- <archive> -->
+            <!-- <manifest> -->
+            <!-- 往Manifest.MF文件中添加ClassPath -->
+            <!-- <addClasspath>true</addClasspath> -->
+            <!-- classpath前缀 -->
+            <!-- <classpathPrefix>lib/</classpathPrefix> -->
+            <!-- 主程序入口 -->
+            <!-- <mainClass>com.infogen.infogen_demo.example.http.Launcher</mainClass> -->
+            <!-- </manifest> -->
+            <!-- </archive> -->
+            <!-- <excludes> -->
+            <!-- <exclude>webapp/**</exclude> -->
+            <!-- <exclude>*.properties</exclude> -->
+            <!-- <exclude>*.xml</exclude> -->
+            <!-- <exclude>*.ini</exclude> -->
+            <!-- <exclude>environment.*</exclude> -->
+            <!-- </excludes> -->
+            <!-- </configuration> -->
+            <!-- </plugin> -->
+        </plugins>
+
+        <resources>
+            <!-- ${basedir} 项目根目录 缺省为target/infogen_soa -->
+            <!-- ${project.build.directory} 构建目录，缺省为target -->
+            <!-- ${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes -->
+            <!-- war包 开发工具中发布配置文件 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <!-- war包 开发工具中发布静态文件 -->
+            <!-- <resource> -->
+            <!-- <directory>src/main/webapp</directory> -->
+            <!-- <targetPath> ${project.build.outputDirectory}/webapp</targetPath> -->
+            <!-- <filtering>true</filtering> -->
+            <!-- </resource> -->
+            <!-- jar 包模式发布可修改的配置文件 -->
+            <!-- <resource> -->
+            <!-- <directory>src/main/resources</directory> -->
+            <!-- <targetPath>${project.build.directory}</targetPath> -->
+            <!-- <filtering>true</filtering> -->
+            <!-- </resource> -->
+            <!-- jar 包模式发布可修改的静态文件 -->
+            <!-- <resource> -->
+            <!-- <directory>src/main/webapp</directory> -->
+            <!-- <targetPath> ${project.build.directory}/webapp</targetPath> -->
+            <!-- <filtering>true</filtering> -->
+            <!-- </resource> -->
+        </resources>
+    </build>
+    <profiles>
+        <profile>
+            <id>develop</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <filters>
+                    <filter>src/main/resources/environment/develop.properties
+                    </filter>
+                </filters>
+            </build>
+        </profile>
+    </profiles>
+</project>

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.James.Annotation.InputParamAnnotation;
 import com.James.Annotation.OutputParamAnnotation;
 import com.James.Annotation.descriptionAnnotation;
+import com.James.Model.InputParam;
+import com.James.Model.OutputParam;
 import com.James.Model.SharedProvider;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.soa_agent.HotInjecter;
@@ -92,14 +94,38 @@ public class providerScanner {
     Method[] methods = clazz.getMethods();
     for(Method method : methods){
       Annotation providerAnno = method.getAnnotation(descriptionAnnotation.class);
-      Annotation inParam = method.getAnnotation(InputParamAnnotation.class);
-      Annotation outParam = method.getAnnotation(OutputParamAnnotation.class);
+      Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
+      Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
       SharedProvider sharedProvider = new SharedProvider();
-      //扫描方法上的注解
+      //扫描描述
       sharedProvider = getDescribe(sharedProvider,method);
 
-      //TODO Inparam,Outparam
+      //Inparam,Outparam
+      for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){
+        InputParam inputParam = new InputParam();
+        inputParam.setName(inParam.name());
+        inputParam.setType(inParam.type());
+        inputParam.setDescribe(inParam.describe());
+        inputParam.setRequired(inParam.Required());
+        inputParam.setDefault_value(inParam.default_value());
+
+        sharedProvider.addInputParam(inputParam);
+
+      }
+
+      for(OutputParamAnnotation outParam: method.getAnnotationsByType(OutputParamAnnotation.class)){
+
+        OutputParam outputParam = new OutputParam();
+        outputParam.setName(outParam.name());
+        outputParam.setType(outParam.type());
+        outputParam.setDescribe(outParam.describe());
+        outputParam.setRequired(outParam.Required());
+        outputParam.setDefault_value(outParam.default_value());
+
+        sharedProvider.addOutputParam(outputParam);
+      }
+
       sharedProviders.add(sharedProvider);
     }
 
@@ -114,7 +140,7 @@ public class providerScanner {
     OutputParamAnnotation outParam = method.getAnnotation(OutputParamAnnotation.class);
 
     if (describe != null) {
-      LOGGER.info("开始扫描"+ method.getDeclaringClass().getName() +"类下的"+ method.getName()+"方法");
+      LOGGER.info("开始扫描" + method.getDeclaringClass().getName() + "类下的" + method.getName() + "方法");
       sharedProvider.setAuthor(describe.author());
       sharedProvider.setMethod_name(describe.name());
       sharedProvider.setDescribe(describe.desc());

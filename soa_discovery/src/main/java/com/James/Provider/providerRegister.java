@@ -137,7 +137,7 @@ public enum providerRegister {
 
       this.zkclient.setContent(sb.toString(), JsonConvert.toJson(sharedProvider));
 
-      LOGGER.debug("写入服务节点成功");
+      LOGGER.info(sb.toString() +"写入服务节点成功");
     }catch(Exception e) {
       e.printStackTrace();
       LOGGER.error("写入服务节点失败", e);

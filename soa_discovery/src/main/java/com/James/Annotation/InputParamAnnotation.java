@@ -18,5 +18,10 @@ public @interface InputParamAnnotation {
 
   public String describe();
 
-  public boolean Required();
+  public boolean Required() default true;
+
+  public String type() default "String";
+
+  public String default_value() default "";
+
 }

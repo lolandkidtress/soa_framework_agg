@@ -11,8 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class InputParam {
   private String name;
-  @JsonIgnore
-  private Class<?> type;
+  private String type;
   private Boolean required = true;
   private String default_value = "";
   private String describe = "";
@@ -20,7 +19,7 @@ public class InputParam {
   public InputParam() {
   }
 
-  public InputParam(String name, Class<?> type, Boolean required, String default_value, String describe) {
+  public InputParam(String name, String type, Boolean required, String default_value, String describe) {
     super();
     this.name = name;
     this.type = type;
@@ -45,11 +44,11 @@ public class InputParam {
     this.describe = describe;
   }
 
-  public Class<?> getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(Class<?> type) {
+  public void setType(String type) {
     this.type = type;
   }
 

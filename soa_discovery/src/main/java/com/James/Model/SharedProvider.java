@@ -155,6 +155,10 @@ public class SharedProvider {
   public void setInputParams(List InputParams){
     this.inputParams = InputParams;
   }
+  public void addInputParam(InputParam inputParam){
+    this.inputParams.add(inputParam);
+  }
+
 
   public List getOutputParams(){
     return this.outputParams;
@@ -162,6 +166,10 @@ public class SharedProvider {
   public void setOutputParams(List OutputParams){
     this.outputParams = OutputParams;
   }
+  public void addOutputParam(OutputParam outputParam){
+    this.outputParams.add(outputParam);
+  }
+
 
   public String getHttp_context(){
     return this.http_context;

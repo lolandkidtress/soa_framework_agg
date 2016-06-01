@@ -1,7 +1,6 @@
 package com.James.Model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -11,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class OutputParam {
   private String name;
-  @JsonIgnore
-  private Class<?> type;
+
+  private String type;
   private Boolean required = true;
   private String default_value;
   private String describe;
@@ -20,7 +19,7 @@ public class OutputParam {
   public OutputParam() {
   }
 
-  public OutputParam(String name, Class<?> type, Boolean required, String default_value, String describe) {
+  public OutputParam(String name, String type, Boolean required, String default_value, String describe) {
     super();
     this.name = name;
     this.type = type;
@@ -45,11 +44,11 @@ public class OutputParam {
     this.describe = describe;
   }
 
-  public Class<?> getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(Class<?> type) {
+  public void setType(String type) {
     this.type = type;
   }
 

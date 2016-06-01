@@ -1,7 +1,7 @@
 package com.James.demo.vmJavasist;
 
 import com.James.demo.sample.Launch;
-import com.James.soa_agent.HotSwapper;
+import com.James.soa_agent.HotInjecter;
 
 /**
  * Created by James on 16/5/27.
@@ -13,8 +13,8 @@ import com.James.soa_agent.HotSwapper;
 public class VmJavasist {
     public static void inject(){
 //        AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
-        HotSwapper.getInstance().add_advice_method(Exc_annotation.class, new My_Agent_Handle());
-        HotSwapper.getInstance().advice();
+        HotInjecter.getInstance().add_advice_method(Exc_annotation.class, new My_Agent_Handle());
+        HotInjecter.getInstance().advice();
     }
 
     public static void main(String[] args) {

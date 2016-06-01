@@ -10,7 +10,7 @@
     <groupId>com.James</groupId>
     <artifactId>soa_demo</artifactId>
     <version>${global.version}</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>soa_demo</name>
 
     <description>分布式服务框架</description>
@@ -29,6 +29,12 @@
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_agent</artifactId>
+            <version>V0.0.1_alpha</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_discovery</artifactId>
             <version>${global.version}</version>
         </dependency>
     </dependencies>
@@ -103,38 +109,38 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <!-- war包 开发工具中发布静态文件 -->
-            <!-- <resource> -->
-            <!-- <directory>src/main/webapp</directory> -->
-            <!-- <targetPath> ${project.build.outputDirectory}/webapp</targetPath> -->
-            <!-- <filtering>true</filtering> -->
-            <!-- </resource> -->
-            <!-- jar 包模式发布可修改的配置文件 -->
-            <!-- <resource> -->
-            <!-- <directory>src/main/resources</directory> -->
-            <!-- <targetPath>${project.build.directory}</targetPath> -->
-            <!-- <filtering>true</filtering> -->
-            <!-- </resource> -->
-            <!-- jar 包模式发布可修改的静态文件 -->
-            <!-- <resource> -->
-            <!-- <directory>src/main/webapp</directory> -->
-            <!-- <targetPath> ${project.build.directory}/webapp</targetPath> -->
-            <!-- <filtering>true</filtering> -->
-            <!-- </resource> -->
+             <!--war包 开发工具中发布静态文件-->
+             <!--<resource>-->
+             <!--<directory>src/main/webapp</directory>-->
+             <!--<targetPath> ${project.build.outputDirectory}/webapp</targetPath>-->
+             <!--<filtering>true</filtering>-->
+             <!--</resource>-->
+             <!--&lt;!&ndash;jar 包模式发布可修改的配置文件&ndash;&gt;-->
+             <!--<resource>-->
+             <!--<directory>src/main/resources</directory>-->
+             <!--<targetPath>${project.build.directory}</targetPath>-->
+             <!--<filtering>true</filtering>-->
+             <!--</resource>-->
+             <!--&lt;!&ndash;jar 包模式发布可修改的静态文件&ndash;&gt;-->
+             <!--<resource>-->
+             <!--<directory>src/main/webapp</directory>-->
+             <!--<targetPath> ${project.build.directory}/webapp</targetPath>-->
+             <!--<filtering>true</filtering>-->
+             <!--</resource>-->
         </resources>
     </build>
-    <profiles>
-        <profile>
-            <id>develop</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <filters>
-                    <filter>src/main/resources/environment/develop.properties
-                    </filter>
-                </filters>
-            </build>
-        </profile>
-    </profiles>
+    <!--<profiles>-->
+        <!--<profile>-->
+            <!--<id>develop</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+            <!--<build>-->
+                <!--<filters>-->
+                    <!--<filter>src/main/resources/environment/develop.properties-->
+                    <!--</filter>-->
+                <!--</filters>-->
+            <!--</build>-->
+        <!--</profile>-->
+    <!--</profiles>-->
 </project>

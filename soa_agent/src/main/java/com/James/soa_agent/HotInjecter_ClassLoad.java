@@ -6,13 +6,13 @@ import java.net.URLClassLoader;
 /**
  * Created by James on 16/5/24.
  */
-public class HotSwapper_ClassLoad extends URLClassLoader {
+public class HotInjecter_ClassLoad extends URLClassLoader {
 
-    public HotSwapper_ClassLoad(URL[] urls) {
+    public HotInjecter_ClassLoad(URL[] urls) {
         super(urls);
     }
 
-    public HotSwapper_ClassLoad(URL[] urls, ClassLoader parent) {
+    public HotInjecter_ClassLoad(URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }
 

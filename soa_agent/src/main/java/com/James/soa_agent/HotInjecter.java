@@ -1,11 +1,5 @@
 package com.James.soa_agent;
 
-import com.James.basic.UtilsTools.JsonConvert;
-import com.James.basic.UtilsTools.NativePath;
-import com.James.soa_agent.event_handle.Agent_Handle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
@@ -14,31 +8,44 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.James.basic.UtilsTools.JsonConvert;
+import com.James.basic.UtilsTools.NativePath;
+import com.James.soa_agent.event_handle.Agent_Handle;
+
 /**
  * Created by James on 16/5/26.
  */
-public class HotSwapper {
+public class HotInjecter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HotSwapper.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(HotInjecter.class.getName());
     private static class InnerInstance {
 
-        public static final HotSwapper instance = new HotSwapper();
+        public static final HotInjecter instance = new HotInjecter();
     }
 
-    public static HotSwapper getInstance() {
+    public static HotInjecter getInstance() {
         return InnerInstance.instance;
     }
 
-    private static final HotSwapper_ClassLoad classLoader = new HotSwapper_ClassLoad(new URL[]{}, null);
+    private static final HotInjecter_ClassLoad classLoader = new HotInjecter_ClassLoad(new URL[]{}, null);
     private Method loadAgent = null;
     private Object virtualmachine_instance = null;
 
-    private HotSwapper() {
+    private HotInjecter() {
         try {
             classes = auto_scan_absolute(NativePath.get_class_path());
 

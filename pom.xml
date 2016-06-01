@@ -35,7 +35,7 @@
 		<module>./soa_db</module>
 
 
-		<module>soa_agent</module>
+		<!--<module>soa_agent</module>-->
 		<module>soa_tools</module>
 		<module>soa_discovery</module>
 
@@ -183,6 +183,7 @@
 						<include>**/*Test.*</include>
 						<include>**/*Suite.*</include>
 					</includes>
+
 				</configuration>
 			</plugin>
 

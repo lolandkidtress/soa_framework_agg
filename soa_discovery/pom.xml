@@ -8,24 +8,22 @@
         <version>V1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>soa_Discovery</artifactId>
+    <packaging>jar</packaging>
+    <artifactId>soa_discovery</artifactId>
+    <version>${global.version}</version>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
-            <version>3.4.7</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.James</groupId>
+            <artifactId>soa_agent</artifactId>
+            <version>V0.0.1_alpha</version>
+        </dependency>
+
+        <!--  zkclient -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>2.7.1</version>
         </dependency>
 
         <dependency>
@@ -33,6 +31,33 @@
             <artifactId>soa_tools</artifactId>
             <version>${global.version}</version>
         </dependency>
+
+
     </dependencies>
+
+    <build>
+     <plugins>
+         <plugin>
+             <groupId>org.codehaus.mojo</groupId>
+             <artifactId>properties-maven-plugin</artifactId>
+             <version>1.0.0</version>
+             <executions>
+                 <execution>
+                     <goals>
+                         <goal>set-system-properties</goal>
+                     </goals>
+                     <configuration>
+                         <properties>
+                             <property>
+                                 <name>soa_framework_version</name>
+                                 <value>${global.version}</value>
+                             </property>
+                         </properties>
+                     </configuration>
+                 </execution>
+             </executions>
+         </plugin>
+     </plugins>
+    </build>
 
 </project>

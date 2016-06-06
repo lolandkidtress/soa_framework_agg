@@ -20,22 +20,28 @@ public class zkConnectionStateListener implements ConnectionStateListener {
 	private iListeners fireListener;
 	private String path;
 	
-	public zkConnectionStateListener(String path,iListeners after){
+	public zkConnectionStateListener(String path ,iListeners after){
 		this.fireListener=after;
 		this.path = path;
 	}
-	
+
 	public void stateChanged(CuratorFramework client, ConnectionState newState) {
 		logger.debug("zk连接状态为:" + newState);
 
 
 		if(newState==ConnectionState.CONNECTED || newState ==ConnectionState.RECONNECTED){
 			logger.debug("zk恢复连接");
-			fireListener.ConnectionRecover(path,CommonConfig.zkEventType.ConnectionRecover.name());
+			fireListener.ConnectionRecover(path, CommonConfig.zkEventType.ConnectionRecover.name());
+
+//			iListeners lsrner = new dataChangedListener();
+//			InvokerHelper.INSTANCE.watchZKConfigConnectStat(path, lsrner);
 		}else{
 			//Lost或者Suspend
 			logger.debug("zk失去连接");
-			fireListener.ConnectionLost(path,CommonConfig.zkEventType.ConnectionLost.name());
+			fireListener.ConnectionLost(path, CommonConfig.zkEventType.ConnectionLost.name());
+
+//			iListeners lsrner = new dataChangedListener();
+//			InvokerHelper.INSTANCE.watchZKConfigConnectStat(path, lsrner);
 		}
 
 	}

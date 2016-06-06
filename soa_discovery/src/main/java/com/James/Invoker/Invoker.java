@@ -51,7 +51,23 @@ public class Invoker {
 
       List<String> ChildrenPaths = this.zkclient.getChildren(zk_root_dir);
       for(String childrenPath : ChildrenPaths){
-        LOGGER.info(childrenPath);
+
+
+        if(childrenPath.equals(server_name)){
+          LOGGER.info("开始扫描"+childrenPath+"服务提供的数据");
+
+          StringBuilder sb = new StringBuilder().append(zk_root_dir);
+          sb.append(CommonConfig.SLASH);
+          sb.append(server_name);
+
+
+
+          //添加watch
+          //watch是一次性的,触发后,需要重新添加watch
+          InvokerHelper.INSTANCE.watchZKConnectStat(sb.toString());
+          InvokerHelper.INSTANCE.watchZKChildChange(sb.toString());
+          InvokerHelper.INSTANCE.watchZKDataChange(sb.toString());
+        }
       }
 
 
@@ -61,13 +77,7 @@ public class Invoker {
 
 
 
-//    iListeners lsrner = new dataChangedListener();
-//    StringBuilder sb = new StringBuilder().append(zk_root_dir);
-//    sb.append(CommonConfig.SLASH);
-//    sb.append(server_name);
-//    InvokerHelper.INSTANCE.watchZKConfigConnectStat(sb.toString(),lsrner);
-//    InvokerHelper.INSTANCE.watchZKConfigDataChange(sb.toString(), lsrner);
-//    InvokerHelper.INSTANCE.watchZKConfigChildChange(sb.toString(), lsrner);
+
 
 
 

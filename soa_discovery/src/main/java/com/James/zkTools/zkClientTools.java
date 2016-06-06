@@ -136,17 +136,13 @@ public class zkClientTools {
         client.commit();
     }
 
-    public String watchedData(CuratorFramework client, String path,CuratorListener listener) throws Exception{
+    public void watchedData(CuratorFramework client, String path,CuratorListener listener) throws Exception{
 
         //getting event/async notifications
         client.getCuratorListenable().addListener(listener);
 
-        byte[] bytes = zkTools.getData().watched().forPath(path);
-        if(bytes!=null){
-            return new String(bytes,StandardCharsets.UTF_8);
-        }else{
-            return "";
-        }
+        zkTools.getData().watched().forPath(path);
+
     }
 
     public void watchedChildChanged(CuratorFramework client, String path,CuratorListener listener) throws Exception{

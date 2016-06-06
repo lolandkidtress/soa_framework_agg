@@ -23,7 +23,7 @@ public class zkDataChangedListener implements CuratorListener {
 	private String path;
 	
 	public zkDataChangedListener(String path,iListeners after){
-		fireListener=after;
+		this.fireListener=after;
 		this.path = path;
 	}
 	
@@ -33,26 +33,27 @@ public class zkDataChangedListener implements CuratorListener {
     	WatchedEvent watchevent = event.getWatchedEvent();
 		if(watchevent.getType().equals(EventType.NodeDataChanged)){
 			fireListener.DataChanged(path,CommonConfig.zkEventType.DataChanged.name());
-//    		refreshZKConfig();
-//    		watchZKConfig(this);
+//			iListeners lsrner = new dataChangedListener();
+//			InvokerHelper.INSTANCE.watchZKConfigDataChange(path, lsrner);
+
     	}
     	
     	if(watchevent.getType().equals(EventType.NodeDeleted)){
     		fireListener.DataChanged(path,CommonConfig.zkEventType.DataChanged.name());
-//    		refreshZKConfig();
-//    		watchZKConfig(this);
+//				iListeners lsrner = new dataChangedListener();
+//				InvokerHelper.INSTANCE.watchZKConfigDataChange(path, lsrner);
+
     	}
     	
     	if(watchevent.getType().equals(EventType.NodeCreated)){
     		fireListener.DataChanged(path,CommonConfig.zkEventType.DataChanged.name()); ;
-//    		refreshZKConfig();
-//    		watchZKConfig(this);
+//				iListeners lsrner = new dataChangedListener();
+//				InvokerHelper.INSTANCE.watchZKConfigDataChange(path, lsrner);
     	}
     	
     	if(watchevent.getType().equals(EventType.None)){
-//    		fireListener.DataChanged();
-//    		refreshZKConfig();
-//    		watchZKConfig(this);
+//				iListeners lsrner = new dataChangedListener();
+//				InvokerHelper.INSTANCE.watchZKConfigDataChange(path, lsrner);
     	}
     	
     }

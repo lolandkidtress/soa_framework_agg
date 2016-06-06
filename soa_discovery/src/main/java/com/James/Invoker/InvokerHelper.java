@@ -6,7 +6,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Listeners.iListeners;
+import com.James.Listeners.dataChangedListener;
 import com.James.Model.providerInvoker;
 import com.James.zkInstance;
 import com.James.zkTools.zkChildChangedListener;
@@ -30,9 +30,17 @@ public enum InvokerHelper {
   //关注的服务提供者
   private ConcurrentHashMap<String,providerInvoker> watchedInvokers = new ConcurrentHashMap();
 
+//  private zkConnectionStateListener ConnectionStateListener = new zkConnectionStateListener(sb.toString(),lsrner);
+//  private zkDataChangedListener DataChangedListener = new zkDataChangedListener(sb.toString(),lsrner);
+//  private zkChildChangedListener DataChangedListener = new zkDataChangedListener(sb.toString(),lsrner);
+
   //监听器
   //保存数据变更后的触发事件列表
-  private ConcurrentHashMap<String,iListeners> InvokerListeners = new ConcurrentHashMap();
+  private ConcurrentHashMap<String,zkConnectionStateListener> InvokerConnectionStateListeners = new ConcurrentHashMap();
+  private ConcurrentHashMap<String,zkDataChangedListener> InvokerDataChangedListeners = new ConcurrentHashMap();
+  private ConcurrentHashMap<String,zkChildChangedListener> InvokerzkChildChangedListeners = new ConcurrentHashMap();
+
+
 
   public providerInvoker getWatchedInvokers(String key){
     return watchedInvokers.get(key);
@@ -52,11 +60,17 @@ public enum InvokerHelper {
     }
   }
 
-  public void watchZKConfigDataChange(String watchPath ,iListeners Lsrner) {
+  public void watchZKDataChange(String watchPath) {
 
     CuratorFramework zktools = zkclient.getCuratorFramework();
 
-    zkDataChangedListener DataChangedListener = new zkDataChangedListener(watchPath,Lsrner);
+    //不能每次都新建lsrn,会有重复事件发生
+    zkDataChangedListener DataChangedListener = InvokerDataChangedListeners.get(watchPath);
+
+    if(DataChangedListener==null){
+      DataChangedListener = new zkDataChangedListener(watchPath,new dataChangedListener());
+      InvokerDataChangedListeners.put(watchPath,DataChangedListener);
+    }
     //watch ZK
     try {
       LOGGER.info("watch " + watchPath + " DataChanged");
@@ -68,11 +82,18 @@ public enum InvokerHelper {
 
   }
 
-  public void watchZKConfigChildChange(String watchPath ,iListeners Lsrner) {
+  public void watchZKChildChange(String watchPath) {
 
     CuratorFramework zktools = zkclient.getCuratorFramework();
 
-    zkChildChangedListener ChildChangedListener = new zkChildChangedListener(watchPath,Lsrner);
+    //不能每次都新建lsrn,会有重复事件发生
+    zkChildChangedListener ChildChangedListener = InvokerzkChildChangedListeners.get(watchPath);
+
+    if(ChildChangedListener==null){
+      ChildChangedListener = new zkChildChangedListener(watchPath,new dataChangedListener());
+      InvokerzkChildChangedListeners.put(watchPath,ChildChangedListener);
+    }
+
     //watch ZK
     try {
       LOGGER.info("watch " + watchPath + " ChildChanged");
@@ -85,11 +106,17 @@ public enum InvokerHelper {
   }
 
 
-  public void watchZKConfigConnectStat(String watchPath ,iListeners Lsrner) {
+  public void watchZKConnectStat(String watchPath) {
 
     CuratorFramework zktools = zkclient.getCuratorFramework();
 
-    zkConnectionStateListener ConnectionStateListener = new zkConnectionStateListener(watchPath,Lsrner);
+    //不能每次都新建lsrn,会有重复事件发生
+    zkConnectionStateListener ConnectionStateListener = InvokerConnectionStateListeners.get(watchPath);
+
+    if(ConnectionStateListener==null){
+      ConnectionStateListener = new zkConnectionStateListener(watchPath,new dataChangedListener());
+      InvokerConnectionStateListeners.put(watchPath,ConnectionStateListener);
+    }
     //watch ZK
     try {
       LOGGER.info("watch " + watchPath + " ConnectStat");

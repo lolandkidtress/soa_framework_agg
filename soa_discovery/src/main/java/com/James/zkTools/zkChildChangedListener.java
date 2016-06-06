@@ -34,7 +34,9 @@ public class zkChildChangedListener implements CuratorListener {
     	WatchedEvent watchevent = event.getWatchedEvent();
 
 		if(watchevent.getType().equals(EventType.NodeChildrenChanged)){
-				fireListener.ChildChanged(path,CommonConfig.zkEventType.NodeChildrenChanged.name());
+			fireListener.ChildChanged(path,CommonConfig.zkEventType.NodeChildrenChanged.name());
+//			iListeners lsrner = new dataChangedListener();
+//			InvokerHelper.INSTANCE.watchZKConfigChildChange(path, lsrner);
 		}
     	
     }

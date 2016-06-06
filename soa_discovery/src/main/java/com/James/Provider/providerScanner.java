@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.Annotation.InputParamAnnotation;
@@ -26,7 +27,7 @@ import com.James.soa_agent.HotInjecter;
  */
 public class providerScanner {
 
-  private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(providerScanner.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(providerScanner.class.getName());
 
   //扫描所有的class
   //返回带有指定注解的类

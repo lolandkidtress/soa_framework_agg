@@ -17,7 +17,7 @@ public @interface descriptionAnnotation {
 
   public String name();
 
-  public String version() ;
+  public String version() default "defaultVersion";
 
   public String desc();
 

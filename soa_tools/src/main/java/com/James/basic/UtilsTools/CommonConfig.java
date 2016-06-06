@@ -14,6 +14,7 @@ public class CommonConfig {
   public final static String SLASH = "/";
   public final static String UNDERLINE = "_";
   public final static String HYPHEN = "-";
+  public final static String DEFAULTVERSION = "defaultVersion";
 
 
   public enum SUBMIT_MODE {
@@ -22,5 +23,9 @@ public class CommonConfig {
 
   public enum PROTOCOL {
     http,thrift,avro,protoc
+  }
+
+  public enum zkEventType{
+    DataChanged,ConnectionRecover,ConnectionLost,NodeChildrenChanged,None
   }
 }

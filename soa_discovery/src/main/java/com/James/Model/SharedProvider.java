@@ -28,12 +28,12 @@ public class SharedProvider {
   //节点名称
   protected String server_name;
 
-  protected String version="";
+  protected String version= CommonConfig.DEFAULTVERSION;
 
   //协议 http,avro,thrift等
   protected String protocol = "";
 
-  //server_name+Method_name+protocol+version 组成一个唯一标示
+  //server_name+Method_name+protocol+version + ip 组成一个唯一标示
   protected String identityID;
 
   protected String describe = "";
@@ -201,13 +201,21 @@ public class SharedProvider {
       this.identityID = this.server_name.concat(CommonConfig.HYPHEN)
           .concat(this.method_name).concat(CommonConfig.HYPHEN)
           .concat(this.protocol).concat(CommonConfig.HYPHEN)
-          .concat(this.version);
+          .concat(this.version).concat(CommonConfig.HYPHEN)
+          .concat(this.ip);
       return true;
 
     }else{
       return false;
     }
 
+  }
+
+  public boolean isDefaultVersion(){
+    if(this.version == CommonConfig.DEFAULTVERSION){
+      return true;
+    }
+    return false;
   }
 
 

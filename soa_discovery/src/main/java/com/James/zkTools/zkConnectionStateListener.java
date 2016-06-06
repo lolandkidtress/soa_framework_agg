@@ -1,23 +1,28 @@
 package com.James.zkTools;
 
-import com.James.Listeners.iListeners;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.James.Listeners.iListeners;
+import com.James.basic.UtilsTools.CommonConfig;
+
+
 /**
  * Created by James on 16/5/27.
- * 连接时间
+ * 连接事件
  */
 public class zkConnectionStateListener implements ConnectionStateListener {
 	private static final Logger logger = LoggerFactory.getLogger(zkConnectionStateListener.class.getName());
 	
 	private iListeners fireListener;
+	private String path;
 	
-	public zkConnectionStateListener(iListeners after){
-		fireListener=after;
+	public zkConnectionStateListener(String path,iListeners after){
+		this.fireListener=after;
+		this.path = path;
 	}
 	
 	public void stateChanged(CuratorFramework client, ConnectionState newState) {
@@ -26,15 +31,13 @@ public class zkConnectionStateListener implements ConnectionStateListener {
 
 		if(newState==ConnectionState.CONNECTED || newState ==ConnectionState.RECONNECTED){
 			logger.debug("zk恢复连接");
-			fireListener.ConnectionRecover();
+			fireListener.ConnectionRecover(path,CommonConfig.zkEventType.ConnectionRecover.name());
 		}else{
 			//Lost或者Suspend
 			logger.debug("zk失去连接");
-			fireListener.ConnectionLost();
+			fireListener.ConnectionLost(path,CommonConfig.zkEventType.ConnectionLost.name());
 		}
-	
-		
-		
+
 	}
 
 }

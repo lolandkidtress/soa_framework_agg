@@ -1,10 +1,11 @@
-import com.James.kafka_Config.Configuration;
-import com.James.Kafka_Tools.Kafka_Consumer;
-import com.James.Kafka_Tools.Kafka_Producer;
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
+import com.James.Kafka_Tools.Kafka_Consumer;
+import com.James.Kafka_Tools.Kafka_Producer;
+import com.James.kafka_Config.Configuration;
 
 /**
  * Created by James on 16/5/20.
@@ -29,14 +30,16 @@ public class kafka_test {
         if(configuration!=null){
             Kafka_Consumer kafka_Consumer = new Kafka_Consumer();
 
-            kafka_Consumer.consume(configuration, "soa_group_test", "smallest", 2, "xuyufei_test", MsgCosum.class);
+            kafka_Consumer.consume(configuration, "soa_group_test", "largest", 2, "soa_test", MsgCosum.class);
 
             System.out.println("start_producer");
             Kafka_Producer.getInstance().start(configuration);
+            int i=0;
 
-//            while(true){
-//                Kafka_Producer.getInstance().send("soa_test","key",String.valueOf(System.currentTimeMillis()));
-//            }
+            while(true){
+               i++;
+                Kafka_Producer.getInstance().send("soa_test","key",String.valueOf(i));
+            }
         }
 
         Thread.currentThread().join();

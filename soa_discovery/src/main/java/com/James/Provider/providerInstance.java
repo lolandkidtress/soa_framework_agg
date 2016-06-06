@@ -12,6 +12,7 @@ import com.James.Model.SharedProvider;
 
 /**
  * Created by James on 16/5/30.
+ * 服务提供方
  */
 public class providerInstance {
   private static final Logger LOGGER = LoggerFactory.getLogger(providerInstance.class.getName());
@@ -36,7 +37,7 @@ public class providerInstance {
   private providerInstance() {
   }
 
-  public providerInstance startServer(String serverName,String zkConnect) {
+  public providerInstance startServer(String serverName) {
 
 
     this.serverName = serverName;
@@ -54,7 +55,7 @@ public class providerInstance {
 
     if(sharedProviders.size()>0){
       //初始化zk
-      providerRegister.INSTANCE.init(zkConnect);
+      providerRegister.INSTANCE.init();
       //往zk中写入注册的服务
       providerRegister.INSTANCE.registerServers(sharedProviders);
       LOGGER.info("注册自身服务结束");

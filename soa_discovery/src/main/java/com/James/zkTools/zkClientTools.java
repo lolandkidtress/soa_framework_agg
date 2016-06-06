@@ -149,6 +149,20 @@ public class zkClientTools {
         }
     }
 
+    public void watchedChildChanged(CuratorFramework client, String path,CuratorListener listener) throws Exception{
+
+        //getting event/async notifications
+        client.getCuratorListenable().addListener(listener);
+
+        zkTools.getChildren().watched().forPath(path);
+//        byte[] bytes = zkTools.getData().watched().forPath(path);
+//        if(bytes!=null){
+//            return new String(bytes,StandardCharsets.UTF_8);
+//        }else{
+//            return "";
+//        }
+    }
+
     public void watchConnectStat(CuratorFramework client, String path,ConnectionStateListener listener) throws Exception{
 
         //getting event/async notifications

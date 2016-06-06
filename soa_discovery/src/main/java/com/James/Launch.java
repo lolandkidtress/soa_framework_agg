@@ -17,9 +17,7 @@ public class Launch {
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
   public void start(){
-    String zkconnect = "172.16.8.97:2181";
-    zkInstance.INSTANCE.init(zkconnect);
-    providerInstance.getInstance().startServer("com.James.soa_discovery");
+      System.out.println("start");
   }
 
   @descriptionAnnotation(author = "james",name="end",submit_mode="post",protocol="thrift",port = "8080" ,desc="")
@@ -27,15 +25,23 @@ public class Launch {
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2")
   public void end(){
-    String zkconnect = "172.16.8.97:2181";
-    zkInstance.INSTANCE.init(zkconnect);
-    providerInstance.getInstance().startServer("com.James.soa_discovery");
+    System.out.println("end");
+
   }
 
   public static void main(String[] args) throws Exception {
-    new Launch().start();
+    String zkconnect = "172.16.8.97:2181";
+    providerInstance.getInstance().initzk(zkconnect).startServer("com.James.demo");
 
-    Invoker invoke = Invoker.create("com.James.soa_discovery");
+    providerInstance.getInstance().initzk(zkconnect).startServer("com.James.soa_discovery");
+
+    Invoker invoke = Invoker.create("com.James.soa_discovery",zkconnect);
+//
+    Invoker invoke2 = Invoker.create("com.James.demo",zkconnect);
+
+//    InvokerHelper.INSTANCE.init();
+//    InvokerHelper.INSTANCE.watchZKDataChange("/com.James.demo");
+//    InvokerHelper.INSTANCE.watchZKChildChange("/com.James.demo");
     Thread.currentThread().join();
   }
 }

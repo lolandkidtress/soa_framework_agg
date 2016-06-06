@@ -29,7 +29,7 @@ public class zkClientTools {
     public static Charset charset = StandardCharsets.UTF_8;
 
     private String connectString;
-    //private String namespace = "/NAME";
+    private String namespace = "";
     private int timeout = 30000;
     private int retry = 5;
     private int retryDuration = 1000;
@@ -40,9 +40,10 @@ public class zkClientTools {
 
     }
 
-    public zkClientTools(String connectString){
+    public zkClientTools(String connectString,String namespace){
         this.connectString = connectString;
-        initCuratorClient(connectString);
+        this.namespace = namespace;
+        initCuratorClient(this.connectString,this.namespace);
 
     }
 
@@ -72,13 +73,13 @@ public class zkClientTools {
 
     }
 
-    public void initCuratorClient(String connectString){
+    public void initCuratorClient(String connectString,String namespace){
 
             this.zkTools = CuratorFrameworkFactory
                     .builder()
                     .connectString(connectString)
-                            //.namespace(namespace)
-                    .retryPolicy(new RetryNTimes(retry,retryDuration))
+                    .namespace(namespace)
+                    .retryPolicy(new RetryNTimes(retry, retryDuration))
                     .connectionTimeoutMs(timeout)
                     .build();
             this.zkTools.start();
@@ -166,7 +167,7 @@ public class zkClientTools {
 
     }
 
-    public boolean checkExists(String Path) throws Exception {
+    public boolean checkExists(String Path) throws Exception{
 
         if(zkTools.checkExists().forPath(Path) !=null){
             return true;

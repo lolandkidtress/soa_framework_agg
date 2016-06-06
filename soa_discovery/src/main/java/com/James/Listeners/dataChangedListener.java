@@ -3,6 +3,7 @@ package com.James.Listeners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.James.Invoker.Invoker;
 import com.James.Invoker.InvokerHelper;
 
 
@@ -24,8 +25,8 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-    InvokerHelper.INSTANCE.watchZKDataChange(path);
-
+    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    invoker.watchZKDataChange(path);
   }
 
   @Override
@@ -38,10 +39,8 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-
-//    iListeners lsrner = new dataChangedListener();
-//
-    InvokerHelper.INSTANCE.watchZKConnectStat(path);
+    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    invoker.watchZKConnectStat(path);
   }
 
   @Override
@@ -54,10 +53,8 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-//
-//    iListeners lsrner = new dataChangedListener();
-//
-    InvokerHelper.INSTANCE.watchZKConnectStat(path);
+    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    invoker.watchZKConnectStat(path);
   }
 
   @Override
@@ -70,9 +67,7 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-
-//    iListeners lsrner = new dataChangedListener();
-//
-    InvokerHelper.INSTANCE.watchZKChildChange(path);
+    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    invoker.watchZKChildChange(path);
   }
 }

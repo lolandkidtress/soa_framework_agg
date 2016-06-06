@@ -1,19 +1,23 @@
 package com.James.Invoker;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.HashFunction.IHashFunction;
+import com.James.Listeners.dataChangedListener;
 import com.James.Model.SharedProvider;
 import com.James.basic.UtilsTools.CommonConfig;
-import com.James.zkInstance;
+import com.James.zkTools.zkChildChangedListener;
 import com.James.zkTools.zkClientTools;
+import com.James.zkTools.zkConnectionStateListener;
+import com.James.zkTools.zkDataChangedListener;
 
 
 /**
@@ -22,8 +26,6 @@ import com.James.zkTools.zkClientTools;
 public class Invoker {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Invoker.class.getName());
-
-  private final String zk_root_dir = zkInstance.INSTANCE.providerMangerPath;
 
   public IHashFunction algo = IHashFunction.MURMUR_HASH;
 
@@ -40,51 +42,65 @@ public class Invoker {
   private zkClientTools zkclient;
 
 
-  public Invoker(String server_name){
-    InvokerHelper.INSTANCE.init();
+  public Invoker(String server_name,String zkconnect) {
 
-    this.zkclient = zkInstance.INSTANCE.getZkclient();
+    if (!zkClientTools.isConnected(zkconnect)) {
+      LOGGER.error("zookeeeper连接失败");
+    }
+    this.zkclient = new zkClientTools(zkconnect, "");
+    LOGGER.info("zookeeeper连接成功");
 
+    initInvoker(server_name);
+  }
 
+  public Invoker(String server_name,String zkconnect,String providerMangerPath) {
+
+    if (!zkClientTools.isConnected(zkconnect)) {
+      LOGGER.error("zookeeeper连接失败");
+    }
+    this.zkclient = new zkClientTools(zkconnect, providerMangerPath);
+    LOGGER.info("zookeeeper连接成功");
+
+    initInvoker(server_name);
+  }
+
+  private void initInvoker(String server_name ){
 
     try{
 
-      List<String> ChildrenPaths = this.zkclient.getChildren(zk_root_dir);
-      for(String childrenPath : ChildrenPaths){
+      if(!this.zkclient.checkExists(CommonConfig.SLASH.concat(server_name))){
+        LOGGER.error("没有名称为" + server_name + "的服务提供者");
+      }else{
+        LOGGER.info("开始扫描" + server_name+"服务提供的数据");
 
+        StringBuilder sb = new StringBuilder();
+        sb.append(CommonConfig.SLASH);
+        sb.append(server_name);
 
-        if(childrenPath.equals(server_name)){
-          LOGGER.info("开始扫描"+childrenPath+"服务提供的数据");
+        //添加watch
+        //watch是一次性的,触发后,需要重新添加watch
+        watchZKConnectStat(sb.toString());
+//        watchZKChildChange(sb.toString());
+        watchZKDataChange(sb.toString());
 
-          StringBuilder sb = new StringBuilder().append(zk_root_dir);
-          sb.append(CommonConfig.SLASH);
-          sb.append(server_name);
+        InvokerHelper.INSTANCE.setWatchedInvokers(CommonConfig.SLASH.concat(server_name),this);
 
-
-
-          //添加watch
-          //watch是一次性的,触发后,需要重新添加watch
-          InvokerHelper.INSTANCE.watchZKConnectStat(sb.toString());
-          InvokerHelper.INSTANCE.watchZKChildChange(sb.toString());
-          InvokerHelper.INSTANCE.watchZKDataChange(sb.toString());
-        }
       }
 
 
     }catch(Exception e){
-
+      e.printStackTrace();
+      LOGGER.error("zookeeeper连接异常");
     }
-
-
-
-
-
-
 
   }
 
-  public static Invoker create(String server_name){
-    return new Invoker(server_name);
+  public static Invoker create(String server_name,String zkconnect){
+    return new Invoker(server_name,zkconnect);
+  }
+
+  public static Invoker create(String server_name,String zkconnect,String providerMangerPath){
+    return new Invoker(server_name,zkconnect,providerMangerPath);
   }
 
   //在环上获取节点
@@ -138,5 +154,79 @@ public class Invoker {
     }
   }
 
+  //***********************************************************//
+  //监听器
+  //保存数据变更后的触发事件列表
+  private ConcurrentHashMap<String,zkConnectionStateListener> InvokerConnectionStateListeners = new ConcurrentHashMap();
+  private ConcurrentHashMap<String,zkDataChangedListener> InvokerDataChangedListeners = new ConcurrentHashMap();
+  private ConcurrentHashMap<String,zkChildChangedListener> InvokerzkChildChangedListeners = new ConcurrentHashMap();
+
+  public void watchZKDataChange(String watchPath) {
+
+    CuratorFramework zktools = zkclient.getCuratorFramework();
+
+    //不能每次都新建lsrn,会有重复事件发生
+    zkDataChangedListener DataChangedListener = this.InvokerDataChangedListeners.get(watchPath);
+
+    if(DataChangedListener==null){
+      DataChangedListener = new zkDataChangedListener(watchPath,new dataChangedListener());
+      this.InvokerDataChangedListeners.put(watchPath,DataChangedListener);
+    }
+    //watch ZK
+    try {
+      LOGGER.info("watch " + watchPath + " DataChanged");
+      zkclient.watchedData(zktools, watchPath, DataChangedListener);
+
+    } catch (Exception e) {
+
+    }
+
+  }
+
+  public void watchZKChildChange(String watchPath) {
+
+    CuratorFramework zktools = zkclient.getCuratorFramework();
+
+    //不能每次都新建lsrn,会有重复事件发生
+    zkChildChangedListener ChildChangedListener = this.InvokerzkChildChangedListeners.get(watchPath);
+
+    if(ChildChangedListener==null){
+      ChildChangedListener = new zkChildChangedListener(watchPath,new dataChangedListener());
+      this.InvokerzkChildChangedListeners.put(watchPath,ChildChangedListener);
+    }
+
+    //watch ZK
+    try {
+      LOGGER.info("watch " + watchPath + " ChildChanged");
+      zkclient.watchedChildChanged(zktools, watchPath, ChildChangedListener);
+
+    } catch (Exception e) {
+
+    }
+
+  }
+
+
+  public void watchZKConnectStat(String watchPath) {
+
+    CuratorFramework zktools = zkclient.getCuratorFramework();
+
+    //不能每次都新建lsrn,会有重复事件发生
+    zkConnectionStateListener ConnectionStateListener = this.InvokerConnectionStateListeners.get(watchPath);
+
+    if(ConnectionStateListener==null){
+      ConnectionStateListener = new zkConnectionStateListener(watchPath,new dataChangedListener());
+      this.InvokerConnectionStateListeners.put(watchPath,ConnectionStateListener);
+    }
+    //watch ZK
+    try {
+      LOGGER.info("watch " + watchPath + " ConnectStat");
+      zkclient.watchConnectStat(zktools, watchPath, ConnectionStateListener);
+
+    } catch (Exception e) {
+
+    }
+
+  }
 
 }

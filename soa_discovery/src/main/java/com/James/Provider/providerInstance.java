@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.Model.SharedProvider;
+import com.James.zkTools.zkClientTools;
 
 
 /**
@@ -37,8 +38,25 @@ public class providerInstance {
   private providerInstance() {
   }
 
+  private zkClientTools zkclient;
+
+
+  public providerInstance initzk(String zkconnect,String providerMangerPath){
+    init(zkconnect,providerMangerPath);
+    return this;
+  }
+
+  public providerInstance initzk(String zkconnect){
+    init(zkconnect);
+    return this;
+  }
+
   public providerInstance startServer(String serverName) {
 
+    if(this.zkclient==null){
+      LOGGER.error("zookeeeper连接失败");
+      return null;
+    }
 
     this.serverName = serverName;
 
@@ -54,10 +72,9 @@ public class providerInstance {
     });
 
     if(sharedProviders.size()>0){
-      //初始化zk
-      providerRegister.INSTANCE.init();
+
       //往zk中写入注册的服务
-      providerRegister.INSTANCE.registerServers(sharedProviders);
+      providerRegister.INSTANCE.registerServers(sharedProviders,zkclient);
       LOGGER.info("注册自身服务结束");
     }else{
       LOGGER.error("没有需要注册的服务");
@@ -68,6 +85,28 @@ public class providerInstance {
     }));
 
     return this;
+  }
+
+
+  public void init(String zkconnect,String providerMangerPath){
+
+    if(!zkClientTools.isConnected(zkconnect)){
+      LOGGER.error("zookeeeper连接失败");
+
+    }
+    this.zkclient = new zkClientTools(zkconnect,providerMangerPath);
+    LOGGER.info("zookeeeper连接成功");
+
+  }
+
+  public void init(String zkconnect){
+
+    if(!zkClientTools.isConnected(zkconnect)){
+      LOGGER.error("zookeeeper连接失败");
+
+    }
+    this.zkclient = new zkClientTools(zkconnect,"");
+    LOGGER.info("zookeeeper连接成功");
   }
 
 

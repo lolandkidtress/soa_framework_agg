@@ -236,5 +236,5 @@ public class Invoker {
   }
 
   //TODO
-  //get/post/delete/put等方法的事先
+  //get/post/delete/put等方法的实现
 }

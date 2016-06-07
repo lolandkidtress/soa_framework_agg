@@ -33,6 +33,7 @@
 		<!--<module>./soa_authc</module>-->
 		<module>./soa_kafka</module>
 		<module>./soa_db</module>
+		<module>./soa_http</module>
 
 
 		<!--<module>soa_agent</module>-->
@@ -41,6 +42,7 @@
 
 		<!-- demo -->
 		<module>./soa_demo</module>
+		<module>soa_http</module>
 
 	</modules>
 	<dependencies>

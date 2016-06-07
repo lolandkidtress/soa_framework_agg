@@ -5,6 +5,7 @@ import com.James.Annotation.OutputParamAnnotation;
 import com.James.Annotation.descriptionAnnotation;
 import com.James.Invoker.Invoker;
 import com.James.Provider.providerInstance;
+import com.James.basic.UtilsTools.JsonConvert;
 
 
 /**
@@ -38,6 +39,9 @@ public class Launch {
     Invoker invoke = Invoker.create("com.James.soa_discovery",zkconnect);
 //
     Invoker invoke2 = Invoker.create("com.James.demo",zkconnect);
+
+    System.out.println(JsonConvert.toJson(invoke2.Function("end")));
+
 
 //    InvokerHelper.INSTANCE.init();
 //    InvokerHelper.INSTANCE.watchZKDataChange("/com.James.demo");

@@ -1,5 +1,7 @@
 package com.James;
 
+import java.util.Properties;
+
 import com.James.Annotation.InputParamAnnotation;
 import com.James.Annotation.OutputParamAnnotation;
 import com.James.Annotation.descriptionAnnotation;
@@ -13,7 +15,7 @@ import com.James.basic.UtilsTools.JsonConvert;
  */
 public class Launch {
 
-  @descriptionAnnotation(author = "james",name="start",submit_mode="get",protocol="http",port = "8080" ,desc="",version = "1.0")
+  @descriptionAnnotation(author = "james",name="start",submit_mode="get",protocol="http" ,desc="",version = "1.0")
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
@@ -21,26 +23,30 @@ public class Launch {
       System.out.println("start");
   }
 
-  @descriptionAnnotation(author = "james",name="end",submit_mode="post",protocol="thrift",port = "8080" ,desc="")
+  @descriptionAnnotation(author = "james",name="send",submit_mode="post",protocol="avro",desc="")
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2")
-  public void end(){
+  public void send(){
     System.out.println("end");
 
   }
 
   public static void main(String[] args) throws Exception {
     String zkconnect = "172.16.8.97:2181";
-    providerInstance.getInstance().initzk(zkconnect).startServer("com.James.demo");
 
-    providerInstance.getInstance().initzk(zkconnect).startServer("com.James.soa_discovery");
+    Properties properties = new Properties();
+    properties.setProperty("zkConnect",zkconnect);
+
+    providerInstance.getInstance().readConfig(properties).startServer("com.James.demo");
+
+    providerInstance.getInstance().readConfig(properties).startServer("com.James.soa_discovery");
 
     Invoker invoke = Invoker.create("com.James.soa_discovery",zkconnect);
 //
     Invoker invoke2 = Invoker.create("com.James.demo",zkconnect);
 
-    System.out.println(JsonConvert.toJson(invoke2.Function("end")));
+    System.out.println(JsonConvert.toJson(invoke2.Function("send")));
 
 
 //    InvokerHelper.INSTANCE.init();

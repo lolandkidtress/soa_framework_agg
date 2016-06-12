@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.James.Exception.Method_Not_Found_Exception;
 import com.James.HashFunction.IHashFunction;
 import com.James.basic.UtilsTools.CommonConfig;
 
@@ -55,15 +56,18 @@ public class providerInvoker {
 
 
   //在环上获取节点
-  public SharedProvider get(String method,String seed) {
+  public SharedProvider get(String method,String seed) throws Method_Not_Found_Exception {
     TreeMap TreeMapNodes = methodTreeMapNodes.get(method);
+    if(TreeMapNodes==null){
+      throw new Method_Not_Found_Exception();
+    }
     SortedMap<Long, SharedProvider> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
     if (tail.isEmpty()) {
       Map.Entry<Long, SharedProvider> firstEntry = TreeMapNodes.firstEntry();
       if (firstEntry != null) {
         return firstEntry.getValue();
       }
-      return null;
+      throw new Method_Not_Found_Exception();
     }
     return tail.get(tail.firstKey());
   }

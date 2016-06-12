@@ -24,6 +24,8 @@ public class SharedProvider {
 
   protected String author;
   //服务名称
+  //http下应该对应request_mapping
+  //rpc下应该是class的全限定名称
   protected String method_name ;
   //节点名称
   protected String server_name;

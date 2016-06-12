@@ -17,7 +17,7 @@ import com.James.basic.UtilsTools.CommonConfig;
  * 数据变更事件
  */
 public class zkDataChangedListener implements CuratorListener {
-	private static final Logger logger = LoggerFactory.getLogger(zkDataChangedListener.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(zkDataChangedListener.class.getName());
 	
 	private iListeners fireListener;
 	private String path;

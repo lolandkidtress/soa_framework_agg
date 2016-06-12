@@ -1,20 +1,21 @@
-package com.James.http_exception;
+package com.James.Exception;
 
 import java.io.IOException;
 
+import com.James.basic.Enum.Code;
+
 
 /**
- * Created by James on 16/6/7.
+ * Created by James on 16/6/8.
  */
-public class Http_Fail_Exception  extends IOException {
-
+public class Method_Not_Found_Exception  extends IOException {
   private Integer code;
   private String message;
 
-  public Http_Fail_Exception(Integer code, String message) {
+  public Method_Not_Found_Exception() {
     super();
-    this.code = code;
-    this.message = message;
+    this.code = Code.service_notfound.code;
+    this.message = Code.service_notfound.name();
   }
 
   public Integer getCode() {
@@ -40,6 +41,6 @@ public class Http_Fail_Exception  extends IOException {
    */
   @Override
   public String toString() {
-    return "HTTP调用时response.isSuccessful()出现为false的错误 code:".concat(code.toString()).concat(" - message:".concat(message));
+    return "code:".concat(code.toString()).concat(" - message:".concat(message));
   }
 }

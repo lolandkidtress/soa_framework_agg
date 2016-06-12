@@ -17,7 +17,7 @@ import com.James.basic.UtilsTools.CommonConfig;
  * 子节点变更事件
  */
 public class zkChildChangedListener implements CuratorListener {
-	private static final Logger logger = LoggerFactory.getLogger(zkChildChangedListener.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(zkChildChangedListener.class.getName());
 
 	private iListeners fireListener;
 

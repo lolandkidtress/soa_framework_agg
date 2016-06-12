@@ -25,7 +25,5 @@ public @interface descriptionAnnotation {
 
   public String protocol() default "http";
 
-  public String port();
-
 
 }

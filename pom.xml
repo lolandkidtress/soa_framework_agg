@@ -43,6 +43,7 @@
 		<!-- demo -->
 		<module>./soa_demo</module>
 		<module>soa_http</module>
+		<module>soa_avrp</module>
 
 	</modules>
 	<dependencies>

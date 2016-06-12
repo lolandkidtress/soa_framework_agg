@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.James.Exception.Method_Not_Found_Exception;
 import com.James.Listeners.dataChangedListener;
 import com.James.Model.SharedProvider;
 import com.James.Model.providerInvoker;
@@ -231,8 +232,14 @@ public class Invoker {
   /**********************************/
   //调用
   public SharedProvider Function(String method){
+    try{
+      return versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,String.valueOf(System.currentTimeMillis()));
+    }catch(Method_Not_Found_Exception e){
+      e.printStackTrace();
+      LOGGER.error("没有可用服务节点");
+      return null;
+    }
 
-    return versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,String.valueOf(System.currentTimeMillis()));
   }
 
   //TODO

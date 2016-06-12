@@ -143,18 +143,19 @@ public class providerScanner {
     if (describe != null) {
       LOGGER.info("开始扫描" + method.getDeclaringClass().getName() + "类下的" + method.getName() + "方法");
       sharedProvider.setAuthor(describe.author());
-      sharedProvider.setMethod_name(describe.name());
+      if(describe.protocol().equals(CommonConfig.PROTOCOL.avro.name())){
+        sharedProvider.setMethod_name(method.getDeclaringClass().getName());
+      }
+      if(describe.protocol().equals(CommonConfig.PROTOCOL.http.name())){
+        sharedProvider.setMethod_name(describe.name());
+      }
+
       sharedProvider.setDescribe(describe.desc());
       sharedProvider.setVersion(describe.version());
       sharedProvider.setProtocol(describe.protocol());
-      if(describe.protocol().equals(CommonConfig.PROTOCOL.http.name())){
-        sharedProvider.setHttp_port(describe.port());
-      }else{
-        sharedProvider.setRpc_port(describe.port());
-      }
       sharedProvider.setSubmit_mode(describe.submit_mode());
 
-      if(!sharedProvider.isAvailable()){
+      if(!sharedProvider.isAvailable()) {
         LOGGER.error(sharedProvider.getMethod_name()+"不可用");
       }
     }

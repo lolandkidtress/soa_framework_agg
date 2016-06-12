@@ -2,6 +2,7 @@ package com.James.Provider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -39,19 +40,44 @@ public class providerInstance {
   }
 
   private zkClientTools zkclient;
+  private String zkConnect;
+
+  private String defaultHttpPort = "9090";
+  private String defaultAvroPort = "46111";
+  private String defaultHttpContext ="";
+
+  //
+  public providerInstance readConfig( Properties properties){
 
 
-  public providerInstance initzk(String zkconnect,String providerMangerPath){
-    init(zkconnect,providerMangerPath);
-    return this;
-  }
+    this.zkConnect = properties.getProperty("zkConnect");
 
-  public providerInstance initzk(String zkconnect){
-    init(zkconnect);
+    if(this.zkConnect==null||this.zkConnect.length()<0){
+      LOGGER.error("没有配置zk连接");
+      return null;
+    }
+
+    if(properties.getProperty("HttpPort")==null){
+      LOGGER.error("没有配置http端口,使用默认地址");
+    }else{
+      this.defaultHttpPort = properties.getProperty("HttpPort");
+    }
+
+    LOGGER.info("http端口为:" + this.defaultHttpPort);
+
+    if(properties.getProperty("AvroPort")==null){
+      LOGGER.error("没有配置rpc端口,使用默认地址");
+    }else{
+      this.defaultAvroPort = properties.getProperty("AvroPort");
+    }
+
+    LOGGER.info("rpc端口为:" + this.defaultAvroPort);
     return this;
   }
 
   public providerInstance startServer(String serverName) {
+
+    init(this.zkConnect);
 
     if(this.zkclient==null){
       LOGGER.error("zookeeeper连接失败");
@@ -64,8 +90,12 @@ public class providerInstance {
     providerClasses.forEach(providerClass -> {
       //读取注解信息
       LOGGER.info("开始扫描" + providerClass.getName() + "类");
+
       providerScanner.readClasses(providerClass).forEach(sharedProvider -> {
         if (sharedProvider.getIdentityID() != null) {
+          sharedProvider.setHttp_port(this.defaultHttpPort);
+          sharedProvider.setRpc_port(this.defaultAvroPort);
+          sharedProvider.setHttp_context(this.defaultHttpContext);
           sharedProviders.add(sharedProvider);
         }
       });

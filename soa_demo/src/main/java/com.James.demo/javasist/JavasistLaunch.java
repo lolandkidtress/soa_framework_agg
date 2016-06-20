@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class JavasistLaunch {
 
-    final static String class_name = "com.James.demo.sample.Launch";
+    final static String class_name = "com.James.demo.sample.LaunchTest";
     final static String method_name = "buildString";
 
     public void javasistMainLaunch(){

@@ -152,7 +152,9 @@ public class providerScanner {
 
       sharedProvider.setDescribe(describe.desc());
       sharedProvider.setVersion(describe.version());
-      sharedProvider.setProtocol(describe.protocol());
+
+      sharedProvider.setProtocol(CommonConfig.PROTOCOL.valueOf(describe.protocol()));
+
       sharedProvider.setSubmit_mode(describe.submit_mode());
 
       if(!sharedProvider.isAvailable()) {

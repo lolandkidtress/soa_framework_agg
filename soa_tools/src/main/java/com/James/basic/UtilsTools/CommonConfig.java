@@ -14,11 +14,21 @@ public class CommonConfig {
   public final static String SLASH = "/";
   public final static String UNDERLINE = "_";
   public final static String HYPHEN = "-";
+  public final static String COLON = ":";
   public final static String DEFAULTVERSION = "defaultVersion";
 
+  public final static String HTTP_PROTOCOL_PREFIX = "http://";
 
-  public enum SUBMIT_MODE {
-    get,post,put,delete
+
+
+//  public enum SUBMIT_MODE {
+//    get,post,put,delete
+//  }
+
+  public enum RequestMethod {
+
+    GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
+
   }
 
   public enum PROTOCOL {

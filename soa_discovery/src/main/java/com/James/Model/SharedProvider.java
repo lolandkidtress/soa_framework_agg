@@ -33,7 +33,7 @@ public class SharedProvider {
   protected String version= CommonConfig.DEFAULTVERSION;
 
   //协议 http,avro,thrift等
-  protected String protocol = "";
+  protected CommonConfig.PROTOCOL protocol = CommonConfig.PROTOCOL.http;
 
   //server_name+Method_name+protocol+version + ip 组成一个唯一标示
   protected String identityID;
@@ -97,10 +97,10 @@ public class SharedProvider {
     this.version = Version;
   }
 
-  public String getProtocol() {
+  public CommonConfig.PROTOCOL getProtocol() {
     return protocol;
   }
-  public void setProtocol(String Protocol) {
+  public void setProtocol(CommonConfig.PROTOCOL Protocol) {
     this.protocol = Protocol;
   }
 
@@ -192,17 +192,13 @@ public class SharedProvider {
     if(this.server_name!=null&&this.server_name.length()>0 &&
         this.method_name!=null&&this.method_name.length() >0 &&
         this.ip!=null&&this.ip.length()>0 &&
-        this.protocol!=null&&this.protocol.length()>0 &&
-        this.version!=null&&this.version.length()>0 &&
-        (
-            (this.protocol.equals(CommonConfig.PROTOCOL.http.name()) && this.http_port!=null&&this.http_port.length()>0 ) ||
-            (!this.protocol.equals(CommonConfig.PROTOCOL.http.name()) && this.rpc_port!=null&&this.rpc_port.length()>0 )
-        )
+        this.protocol!=null&&this.protocol.name().length()>0 &&
+        this.version!=null&&this.version.length()>0
         )
     {
       this.identityID = this.server_name.concat(CommonConfig.HYPHEN)
           .concat(this.method_name).concat(CommonConfig.HYPHEN)
-          .concat(this.protocol).concat(CommonConfig.HYPHEN)
+          .concat(this.protocol.name()).concat(CommonConfig.HYPHEN)
           .concat(this.version).concat(CommonConfig.HYPHEN)
           .concat(this.ip);
       return true;

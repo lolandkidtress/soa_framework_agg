@@ -14,6 +14,8 @@ import com.James.Model.SharedProvider;
 import com.James.Model.providerInvoker;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
+import com.James.basic.UtilsTools.Parameter;
+import com.James.basic.UtilsTools.Return;
 import com.James.zkTools.zkChildChangedListener;
 import com.James.zkTools.zkClientTools;
 import com.James.zkTools.zkConnectionStateListener;
@@ -60,7 +62,7 @@ public class Invoker {
       if(!this.zkclient.checkExists(CommonConfig.SLASH.concat(server_name))){
         LOGGER.error("没有名称为" + server_name + "的服务提供者");
       }else{
-        LOGGER.info("开始扫描" + server_name + "服务提供的数据");
+        LOGGER.info("开始扫描" + server_name + "服务提供的接口");
 
         StringBuilder sb = new StringBuilder();
         sb.append(CommonConfig.SLASH);
@@ -231,8 +233,52 @@ public class Invoker {
 
   /**********************************/
   //调用
-  public SharedProvider Function(String method){
+  public Return call(String method,Parameter parameter){
     try{
+      SharedProvider sharedProvider;
+      try{
+        sharedProvider = versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,
+            String.valueOf(System.currentTimeMillis()));
+      }catch(NullPointerException e){
+        LOGGER.error("没有可用服务节点");
+        return Return.FAIL(500,"没有可用服务节点");
+      }
+
+      //判断协议
+      switch (sharedProvider.getProtocol()) {
+        case http :
+           return InvokerHelper.INSTANCE.http_call(sharedProvider,parameter);
+        case avro :
+          //TODO
+          System.out.println();
+          break;
+        case protoc :
+          //TODO
+          break;
+        case thrift :
+          //TODO
+          break;
+        default:
+          LOGGER.error(method + "不支持的协议");
+          return Return.FAIL(500,"调用异常");
+      }
+
+      Return ret = Return.FAIL(500,"调用异常");
+
+      return ret;
+    }catch(Method_Not_Found_Exception e){
+      e.printStackTrace();
+      LOGGER.error("调用异常");
+      return Return.FAIL(500,"调用异常");
+    }
+
+  }
+
+  //随机取得可用节点
+  public SharedProvider getAvailableProvider(String method){
+    try{
+
+
       return versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,String.valueOf(System.currentTimeMillis()));
     }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
@@ -241,6 +287,20 @@ public class Invoker {
     }
 
   }
+
+  //取得固定的某个节点
+  public SharedProvider getAvailableProvider(String method,String seed){
+    try{
+      return versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,seed);
+    }catch(Method_Not_Found_Exception e){
+      e.printStackTrace();
+      LOGGER.error("没有可用服务节点");
+      return null;
+    }
+
+  }
+
+
 
   //TODO
   //get/post/delete/put等方法的实现

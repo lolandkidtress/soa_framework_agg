@@ -17,18 +17,19 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.OkHttpClient;
 
 
 /**
  * Created by James on 16/6/7.
  */
-public class OkHttpClient {
+public class OkHttpTools {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OkHttpClient.class.getName());
   // 当使用长轮循时需要注意不能超过此时间
   public static Integer socket_timeout = 30_000;// 数据传输时间
   public static Integer connect_timeout = 3_000;// 连接时间
-  private static final okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()//
+  private static final OkHttpClient client = new OkHttpClient.Builder()//
       // TODO WARN util.UrlEncoded : org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte 8b in state 0
       // .addInterceptor(new GzipRequestInterceptor())
       .connectTimeout(connect_timeout, TimeUnit.MILLISECONDS).writeTimeout(socket_timeout, TimeUnit.MILLISECONDS).readTimeout(socket_timeout, TimeUnit.MILLISECONDS).build();
@@ -67,7 +68,7 @@ public class OkHttpClient {
   }
 
   // get 获取 rest 资源
-  public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
+  public String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
     Request.Builder builder = new Request.Builder().url(concat_url_params(url, params));
     add_headers(builder, headers);
     Request request = builder.build();

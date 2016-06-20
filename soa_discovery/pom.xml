@@ -32,6 +32,12 @@
             <version>${global.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_http</artifactId>
+            <version>${global.version}</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -1,4 +1,4 @@
-package com.James;
+package com.James.NettyAvroRpcServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -70,20 +70,21 @@ public class avroRpcServer {
 
   public avroRpcServer startServer() throws IOException {
 
-    server = new NettyServer(new ReflectResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(DEFAULT_PORT));
 
+    server = new NettyServer(new ReflectResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(DEFAULT_PORT));
+    LOGGER.info("avro服务启动@" + DEFAULT_PORT );
     return this;
 
   }
 
   public avroRpcServer startServer(String port) throws IOException {
     server = new NettyServer(new ReflectResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(Integer.valueOf(port)));
-
+    LOGGER.info("avro服务启动@" + port );
     return this;
   }
 
-  public avroRpcServer addRegisterServers(String handleClass,avrpRequestProto clazz){
-    avroServerHandle.INSTANCE.addRegisterServers(handleClass, clazz);
+  public avroRpcServer addRegisterServers(String requestName,avrpRequestProto clazz){
+    avroServerHandle.INSTANCE.addRegisterServers(requestName, clazz);
     return this;
   }
 
@@ -96,7 +97,7 @@ public class avroRpcServer {
     avroRpcServer.getInstance().startServer().addRegisterServers("test",new test());
     System.out.println("Server started");
 
-    NettyTransceiver client = new NettyTransceiver(new InetSocketAddress("127.0.0.1",DEFAULT_PORT));
+    NettyTransceiver client = new NettyTransceiver(new InetSocketAddress(DEFAULT_PORT));
     // client code - attach to the server and send a message
     avrpRequestProto proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, client);
     System.out.println("Client built, got proxy");
@@ -104,7 +105,7 @@ public class avroRpcServer {
     // fill in the Message record and send it
     Message message = new Message();
     message.setRequestName("test");
-    message.setParam("str_param");
+    message.setParam("{\"\":\"\"}");
     System.out.println("Calling proxy.send with message:  " + message.toString());
     System.out.println("Result: " + proxy.send(message));
 

@@ -22,22 +22,22 @@ import com.James.test.test;
 /**
  * Created by James on 16/6/8.
  */
-public class avroRpcServer {
+public class avroRpcServerTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(avroRpcServer.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(avroRpcServerTest.class.getName());
 
   //默认netty端口
   public static final int DEFAULT_PORT = 40881;
 
   private static class InnerInstance {
-    public static final avroRpcServer instance = new avroRpcServer();
+    public static final avroRpcServerTest instance = new avroRpcServerTest();
   }
 
-  public static avroRpcServer getInstance() {
+  public static avroRpcServerTest getInstance() {
     return InnerInstance.instance;
   }
 
-  public avroRpcServer(){
+  public avroRpcServerTest(){
 
   }
 
@@ -68,7 +68,7 @@ public class avroRpcServer {
 
   private static Server server;
 
-  public avroRpcServer startServer() throws IOException {
+  public avroRpcServerTest startServer() throws IOException {
 
     server = new NettyServer(new ReflectResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(DEFAULT_PORT));
 
@@ -76,13 +76,13 @@ public class avroRpcServer {
 
   }
 
-  public avroRpcServer startServer(String port) throws IOException {
+  public avroRpcServerTest startServer(String port) throws IOException {
     server = new NettyServer(new ReflectResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(Integer.valueOf(port)));
 
     return this;
   }
 
-  public avroRpcServer addRegisterServers(String handleClass,avrpRequestProto clazz){
+  public avroRpcServerTest addRegisterServers(String handleClass,avrpRequestProto clazz){
     avroServerHandle.INSTANCE.addRegisterServers(handleClass, clazz);
     return this;
   }
@@ -104,7 +104,7 @@ public class avroRpcServer {
     // fill in the Message record and send it
     Message message = new Message();
     message.setRequestName("test");
-    message.setParam("str_param");
+    message.setParam("{\"\":\"\"}");
     System.out.println("Calling proxy.send with message:  " + message.toString());
     System.out.println("Result: " + proxy.send(message));
 

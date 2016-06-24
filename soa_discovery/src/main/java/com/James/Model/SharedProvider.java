@@ -25,8 +25,12 @@ public class SharedProvider {
   protected String author;
   //服务名称
   //http下应该对应request_mapping
-  //rpc下应该是class的全限定名称
+  //rpc下应该是对应方法名为send的全限定名称
   protected String method_name ;
+
+  //avro调用的全限定类名
+  protected String declaringClass_name ;
+
   //节点名称
   protected String server_name;
 
@@ -82,6 +86,14 @@ public class SharedProvider {
   public void setMethod_name(String Method_name) {
     this.method_name = Method_name;
   }
+
+  public String getDeclaringClass_name() {
+    return declaringClass_name;
+  }
+  public void setDeclaringClass_name(String DeclaringClass_name) {
+    this.declaringClass_name = DeclaringClass_name;
+  }
+
 
   public String getServer_name() {
     return server_name;

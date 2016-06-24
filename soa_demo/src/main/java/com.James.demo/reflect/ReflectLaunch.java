@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  */
 public class ReflectLaunch {
 
-    final static String class_name = "com.James.demo.sample.LaunchTest";
+    final static String class_name = "com.James.demo.sample.Launch";
     final static String method_name = "buildString";
 
     public void reflectLaunch(){

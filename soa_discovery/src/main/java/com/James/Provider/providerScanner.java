@@ -29,6 +29,8 @@ public class providerScanner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(providerScanner.class.getName());
 
+
+
   //扫描所有的class
   //返回带有指定注解的类
   public static List<Class<?>> scanClass(Annotation annotationClass){
@@ -87,6 +89,7 @@ public class providerScanner {
 
 
   //扫描指定的class
+  //读取desc信息
   //读取方法上的入参和出参
   public static List<SharedProvider> readClasses(Class<?> clazz){
 
@@ -99,7 +102,7 @@ public class providerScanner {
       Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
       SharedProvider sharedProvider = new SharedProvider();
-      //扫描描述
+      //读取desc信息
       sharedProvider = getDescribe(sharedProvider,method);
 
       //Inparam,Outparam
@@ -143,12 +146,6 @@ public class providerScanner {
     if (describe != null) {
       LOGGER.info("开始扫描" + method.getDeclaringClass().getName() + "类下的" + method.getName() + "方法");
       sharedProvider.setAuthor(describe.author());
-      if(describe.protocol().equals(CommonConfig.PROTOCOL.avro.name())){
-        sharedProvider.setMethod_name(method.getDeclaringClass().getName());
-      }
-      if(describe.protocol().equals(CommonConfig.PROTOCOL.http.name())){
-        sharedProvider.setMethod_name(describe.name());
-      }
 
       sharedProvider.setDescribe(describe.desc());
       sharedProvider.setVersion(describe.version());
@@ -156,6 +153,19 @@ public class providerScanner {
       sharedProvider.setProtocol(CommonConfig.PROTOCOL.valueOf(describe.protocol()));
 
       sharedProvider.setSubmit_mode(describe.submit_mode());
+
+      if(describe.protocol().equals(CommonConfig.PROTOCOL.avro.name())){
+        sharedProvider.setMethod_name(describe.name());
+        //avro需要全限定名
+        sharedProvider.setDeclaringClass_name(method.getDeclaringClass().getName());
+        sharedProvider.setRpc_port(providerInstance.getInstance().getDefaultAvroPort());
+      }
+
+      if(describe.protocol().equals(CommonConfig.PROTOCOL.http.name())){
+        sharedProvider.setMethod_name(describe.name());
+        sharedProvider.setHttp_port(providerInstance.getInstance().getDefaultHttpPort());
+        sharedProvider.setHttp_context(providerInstance.getInstance().getDefaultHttpContext());
+      }
 
       if(!sharedProvider.isAvailable()) {
         LOGGER.error(sharedProvider.getMethod_name()+"不可用");

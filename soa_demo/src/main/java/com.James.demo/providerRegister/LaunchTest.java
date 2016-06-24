@@ -1,4 +1,4 @@
-package com.James;
+package com.James.demo.providerRegister;
 
 import java.util.Properties;
 
@@ -16,6 +16,8 @@ import com.James.basic.UtilsTools.Parameter;
  */
 public class LaunchTest {
 
+
+  //通过http 方式调用
   @descriptionAnnotation(author = "james",name="start",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
@@ -24,7 +26,13 @@ public class LaunchTest {
       System.out.println("start");
   }
 
-  @descriptionAnnotation(author = "james",name="send",submit_mode="POST",protocol="avro",desc="")
+  //重复的name会有报错
+  @descriptionAnnotation(author = "james",name="start",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
+  public void duplicatestart(){
+    System.out.println("duplicatestart");
+  }
+
+  @descriptionAnnotation(author = "james",name="avrosend",submit_mode="",protocol="avro",desc="")
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2")
@@ -45,11 +53,12 @@ public class LaunchTest {
 
 //    Invoker invoke = Invoker.create("com.James.soa_discovery",zkconnect);
 //
-    Invoker invoke2 = Invoker.create("com.James.demo",zkconnect);
+    Invoker demoinvoke = Invoker.create("com.James.demo",zkconnect);
 
-    System.out.println(JsonConvert.toJson(invoke2.getAvailableProvider("start")));
+    System.out.println(JsonConvert.toJson(demoinvoke.getAvailableProvider("start")));
+    System.out.println(JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
 
-    invoke2.call("start", Parameter.create());
+    demoinvoke.call("start", Parameter.create());
 //    InvokerHelper.INSTANCE.init();
 //    InvokerHelper.INSTANCE.watchZKDataChange("/com.James.demo");
 //    InvokerHelper.INSTANCE.watchZKChildChange("/com.James.demo");

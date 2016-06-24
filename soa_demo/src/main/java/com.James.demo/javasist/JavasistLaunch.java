@@ -1,8 +1,14 @@
 package com.James.demo.javasist;
 
-import javassist.*;
-
 import java.io.IOException;
+
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.Loader;
+import javassist.NotFoundException;
 
 /**
  * Created by James on 16/5/27.
@@ -11,7 +17,7 @@ import java.io.IOException;
  */
 public class JavasistLaunch {
 
-    final static String class_name = "com.James.demo.sample.LaunchTest";
+    final static String class_name = "com.James.demo.sample.Launch";
     final static String method_name = "buildString";
 
     public void javasistMainLaunch(){

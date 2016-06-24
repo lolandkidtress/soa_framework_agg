@@ -1,6 +1,8 @@
 package com.James.Provider;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -9,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.Model.SharedProvider;
+import com.James.avroProto.avrpRequestProto;
+import com.James.avroRpcServer.avroRpcServer;
 import com.James.zkTools.zkClientTools;
 
 
@@ -27,8 +31,11 @@ public class providerInstance {
     return InnerInstance.instance;
   }
 
-  //需要注册的服务
+  //需要注册到zk的服务
   private List<SharedProvider> sharedProviders = new ArrayList<>();
+
+  //已扫描到的服务,用于重命检验
+  private static Set readMethodName = new HashSet<String>();
 
   private String serverName;
 
@@ -46,7 +53,19 @@ public class providerInstance {
   private String defaultAvroPort = "46111";
   private String defaultHttpContext ="";
 
-  //
+
+  public String getDefaultAvroPort(){
+    return this.defaultAvroPort;
+  }
+
+  public String getDefaultHttpPort(){
+    return this.defaultHttpPort;
+  }
+
+  public String getDefaultHttpContext(){
+    return this.defaultHttpContext;
+  }
+
   public providerInstance readConfig( Properties properties){
 
 
@@ -86,17 +105,22 @@ public class providerInstance {
 
     this.serverName = serverName;
 
+    //扫描所有含有descriptionAnnotation的类
     Set<Class<?>> providerClasses = providerScanner.scanClasses();
+
     providerClasses.forEach(providerClass -> {
       //读取注解信息
-      LOGGER.info("开始扫描" + providerClass.getName() + "类");
+      LOGGER.info("开始读取" + providerClass.getName() + "类下的注册信息");
 
       providerScanner.readClasses(providerClass).forEach(sharedProvider -> {
         if (sharedProvider.getIdentityID() != null) {
-          sharedProvider.setHttp_port(this.defaultHttpPort);
-          sharedProvider.setRpc_port(this.defaultAvroPort);
-          sharedProvider.setHttp_context(this.defaultHttpContext);
-          sharedProviders.add(sharedProvider);
+          //判断重名
+          if (readMethodName.contains(sharedProvider.getIdentityID())) {
+            LOGGER.error(providerClass.getName() + "扫描到重复定义: " + sharedProvider.getIdentityID());
+          } else {
+            sharedProviders.add(sharedProvider);
+          }
+          readMethodName.add(sharedProvider.getIdentityID());
         }
       });
     });
@@ -109,6 +133,35 @@ public class providerInstance {
     }else{
       LOGGER.error("没有需要注册的服务");
     }
+
+    sharedProviders.stream()
+        .filter(sharedProvider -> sharedProvider.getProtocol().equals("avro"))
+        .forEach(sharedProvider -> {
+          try {
+
+            //注册对应的avrpRequestProto类到avro处理器
+            avroRpcServer.getInstance().addRegisterServers("test",
+                (avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance());
+          } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            LOGGER.error("ClassNotFoundException" + sharedProvider.getDeclaringClass_name());
+          } catch (IllegalAccessException iae) {
+            iae.printStackTrace();
+            LOGGER.error("IllegalAccessException" + sharedProvider.getDeclaringClass_name());
+          } catch (InstantiationException ise) {
+            ise.printStackTrace();
+            LOGGER.error("InstantiationException" + sharedProvider.getDeclaringClass_name());
+          }
+        });
+    try{
+      avroRpcServer.getInstance().startServer();
+    }catch(IOException ioe){
+      ioe.printStackTrace();
+      LOGGER.error("启动avro服务异常" );
+    }
+
+
+    //TODO start jetty server
 
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       LOGGER.info("系统退出,关闭监听服务");

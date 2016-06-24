@@ -35,7 +35,7 @@
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_discovery</artifactId>
-            <version>${global.version}</version>
+            <version>V0.0.1_alpha</version>
         </dependency>
     </dependencies>
     <build>

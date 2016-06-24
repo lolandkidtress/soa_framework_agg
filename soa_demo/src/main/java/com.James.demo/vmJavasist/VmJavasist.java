@@ -9,6 +9,7 @@ import com.James.soa_agent.HotInjecter;
  * 配合使用
  *
  * soa_agent需要作为jar文件在class目录中
+ * 开发环境中需要将soa_agent项目关闭
  */
 public class VmJavasist {
     public static void inject(){

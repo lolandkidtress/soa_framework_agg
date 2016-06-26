@@ -16,7 +16,6 @@ public class CommonConfig {
   public final static String HYPHEN = "-";
   public final static String DEFAULTVERSION = "defaultVersion";
 
-
   public enum SUBMIT_MODE {
     get,post,put,delete
   }

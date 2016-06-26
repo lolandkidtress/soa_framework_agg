@@ -1,4 +1,4 @@
-package com.James.avroServerHandle;
+package com.James.avroServiceRegist;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -6,24 +6,23 @@ import com.James.avroProto.avrpRequestProto;
 
 
 /**
- * Created by James on 16/6/8.
+ * Created by James on 16/6/26.
  */
-public enum avroServerHandle {
-
+public enum avroRequestHandleRegister {
   INSTANCE;
 
   //记录请求对应的方法
   private ConcurrentHashMap<String,avrpRequestProto> registerServers = new ConcurrentHashMap();
 
-  public avrpRequestProto getRegisterServers(String key){
-      return registerServers.get(key);
+  public avrpRequestProto getRequestHandle(String key){
+    return registerServers.get(key);
   }
 
-  public void addRegisterServers(String key, avrpRequestProto clazz){
+  public void addRequestHandle(String key, avrpRequestProto clazz){
     registerServers.put(key, clazz);
   }
 
-  public void removeRegisterServers(String key){
+  public void removeRequestHandle(String key){
     registerServers.remove(key);
   }
 }

@@ -1,0 +1,20 @@
+{"namespace": "com.James.avroProto",
+ "protocol": "Mail",
+
+ "types": [
+     {"name": "MailMessage", "type": "record",
+      "fields": [
+          {"name": "to",   "type": "string"},
+          {"name": "from", "type": "string"},
+          {"name": "body", "type": "string"}
+      ]
+     }
+ ],
+
+ "messages": {
+     "send": {
+         "request": [{"name": "message", "type": "MailMessage"}],
+         "response": "string"
+     }
+ }
+}

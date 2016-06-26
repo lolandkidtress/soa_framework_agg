@@ -13,8 +13,8 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
   private static final long serialVersionUID = 7012675389317148321L;
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Message\",\"namespace\":\"com.James.avroProto\",\"fields\":[{\"name\":\"param\",\"type\":\"string\"},{\"name\":\"RequestName\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.CharSequence param;
-  @Deprecated public java.lang.CharSequence RequestName;
+  @Deprecated public CharSequence param;
+  @Deprecated public CharSequence RequestName;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -28,14 +28,14 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param param The new value for param
    * @param RequestName The new value for RequestName
    */
-  public Message(java.lang.CharSequence param, java.lang.CharSequence RequestName) {
+  public Message(CharSequence param, CharSequence RequestName) {
     this.param = param;
     this.RequestName = RequestName;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
-  public java.lang.Object get(int field$) {
+  public Object get(int field$) {
     switch (field$) {
     case 0: return param;
     case 1: return RequestName;
@@ -45,10 +45,10 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
 
   // Used by DatumReader.  Applications should not call.
   @SuppressWarnings(value="unchecked")
-  public void put(int field$, java.lang.Object value$) {
+  public void put(int field$, Object value$) {
     switch (field$) {
-    case 0: param = (java.lang.CharSequence)value$; break;
-    case 1: RequestName = (java.lang.CharSequence)value$; break;
+    case 0: param = (CharSequence)value$; break;
+    case 1: RequestName = (CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -57,7 +57,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Gets the value of the 'param' field.
    * @return The value of the 'param' field.
    */
-  public java.lang.CharSequence getParam() {
+  public CharSequence getParam() {
     return param;
   }
 
@@ -65,7 +65,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Sets the value of the 'param' field.
    * @param value the value to set.
    */
-  public void setParam(java.lang.CharSequence value) {
+  public void setParam(CharSequence value) {
     this.param = value;
   }
 
@@ -73,7 +73,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Gets the value of the 'RequestName' field.
    * @return The value of the 'RequestName' field.
    */
-  public java.lang.CharSequence getRequestName() {
+  public CharSequence getRequestName() {
     return RequestName;
   }
 
@@ -81,7 +81,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Sets the value of the 'RequestName' field.
    * @param value the value to set.
    */
-  public void setRequestName(java.lang.CharSequence value) {
+  public void setRequestName(CharSequence value) {
     this.RequestName = value;
   }
 
@@ -89,8 +89,8 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Creates a new Message RecordBuilder.
    * @return A new Message RecordBuilder
    */
-  public static com.James.avroProto.Message.Builder newBuilder() {
-    return new com.James.avroProto.Message.Builder();
+  public static Builder newBuilder() {
+    return new Builder();
   }
 
   /**
@@ -98,8 +98,8 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param other The existing builder to copy.
    * @return A new Message RecordBuilder
    */
-  public static com.James.avroProto.Message.Builder newBuilder(com.James.avroProto.Message.Builder other) {
-    return new com.James.avroProto.Message.Builder(other);
+  public static Builder newBuilder(Builder other) {
+    return new Builder(other);
   }
 
   /**
@@ -107,8 +107,8 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param other The existing instance to copy.
    * @return A new Message RecordBuilder
    */
-  public static com.James.avroProto.Message.Builder newBuilder(com.James.avroProto.Message other) {
-    return new com.James.avroProto.Message.Builder(other);
+  public static Builder newBuilder(Message other) {
+    return new Builder(other);
   }
 
   /**
@@ -117,8 +117,8 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Message>
     implements org.apache.avro.data.RecordBuilder<Message> {
 
-    private java.lang.CharSequence param;
-    private java.lang.CharSequence RequestName;
+    private CharSequence param;
+    private CharSequence RequestName;
 
     /** Creates a new Builder */
     private Builder() {
@@ -129,7 +129,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(com.James.avroProto.Message.Builder other) {
+    private Builder(Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.param)) {
         this.param = data().deepCopy(fields()[0].schema(), other.param);
@@ -145,7 +145,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing Message instance
      * @param other The existing instance to copy.
      */
-    private Builder(com.James.avroProto.Message other) {
+    private Builder(Message other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.param)) {
         this.param = data().deepCopy(fields()[0].schema(), other.param);
@@ -161,7 +161,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Gets the value of the 'param' field.
       * @return The value.
       */
-    public java.lang.CharSequence getParam() {
+    public CharSequence getParam() {
       return param;
     }
 
@@ -170,7 +170,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'param'.
       * @return This builder.
       */
-    public com.James.avroProto.Message.Builder setParam(java.lang.CharSequence value) {
+    public Builder setParam(CharSequence value) {
       validate(fields()[0], value);
       this.param = value;
       fieldSetFlags()[0] = true;
@@ -190,7 +190,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Clears the value of the 'param' field.
       * @return This builder.
       */
-    public com.James.avroProto.Message.Builder clearParam() {
+    public Builder clearParam() {
       param = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -200,7 +200,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Gets the value of the 'RequestName' field.
       * @return The value.
       */
-    public java.lang.CharSequence getRequestName() {
+    public CharSequence getRequestName() {
       return RequestName;
     }
 
@@ -209,7 +209,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'RequestName'.
       * @return This builder.
       */
-    public com.James.avroProto.Message.Builder setRequestName(java.lang.CharSequence value) {
+    public Builder setRequestName(CharSequence value) {
       validate(fields()[1], value);
       this.RequestName = value;
       fieldSetFlags()[1] = true;
@@ -229,7 +229,7 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Clears the value of the 'RequestName' field.
       * @return This builder.
       */
-    public com.James.avroProto.Message.Builder clearRequestName() {
+    public Builder clearRequestName() {
       RequestName = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -239,8 +239,8 @@ public class Message extends org.apache.avro.specific.SpecificRecordBase impleme
     public Message build() {
       try {
         Message record = new Message();
-        record.param = fieldSetFlags()[0] ? this.param : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.RequestName = fieldSetFlags()[1] ? this.RequestName : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.param = fieldSetFlags()[0] ? this.param : (CharSequence) defaultValue(fields()[0]);
+        record.RequestName = fieldSetFlags()[1] ? this.RequestName : (CharSequence) defaultValue(fields()[1]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

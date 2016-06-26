@@ -49,7 +49,7 @@
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <compilerArguments>
-                        <extdirs>src/main/webapp/WEB-INF/lib</extdirs>
+                        <extdirs>src/Mailmain/webapp/WEB-INF/lib</extdirs>
                     </compilerArguments>
                 </configuration>
             </plugin>
@@ -106,24 +106,24 @@
             <!-- ${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes -->
             <!-- war包 开发工具中发布配置文件 -->
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>src/Mailmain/resources</directory>
                 <filtering>true</filtering>
             </resource>
              <!--war包 开发工具中发布静态文件-->
              <!--<resource>-->
-             <!--<directory>src/main/webapp</directory>-->
+             <!--<directory>src/Mailmain/webapp</directory>-->
              <!--<targetPath> ${project.build.outputDirectory}/webapp</targetPath>-->
              <!--<filtering>true</filtering>-->
              <!--</resource>-->
              <!--&lt;!&ndash;jar 包模式发布可修改的配置文件&ndash;&gt;-->
              <!--<resource>-->
-             <!--<directory>src/main/resources</directory>-->
+             <!--<directory>src/Mailmain/resources</directory>-->
              <!--<targetPath>${project.build.directory}</targetPath>-->
              <!--<filtering>true</filtering>-->
              <!--</resource>-->
              <!--&lt;!&ndash;jar 包模式发布可修改的静态文件&ndash;&gt;-->
              <!--<resource>-->
-             <!--<directory>src/main/webapp</directory>-->
+             <!--<directory>src/Mailmain/webapp</directory>-->
              <!--<targetPath> ${project.build.directory}/webapp</targetPath>-->
              <!--<filtering>true</filtering>-->
              <!--</resource>-->
@@ -137,7 +137,7 @@
             <!--</activation>-->
             <!--<build>-->
                 <!--<filters>-->
-                    <!--<filter>src/main/resources/environment/develop.properties-->
+                    <!--<filter>src/Mailmain/resources/environment/develop.properties-->
                     <!--</filter>-->
                 <!--</filters>-->
             <!--</build>-->

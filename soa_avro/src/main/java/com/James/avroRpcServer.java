@@ -3,7 +3,6 @@ package com.James;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyServer;
 import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.Server;
@@ -43,25 +42,34 @@ public class avroRpcServer {
 
   //Impl中转发请求
   public static class avrpRequestProtoImpl implements avrpRequestProto {
+    static { System.out.println("avrpRequestProtoImpl init");}
+
 
     public Utf8 send(Message message) {
-      LOGGER.info("接收到" + message.getRequestName() + "请求");
-      String ret ="";
-
-      avrpRequestProto avrpRequestProto =  avroServerHandle.INSTANCE.getRegisterServers(
-          message.getRequestName().toString());
-      if(avrpRequestProto==null){
-        return new Utf8("没有服务");
-      }
-      try{
-        ret = avrpRequestProto.send(message).toString();
-      }catch(AvroRemoteException e){
-        e.printStackTrace();
-        LOGGER.error("调用avro接口异常",e);
-      }
-
-      return new Utf8(ret);
+      System.out.println("Sending message");
+      return new Utf8("Sending getParam to " + message.getParam().toString()
+          + " to " + message.getRequestName().toString()
+      );
     }
+
+//    public Utf8 send(Message message) {
+//      LOGGER.info("接收到" + message.getRequestName() + "请求");
+//      String ret ="";
+//
+//      avrpRequestProto avrpRequestProto =  avroServerHandle.INSTANCE.getRegisterServers(
+//          message.getRequestName().toString());
+//      if(avrpRequestProto==null){
+//        return new Utf8("没有服务");
+//      }
+//      try{
+//        ret = avrpRequestProto.send(message).toString();
+//      }catch(AvroRemoteException e){
+//        e.printStackTrace();
+//        LOGGER.error("调用avro接口异常",e);
+//      }
+//
+//      return new Utf8(ret);
+//    }
 
 
   }
@@ -96,7 +104,7 @@ public class avroRpcServer {
     avroRpcServer.getInstance().startServer().addRegisterServers("test",new test());
     System.out.println("Server started");
 
-    NettyTransceiver client = new NettyTransceiver(new InetSocketAddress(DEFAULT_PORT));
+    NettyTransceiver client = new NettyTransceiver(new InetSocketAddress("127.0.0.1",DEFAULT_PORT));
     // client code - attach to the server and send a message
     avrpRequestProto proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, client);
     System.out.println("Client built, got proxy");

@@ -123,7 +123,7 @@
 					<target>1.8</target>
 					<encoding>UTF-8</encoding>
 					<compilerArguments>
-						<extdirs>src/main/webapp/WEB-INF/lib</extdirs>
+						<extdirs>src/Mailmain/webapp/WEB-INF/lib</extdirs>
 					</compilerArguments>
 				</configuration>
 			</plugin>

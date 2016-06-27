@@ -26,9 +26,7 @@ public class CommonConfig {
 //  }
 
   public enum RequestMethod {
-
     GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
-
   }
 
   public enum PROTOCOL {

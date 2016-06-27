@@ -3,6 +3,7 @@ package com.James.basic.UtilsTools;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -11,6 +12,7 @@ import java.util.Map;
  */
 public class Parameter extends IdentityHashMap<String, String> {
   private static final long serialVersionUID = -5436768657673377874L;
+
 
   public static Parameter create() {
     return new Parameter();
@@ -23,6 +25,11 @@ public class Parameter extends IdentityHashMap<String, String> {
         identityhashmap.put(new String(key), value);
       });
     });
+    //trackingID
+    //用于调用服务时,作为一致性hash的key
+    if(!identityhashmap.containsKey("trackingID")){
+      identityhashmap.put("trackingID",UUID.randomUUID().toString().replace("-",""));
+    }
     return identityhashmap;
   }
 

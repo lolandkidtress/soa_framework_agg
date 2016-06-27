@@ -4,6 +4,7 @@
  "types": [
      {"name": "Message", "type": "record",
       "fields": [
+          {"name": "trackingID", "type": "string"},
           {"name": "param", "type": "string"},
           {"name": "RequestName", "type": "string"}
       ]

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
-import com.James.avroServerHandle.avroServerHandle;
+import com.James.avroServiceRegist.avroRequestHandleRegister;
 
 
 /**
@@ -74,7 +74,7 @@ public class avroRpcClient {
       LOGGER.info("接收到" + message.getRequestName() + "请求");
       String ret ="";
 
-      avrpRequestProto avrpRequestProto =  avroServerHandle.INSTANCE.getRegisterServers(
+      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
       if(avrpRequestProto==null){
         return new Utf8("没有服务");

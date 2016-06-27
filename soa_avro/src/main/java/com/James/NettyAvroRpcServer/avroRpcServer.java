@@ -5,18 +5,16 @@ import java.net.InetSocketAddress;
 
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyServer;
-import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.reflect.ReflectResponder;
-import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.avro.util.Utf8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
-import com.James.avroServerHandle.avroServerHandle;
-import com.James.test.test;
+import com.James.avroServiceRegist.avroRequestHandleRegister;
+import com.James.basic.UtilsTools.Return;
 
 
 /**
@@ -41,26 +39,29 @@ public class avroRpcServer {
 
   }
 
+  //
   //Impl中转发请求
   public static class avrpRequestProtoImpl implements avrpRequestProto {
 
     public Utf8 send(Message message) {
       LOGGER.info("接收到" + message.getRequestName() + "请求");
-      String ret ="";
+      String response ="";
 
-      avrpRequestProto avrpRequestProto =  avroServerHandle.INSTANCE.getRegisterServers(
+      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
       if(avrpRequestProto==null){
-        return new Utf8("没有服务");
+        return new Utf8(Return.FAIL(500,"没有服务").toJson());
       }
       try{
-        ret = avrpRequestProto.send(message).toString();
+        response = avrpRequestProto.send(message).toString();
+        return new Utf8(Return.SUCCESS(200,"调用成功").put("response",response).toJson());
       }catch(AvroRemoteException e){
         e.printStackTrace();
         LOGGER.error("调用avro接口异常",e);
+        return new Utf8(Return.FAIL(500,"调用avro接口异常").toJson());
       }
 
-      return new Utf8(ret);
+
     }
 
 
@@ -79,39 +80,14 @@ public class avroRpcServer {
 
   public avroRpcServer startServer(String port) throws IOException {
     server = new NettyServer(new ReflectResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(Integer.valueOf(port)));
-    LOGGER.info("avro服务启动@" + port );
+    LOGGER.info("avro服务启动@" + port);
     return this;
   }
 
   public avroRpcServer addRegisterServers(String requestName,avrpRequestProto clazz){
-    avroServerHandle.INSTANCE.addRegisterServers(requestName, clazz);
+    avroRequestHandleRegister.INSTANCE.addRequestHandle(requestName, clazz);
     return this;
   }
 
-  //TEST
-  public static void main(String[] args) throws IOException {
-
-
-    System.out.println("Starting server");
-
-    avroRpcServer.getInstance().startServer().addRegisterServers("test",new test());
-    System.out.println("Server started");
-
-    NettyTransceiver client = new NettyTransceiver(new InetSocketAddress(DEFAULT_PORT));
-    // client code - attach to the server and send a message
-    avrpRequestProto proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, client);
-    System.out.println("Client built, got proxy");
-
-    // fill in the Message record and send it
-    Message message = new Message();
-    message.setRequestName("test");
-    message.setParam("{\"\":\"\"}");
-    System.out.println("Calling proxy.send with message:  " + message.toString());
-    System.out.println("Result: " + proxy.send(message));
-
-    // cleanup
-    client.close();
-    server.close();
-  }
 
 }

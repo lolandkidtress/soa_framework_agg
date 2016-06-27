@@ -238,9 +238,10 @@ public class Invoker {
       SharedProvider sharedProvider;
       try{
         sharedProvider = versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,
-            String.valueOf(System.currentTimeMillis()));
+            parameter.get("trackingID"));
       }catch(NullPointerException e){
-        LOGGER.error("没有可用服务节点");
+        e.printStackTrace();
+        LOGGER.error("没有可用服务节点",e);
         return Return.FAIL(500,"没有可用服务节点");
       }
 
@@ -249,26 +250,21 @@ public class Invoker {
         case http :
            return InvokerHelper.INSTANCE.http_call(sharedProvider,parameter);
         case avro :
-          //TODO
-          System.out.println();
-          break;
-        case protoc :
-          //TODO
-          break;
-        case thrift :
-          //TODO
-          break;
+          return InvokerHelper.INSTANCE.avro_call(sharedProvider,parameter);
+//        case protoc:
+//          //TODO
+//          break;
+//        case thrift :
+//          //TODO
+//          break;
         default:
           LOGGER.error(method + "不支持的协议");
           return Return.FAIL(500,"调用异常");
       }
 
-      Return ret = Return.FAIL(500,"调用异常");
-
-      return ret;
     }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
-      LOGGER.error("调用异常");
+      LOGGER.error("调用异常",e);
       return Return.FAIL(500,"调用异常");
     }
 

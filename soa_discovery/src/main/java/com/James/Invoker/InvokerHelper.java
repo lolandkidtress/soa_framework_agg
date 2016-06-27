@@ -9,7 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.Model.SharedProvider;
+import com.James.NettyAvroRpcClient.avroRpcClient;
+import com.James.avroProto.Message;
 import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.basic.UtilsTools.Return;
 import com.James.http_client.OkHttpTools;
@@ -77,9 +80,17 @@ public enum InvokerHelper {
 
   }
 
-  //TODO
+  //TODO netty client 连接池
   public Return avro_call(SharedProvider sharedProvider,Parameter parameter) {
-    return Return.FAIL(500,"调用avro失败");
+
+    Message message = new Message();
+    message.setParam(JsonConvert.toJson(parameter));
+    message.setRequestName(sharedProvider.getDescribe());
+    String rpc_ret = avroRpcClient.getInstance().call(sharedProvider.getIP(),
+        Integer.valueOf(sharedProvider.getRpc_port()),
+        message);
+
+    return Return.create(rpc_ret);
   }
 
 }

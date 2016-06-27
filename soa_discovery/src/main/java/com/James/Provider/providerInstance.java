@@ -119,8 +119,9 @@ public class providerInstance {
             LOGGER.error(providerClass.getName() + "扫描到重复定义: " + sharedProvider.getIdentityID());
           } else {
             sharedProviders.add(sharedProvider);
+            readMethodName.add(sharedProvider.getIdentityID());
           }
-          readMethodName.add(sharedProvider.getIdentityID());
+
         }
       });
     });

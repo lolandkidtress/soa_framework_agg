@@ -6,6 +6,7 @@ package com.James.basic.Enum;
 public enum Code {
     success(200, "成功"), //
 
+    method_notallow(405,"不支持的请求方法"),
     parameters_incorrect(400, "参数不正确"), //
     parameters_invalid(401, "特定参数不符合条件(eg:没有这个用户)"), //
     service_notfound(402, "没有这个服务"), //

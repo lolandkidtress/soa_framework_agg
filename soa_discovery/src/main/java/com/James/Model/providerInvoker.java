@@ -114,7 +114,7 @@ public class providerInvoker {
   }
 
   //TODO
-  //不可用节点
+  //节点不可用时的处理
 
   //TODO
   //定时扫描不可用节点

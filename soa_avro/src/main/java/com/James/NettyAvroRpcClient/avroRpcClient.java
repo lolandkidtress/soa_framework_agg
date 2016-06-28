@@ -22,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
+import com.James.basic.Enum.Code;
+import com.James.basic.UtilsTools.JsonConvert;
+import com.James.basic.UtilsTools.Return;
 
 
 /**
@@ -105,7 +108,7 @@ public class avroRpcClient {
   }
 
 
-  public String call(String hostname,int port,Message message){
+  public static Return call(String hostname,int port,Message message){
     NettyTransceiver client ;
     try{
       client = new NettyTransceiver(new InetSocketAddress(hostname,port));
@@ -115,19 +118,59 @@ public class avroRpcClient {
 //      message.setRequestName("test");
 //      message.setParam("{\"\":\"\"}");
 
-      String ret = proxy.send(message).toString();
+      String response = proxy.send(message).toString();
       if(client!=null && client.isConnected()){
         client.close();
       }
 
-      return ret;
+      return JsonConvert.toObject(response,Return.class);
 
     }catch(IOException e){
       LOGGER.error("调用nettyavro异常");
+      return Return.FAIL(Code.error.code,Code.error.name());
+    }
+
+  }
+
+  public String sendRequest(String hostname,int port,Message message){
+    try{
+
+      return bindProxy(initClient(hostname,port)).send(message).toString();
+    }catch(AvroRemoteException e){
+      e.printStackTrace();
+      LOGGER.error("调用" + message.getRequestName() + "接口异常",e);
       return null;
     }
 
   }
+
+  private avrpRequestProto bindProxy(NettyTransceiver client){
+    try{
+      avrpRequestProto proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, client);
+
+      return proxy;
+    }catch(IOException e) {
+      e.printStackTrace();
+      LOGGER.error("绑定request接口异常",e);
+      return null;
+    }
+
+  }
+
+  private NettyTransceiver initClient(String hostname,int port){
+    try{
+      NettyTransceiver client = new NettyTransceiver(new InetSocketAddress(hostname,port));
+      return client;
+    }catch (IOException e){
+      e.printStackTrace();
+      LOGGER.error("初始化netty client 异常",e);
+      return null;
+    }
+
+  }
+
+
+
 
   private static class DaemonThreadFactory implements ThreadFactory {
     private ThreadFactory delegate;

@@ -9,7 +9,7 @@ import org.apache.avro.util.Utf8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.avroNettyClient.avroClient;
+import com.James.NettyAvroRpcClient.avroRpcClient;
 import com.James.avroNettyCofig.avroConfig;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.Message;
@@ -98,7 +98,7 @@ public class Sample {
 
     avroRequestHandleRegister.INSTANCE.addRequestHandle("test", new sampleRequest());
     avroServer.startServer();
-    avroClient client = new avroClient();
+    avroRpcClient client = new avroRpcClient();
 
     String response = client.sendRequest("127.0.0.1",avroConfig.getDEFAULT_PORT(),message);
     System.out.println("接受到请求返回" + response);

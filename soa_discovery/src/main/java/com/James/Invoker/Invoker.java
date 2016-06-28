@@ -12,6 +12,7 @@ import com.James.Exception.Method_Not_Found_Exception;
 import com.James.Listeners.dataChangedListener;
 import com.James.Model.SharedProvider;
 import com.James.Model.providerInvoker;
+import com.James.basic.Enum.Code;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
@@ -242,7 +243,7 @@ public class Invoker {
       }catch(NullPointerException e){
         e.printStackTrace();
         LOGGER.error("没有可用服务节点",e);
-        return Return.FAIL(500,"没有可用服务节点");
+        return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
       }
 
       //判断协议
@@ -259,13 +260,13 @@ public class Invoker {
 //          break;
         default:
           LOGGER.error(method + "不支持的协议");
-          return Return.FAIL(500,"调用异常");
+          return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
       }
 
     }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("调用异常",e);
-      return Return.FAIL(500,"调用异常");
+      return Return.FAIL(Code.error.code,Code.error.name());
     }
 
   }

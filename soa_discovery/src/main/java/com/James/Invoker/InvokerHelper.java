@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.James.Model.SharedProvider;
 import com.James.NettyAvroRpcClient.avroRpcClient;
 import com.James.avroProto.Message;
+import com.James.basic.Enum.Code;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
@@ -68,7 +69,7 @@ public enum InvokerHelper {
       }catch(IOException e){
         e.printStackTrace();
         LOGGER.error("调用okhttp get异常",e);
-        return Return.FAIL(500,"调用okhttp get异常");
+        return Return.FAIL(Code.error.code,Code.error.name());
       }
     }
 
@@ -76,7 +77,7 @@ public enum InvokerHelper {
       //TODO
     }
 
-    return Return.FAIL(500,"不支持的Submit_mode");
+    return Return.FAIL(Code.method_notallow.code,Code.method_notallow.name());
 
   }
 
@@ -85,12 +86,13 @@ public enum InvokerHelper {
 
     Message message = new Message();
     message.setParam(JsonConvert.toJson(parameter));
-    message.setRequestName(sharedProvider.getDescribe());
-    String rpc_ret = avroRpcClient.getInstance().call(sharedProvider.getIP(),
+    message.setRequestName(sharedProvider.getMethod_name());
+
+    Return rpc_ret = avroRpcClient.call(sharedProvider.getIP(),
         Integer.valueOf(sharedProvider.getRpc_port()),
         message);
 
-    return Return.create(rpc_ret);
+    return rpc_ret;
   }
 
 }

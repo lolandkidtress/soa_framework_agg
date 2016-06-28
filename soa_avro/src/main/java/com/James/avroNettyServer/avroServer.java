@@ -15,6 +15,8 @@ import com.James.avroNettyCofig.avroConfig;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
+import com.James.basic.Enum.Code;
+import com.James.basic.UtilsTools.Return;
 
 
 /**
@@ -28,22 +30,31 @@ public class avroServer {
   public static class avrpRequestProtoImpl implements avrpRequestProto {
     // in this simple example just return details of the message
     public Utf8 send(Message message) {
+
+      if(message.getRequestName()==null||message.getRequestName().length()<=0){
+        LOGGER.error("RequestName参数不正确");
+        Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
+        return new Utf8(ret.toJson());
+      }
       LOGGER.info("接收到" + message.getRequestName() + "请求");
-      String ret ="";
+      String response ="";
 
       avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
       if(avrpRequestProto==null){
-        return new Utf8("没有服务");
+        Return ret = Return.FAIL(Code.service_notfound.code,Code.service_notfound.name());
+        return new Utf8(ret.toJson());
       }
       try{
-        ret = avrpRequestProto.send(message).toString();
+        response = avrpRequestProto.send(message).toString();
       }catch(AvroRemoteException e){
         e.printStackTrace();
         LOGGER.error("转发"+message.getRequestName() + "服务异常",e);
+        Return ret = Return.FAIL(Code.error.code,Code.error.name());
+        return new Utf8(ret.toJson());
       }
-
-      return new Utf8(ret);
+      Return ret = Return.SUCCESS(Code.success.code,Code.success.name()).put("data",response);
+      return new Utf8(ret.toJson());
     }
   }
 

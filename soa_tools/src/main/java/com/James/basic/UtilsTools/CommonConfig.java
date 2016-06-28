@@ -19,6 +19,9 @@ public class CommonConfig {
 
   public final static String HTTP_PROTOCOL_PREFIX = "http://";
 
+  public final static String defaultHttpPort = "9090";
+  public final static String defaultAvroPort = "46111";
+
 
 
 //  public enum SUBMIT_MODE {

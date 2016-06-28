@@ -11,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.Model.SharedProvider;
+import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
-import com.James.NettyAvroRpcServer.avroRpcServer;
+import com.James.avroServiceRegist.avroRequestHandleRegister;
+import com.James.basic.UtilsTools.CommonConfig;
 import com.James.zkTools.zkClientTools;
 
 
@@ -49,8 +51,8 @@ public class providerInstance {
   private zkClientTools zkclient;
   private String zkConnect;
 
-  private String defaultHttpPort = "9090";
-  private String defaultAvroPort = "46111";
+  private String defaultHttpPort = CommonConfig.defaultHttpPort;
+  private String defaultAvroPort = CommonConfig.defaultAvroPort;
   private String defaultHttpContext ="";
 
 
@@ -136,13 +138,15 @@ public class providerInstance {
     }
 
     sharedProviders.stream()
-        .filter(sharedProvider -> sharedProvider.getProtocol().equals("avro"))
+        .filter(sharedProvider -> sharedProvider.getProtocol().equals(CommonConfig.PROTOCOL.avro))
         .forEach(sharedProvider -> {
           try {
 
             //注册对应的avrpRequestProto类到avro处理器
-            avroRpcServer.getInstance().addRegisterServers("test",
+            avroRequestHandleRegister.INSTANCE.addRequestHandle(sharedProvider.getMethod_name(),
                 (avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance());
+//            avroRpcServer.getInstance().addRegisterServers("test",
+//                (avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance());
           } catch (ClassNotFoundException e) {
             e.printStackTrace();
             LOGGER.error("ClassNotFoundException" + sharedProvider.getDeclaringClass_name());
@@ -155,7 +159,8 @@ public class providerInstance {
           }
         });
     try{
-      avroRpcServer.getInstance().startServer();
+      avroServer.startServer();
+//      avroRpcServer.getInstance().startServer();
     }catch(IOException ioe){
       ioe.printStackTrace();
       LOGGER.error("启动avro服务异常" );

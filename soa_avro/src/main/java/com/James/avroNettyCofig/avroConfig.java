@@ -1,10 +1,13 @@
 package com.James.avroNettyCofig;
 
+import com.James.basic.UtilsTools.CommonConfig;
+
+
 /**
  * Created by James on 16/6/26.
  */
 public class avroConfig {
-  private static int DEFAULT_PORT = 65111;
+  private static int DEFAULT_PORT = Integer.valueOf(CommonConfig.defaultAvroPort);
 
   public static int getDEFAULT_PORT() {
     return DEFAULT_PORT;

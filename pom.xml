@@ -31,15 +31,16 @@
 		<!--<module>./soa_framework</module>-->
 		<!--&lt;!&ndash; 服务治理网站 &ndash;&gt;-->
 		<!--<module>./soa_authc</module>-->
-		<module>./soa_kafka</module>
-		<module>./soa_db</module>
-		<module>./soa_http</module>
-		<module>./soa_avro</module>
+		<module>soa_kafka</module>
+		<module>soa_db</module>
+		<module>soa_http</module>
+		<module>soa_avro</module>
 
 
 		<!--<module>soa_agent</module>-->
 		<module>soa_tools</module>
 		<module>soa_discovery</module>
+		<!--<module>soa_demo</module>-->
 
 
 	</modules>

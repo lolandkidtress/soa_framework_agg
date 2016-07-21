@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by James on 16/6/2.
  */
-public class MD5Hash implements IHashFunction{
+public class MD5Hash implements iHashFunction {
   public ThreadLocal<MessageDigest> md5Holder = new ThreadLocal<MessageDigest>();
 
   public long hash(String key, Charset charset) throws UnsupportedEncodingException {

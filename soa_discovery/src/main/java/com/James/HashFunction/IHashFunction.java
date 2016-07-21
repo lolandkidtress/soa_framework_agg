@@ -7,9 +7,9 @@ import java.nio.charset.Charset;
 /**
  * Created by James on 16/6/2.
  */
-public interface IHashFunction {
-  public static final IHashFunction MURMUR_HASH = new MurmurHash();
-  public static final IHashFunction MD5 = new MD5Hash();
+public interface iHashFunction {
+  public static final iHashFunction MURMUR_HASH = new MurmurHash();
+  public static final iHashFunction MD5 = new MD5Hash();
 
   public long hash(String key, Charset charset) throws UnsupportedEncodingException;
 

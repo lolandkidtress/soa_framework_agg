@@ -110,6 +110,7 @@ public class avroRpcClient {
 
   public static Return call(String hostname,int port,Message message){
     NettyTransceiver client ;
+
     try{
       client = new NettyTransceiver(new InetSocketAddress(hostname,port));
       avrpRequestProto proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, client);
@@ -126,7 +127,8 @@ public class avroRpcClient {
       return JsonConvert.toObject(response,Return.class);
 
     }catch(IOException e){
-      LOGGER.error("调用nettyavro异常");
+      e.printStackTrace();
+      LOGGER.error("调用nettyavro异常",e);
       return Return.FAIL(Code.error.code,Code.error.name());
     }
 

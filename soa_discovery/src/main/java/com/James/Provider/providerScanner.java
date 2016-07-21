@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.James.Annotation.InputParamAnnotation;
 import com.James.Annotation.OutputParamAnnotation;
 import com.James.Annotation.descriptionAnnotation;
-import com.James.Model.InputParam;
-import com.James.Model.OutputParam;
-import com.James.Model.SharedProvider;
+import com.James.Model.inputParam;
+import com.James.Model.outputParam;
+import com.James.Model.sharedProvider;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.soa_agent.HotInjecter;
 
@@ -91,9 +91,9 @@ public class providerScanner {
   //扫描指定的class
   //读取desc信息
   //读取方法上的入参和出参
-  public static List<SharedProvider> readClasses(Class<?> clazz){
+  public static List<sharedProvider> readClasses(Class<?> clazz){
 
-    List<SharedProvider> sharedProviders =new ArrayList<>();
+    List<sharedProvider> sharedProviders =new ArrayList<>();
 
     Method[] methods = clazz.getMethods();
     for(Method method : methods){
@@ -101,13 +101,13 @@ public class providerScanner {
       Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
       Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
-      SharedProvider sharedProvider = new SharedProvider();
+      sharedProvider sharedProvider = new sharedProvider();
       //读取desc信息
       sharedProvider = getDescribe(sharedProvider,method);
 
       //Inparam,Outparam
       for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){
-        InputParam inputParam = new InputParam();
+        inputParam inputParam = new inputParam();
         inputParam.setName(inParam.name());
         inputParam.setType(inParam.type());
         inputParam.setDescribe(inParam.describe());
@@ -120,7 +120,7 @@ public class providerScanner {
 
       for(OutputParamAnnotation outParam: method.getAnnotationsByType(OutputParamAnnotation.class)){
 
-        OutputParam outputParam = new OutputParam();
+        outputParam outputParam = new outputParam();
         outputParam.setName(outParam.name());
         outputParam.setType(outParam.type());
         outputParam.setDescribe(outParam.describe());
@@ -137,7 +137,7 @@ public class providerScanner {
 
   }
 
-  public static SharedProvider getDescribe(SharedProvider sharedProvider,Method method) {
+  public static sharedProvider getDescribe(sharedProvider sharedProvider,Method method) {
 
     descriptionAnnotation describe = method.getAnnotation(descriptionAnnotation.class);
     InputParamAnnotation inParam = method.getAnnotation(InputParamAnnotation.class);

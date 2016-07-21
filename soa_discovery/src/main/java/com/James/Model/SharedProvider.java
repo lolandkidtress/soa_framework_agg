@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  *
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class SharedProvider {
+public class sharedProvider {
 
   protected String author;
   //服务名称
@@ -57,9 +57,9 @@ public class SharedProvider {
   protected String http_context="";
 
   //入参
-  private List<InputParam> inputParams = new ArrayList<>();
+  private List<inputParam> _inputParams = new ArrayList<>();
   //出参
-  private List<OutputParam> outputParams = new ArrayList<>();
+  private List<outputParam> _outputParams = new ArrayList<>();
 
   // 其他个性化配置
   protected Map<String, Object> metadata = new HashMap<>();
@@ -67,7 +67,7 @@ public class SharedProvider {
   protected Timestamp time = new Timestamp(Clock.system(CommonConfig.ZONDID) .millis());
 
 
-  public SharedProvider(){
+  public sharedProvider(){
 
     this.server_name = providerInstance.getInstance().getServerName();
     this.ip=Utils.getLocalIP();
@@ -164,24 +164,24 @@ public class SharedProvider {
   }
 
   public List getInputParams(){
-    return this.inputParams;
+    return this._inputParams;
   }
   public void setInputParams(List InputParams){
-    this.inputParams = InputParams;
+    this._inputParams = InputParams;
   }
-  public void addInputParam(InputParam inputParam){
-    this.inputParams.add(inputParam);
+  public void addInputParam(inputParam inputParam){
+    this._inputParams.add(inputParam);
   }
 
 
   public List getOutputParams(){
-    return this.outputParams;
+    return this._outputParams;
   }
   public void setOutputParams(List OutputParams){
-    this.outputParams = OutputParams;
+    this._outputParams = OutputParams;
   }
-  public void addOutputParam(OutputParam outputParam){
-    this.outputParams.add(outputParam);
+  public void addOutputParam(outputParam outputParam){
+    this._outputParams.add(outputParam);
   }
 
 

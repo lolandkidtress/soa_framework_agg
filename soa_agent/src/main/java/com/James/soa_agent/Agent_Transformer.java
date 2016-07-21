@@ -1,11 +1,15 @@
 package com.James.soa_agent;
 
-import javassist.*;
-
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Set;
+
+import javassist.ClassClassPath;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtMethod;
 
 /**
  * Created by James on 16/5/25.
@@ -29,11 +33,14 @@ public class Agent_Transformer implements ClassFileTransformer {
             return classfileBuffer;
         }
         String class_name = agent_Advice_Class.getClass_name();
+
+        System.out.println("开始对"+class_name +"transform" );
         try {
             class_pool.insertClassPath(new ClassClassPath(reload_class));// war包下使用必须
             CtClass ct_class = class_pool.get(class_name);
             ct_class.defrost();
 
+            System.out.println("开始对" + class_name + "注入属性");
             // 注入属性
             Set<Agent_Advice_Field> fields = agent_Advice_Class.getFields();
             for (Agent_Advice_Field Agent_Advice_Field : fields) {
@@ -45,6 +52,7 @@ public class Agent_Transformer implements ClassFileTransformer {
                 }
             }
 
+            System.out.println("开始对" + class_name + "注入方法");
             // 注入方法
             Set<Agent_Advice_Method> methods = agent_Advice_Class.getMethods();
             for (Agent_Advice_Method agent_advice_method : methods) {
@@ -61,14 +69,17 @@ public class Agent_Transformer implements ClassFileTransformer {
                             ct_method.addLocalVariable(long_local_variable, CtClass.longType);
                         }
                         String insert_before = agent_advice_method.getInsert_before();
+                        System.out.println("开始对" + class_name + "注入insert_before:" + insert_before);
                         if (insert_before != null) {
                             ct_method.insertBefore(insert_before);
                         }
                         String insert_after = agent_advice_method.getInsert_after();
+                        System.out.println("开始对" + class_name + "注入insert_after:" + insert_after);
                         if (insert_after != null) {
                             ct_method.insertAfter(insert_after);
                         }
                         String add_catch = agent_advice_method.getAdd_catch();
+                        System.out.println("开始对" + class_name + "注入add_catch:" + add_catch);
                         if (add_catch != null) {
                             CtClass ctClass = class_pool.get("java.lang.Throwable");
                             ct_method.addCatch(add_catch, ctClass);
@@ -87,12 +98,14 @@ public class Agent_Transformer implements ClassFileTransformer {
                 }
             }
 
+            System.out.println(class_name + "transform完成");
             return ct_class.toBytecode();
         } catch (Throwable e) {
             System.out.println("transform 字节码文件错误 :");
-            System.out.println("1:请检查是不是javassist jar包冲突,例如hibernate等都会包含一个版本较低的javassist依赖 (使用maven可以尝试将infogen的jar包放到dependencies列表的最上方)");
+            System.out.println("1:请检查是不是javassist jar包冲突,例如hibernate等都会包含一个版本较低的javassist依赖 (使用maven可以尝试将jar包放到dependencies列表的最上方)");
             System.out.println("2:如有需要将返回值($_)作为参数调用回调方法,返回值必须是对象类型,否则会报类似");
             System.out.println("javassist.CannotCompileException: [source error] insert_after_call_back(boolean) not found in Handle_Execution的错误");
+
             e.printStackTrace();
             return classfileBuffer;
         }

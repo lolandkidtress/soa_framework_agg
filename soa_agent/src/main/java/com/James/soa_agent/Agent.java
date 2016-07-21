@@ -1,11 +1,12 @@
 package com.James.soa_agent;
 
-import com.James.basic.UtilsTools.JsonConvert;
-
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.util.Map;
+
+import UtilsTools.JsonConvert;
+
 
 /**
  * Created by James on 16/5/25.
@@ -25,7 +26,7 @@ public class Agent {
 
     public static void agentmain(String args, Instrumentation inst) {
         instrumentation = inst;
-        // Caused by: java.lang.ClassCastException: com.infogen.aop.agent.InfoGen_Agent_Advice_Class cannot be cast to com.infogen.aop.agent.InfoGen_Agent_Advice_Class
+
         Agent_Advice_Class agent_advice_class = null;
         synchronized (add_transformer_lock) {
             Class<?>[] allLoadedClasses = inst.getAllLoadedClasses();

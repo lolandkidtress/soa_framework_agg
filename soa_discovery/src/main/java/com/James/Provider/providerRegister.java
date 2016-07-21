@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Model.SharedProvider;
+import com.James.Model.sharedProvider;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.zkTools.zkClientTools;
@@ -24,7 +24,7 @@ public enum providerRegister {
 
   private zkClientTools zkclient;
   //注册服务
-  public providerRegister registerServers(List<SharedProvider> sharedProviders,zkClientTools zkclient){
+  public providerRegister registerServers(List<sharedProvider> sharedProviders,zkClientTools zkclient){
     this.zkclient = zkclient;
 
     //节点信息写入zk
@@ -71,7 +71,7 @@ public enum providerRegister {
   }
 
   //创建Server的path路径
-  private StringBuilder createServerPath(SharedProvider sharedProvider){
+  private StringBuilder createServerPath(sharedProvider sharedProvider){
     try{
       StringBuilder sb = new StringBuilder();
       //namespace方式制定根目录
@@ -91,7 +91,7 @@ public enum providerRegister {
   }
 
   //创建Server / defaultVersion 的path路径
-  private StringBuilder createVersionPath(StringBuilder sb,SharedProvider sharedProvider,boolean isDefault){
+  private StringBuilder createVersionPath(StringBuilder sb,sharedProvider sharedProvider,boolean isDefault){
     try{
 
       sb.append(CommonConfig.SLASH);
@@ -114,7 +114,7 @@ public enum providerRegister {
   }
 
   //创建Server / version/ method 的path路径
-  private StringBuilder createMethodPath(StringBuilder sb,SharedProvider sharedProvider){
+  private StringBuilder createMethodPath(StringBuilder sb,sharedProvider sharedProvider){
     try{
 
       sb.append(CommonConfig.SLASH);
@@ -133,7 +133,7 @@ public enum providerRegister {
   }
 
   //method 的服务节点
-  private StringBuilder createMethodNode(StringBuilder sb,SharedProvider sharedProvider){
+  private StringBuilder createMethodNode(StringBuilder sb,sharedProvider sharedProvider){
     try{
 
       sb.append(CommonConfig.SLASH);
@@ -151,7 +151,7 @@ public enum providerRegister {
   }
 
   //写入数据
-  private void setServerData(StringBuilder sb,SharedProvider sharedProvider){
+  private void setServerData(StringBuilder sb,sharedProvider sharedProvider){
     try{
 
       this.zkclient.setContent(sb.toString(), JsonConvert.toJson(sharedProvider));

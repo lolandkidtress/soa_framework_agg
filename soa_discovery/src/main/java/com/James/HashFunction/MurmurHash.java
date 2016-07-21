@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 /**
  * Created by James on 16/6/2.
  */
-public class MurmurHash implements IHashFunction{
+public class MurmurHash implements iHashFunction {
   private int default_seed = 0x1234ABCD;
 
   /**

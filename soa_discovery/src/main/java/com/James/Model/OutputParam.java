@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * 出参
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class OutputParam {
+public class outputParam {
   private String name;
 
   private String type;
@@ -16,10 +16,10 @@ public class OutputParam {
   private String default_value;
   private String describe;
 
-  public OutputParam() {
+  public outputParam() {
   }
 
-  public OutputParam(String name, String type, Boolean required, String default_value, String describe) {
+  public outputParam(String name, String type, Boolean required, String default_value, String describe) {
     super();
     this.name = name;
     this.type = type;

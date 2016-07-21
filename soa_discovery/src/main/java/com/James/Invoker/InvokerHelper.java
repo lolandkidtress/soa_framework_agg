@@ -1,35 +1,29 @@
 package com.James.Invoker;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.James.Model.SharedProvider;
-import com.James.NettyAvroRpcClient.avroRpcClient;
-import com.James.avroProto.Message;
-import com.James.basic.Enum.Code;
-import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
-import com.James.basic.UtilsTools.Parameter;
-import com.James.basic.UtilsTools.Return;
-import com.James.http_client.OkHttpTools;
+import com.James.embeddedHttpServer.RouterNanoHTTPD;
+
+import fi.iki.elonen.NanoHTTPD;
 
 
 /**
  * Created by James on 16/6/2.
  * 服务调用辅助
  */
-public enum InvokerHelper {
+public class InvokerHelper extends RouterNanoHTTPD.DefaultHandler {
 
-  INSTANCE;
 
-  private OkHttpTools okHttpTools =  new OkHttpTools();
+  private static class InnerInstance {
+    public static final InvokerHelper instance = new InvokerHelper();
+  }
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(InvokerHelper.class.getName());
+  public static InvokerHelper getInstance() {
+    return InnerInstance.instance;
+  }
+
 
   //关注的服务提供者
   private ConcurrentHashMap<String,Invoker> watchedInvokers = new ConcurrentHashMap();
@@ -43,56 +37,63 @@ public enum InvokerHelper {
   }
 
 
-  public Return http_call(SharedProvider sharedProvider,Parameter parameter){
+  @Override
+  public String getText() {
+    return "not implemented";
+//        return GetStatus();
+  }
 
+  @Override
+  public String getMimeType() {
+    return "application/json;charset=utf-8";
+  }
 
-    StringBuffer sb = new StringBuffer();
-    sb.append(CommonConfig.HTTP_PROTOCOL_PREFIX);
-    sb.append(sharedProvider.getIP());
+  @Override
+  public NanoHTTPD.Response.IStatus getStatus() {
+    return NanoHTTPD.Response.Status.OK;
+  }
 
-    sb.append(CommonConfig.COLON);
-    sb.append(sharedProvider.getHttp_port());
-    if(sharedProvider.getHttp_context()!=null&&sharedProvider.getHttp_context().length()>0){
-      sb.append(CommonConfig.SLASH);
-      sb.append(sharedProvider.getHttp_context());
+  public static class Error404UriHandler extends RouterNanoHTTPD.DefaultHandler {
+
+    public String getText() {
+      return "<html><body><h3>Error 404: the requested page doesn't exist.</h3></body></html>";
     }
 
-    sb.append(CommonConfig.SLASH);
-    sb.append(sharedProvider.getMethod_name());
-
-
-    Map<String, String> headers = new HashMap<>();
-
-    if(sharedProvider.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
-      try {
-        return Return.create(okHttpTools.do_get(sb.toString(), parameter, headers ));
-      }catch(IOException e){
-        e.printStackTrace();
-        LOGGER.error("调用okhttp get异常",e);
-        return Return.FAIL(Code.error.code,Code.error.name());
-      }
+    @Override
+    public String getMimeType() {
+      return "text/html";
     }
 
-    if(sharedProvider.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
-      //TODO
+    @Override
+    public NanoHTTPD.Response.IStatus getStatus() {
+      return NanoHTTPD.Response.Status.NOT_FOUND;
+    }
+  }
+
+  public NanoHTTPD.Response get(RouterNanoHTTPD.UriResource uriResource, Map<String, String> urlParams, NanoHTTPD.IHTTPSession session) {
+
+    String targetUri = session.getUri();
+
+//        final HashMap<String, String> map = new HashMap<String, String>();
+//        try{
+//            session.parseBody(map);
+//            final String json = map.get("postData");
+//            System.out.println(json);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+    if(targetUri.equals("/monitor/Status")) {
+      //返回关注的服务提供者的信息
+      String text = JsonConvert.toJson(watchedInvokers);
+      return NanoHTTPD.newFixedLengthResponse(getStatus(), getMimeType(), text.toString());
+
     }
 
-    return Return.FAIL(Code.method_notallow.code,Code.method_notallow.name());
+
+    //404 not found
+    return new Error404UriHandler().get(uriResource, urlParams, session);
 
   }
 
-  //TODO netty client 连接池
-  public Return avro_call(SharedProvider sharedProvider,Parameter parameter) {
-
-    Message message = new Message();
-    message.setParam(JsonConvert.toJson(parameter));
-    message.setRequestName(sharedProvider.getMethod_name());
-
-    Return rpc_ret = avroRpcClient.call(sharedProvider.getIP(),
-        Integer.valueOf(sharedProvider.getRpc_port()),
-        message);
-
-    return rpc_ret;
-  }
 
 }

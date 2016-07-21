@@ -8,10 +8,11 @@ import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Exception.Method_Not_Found_Exception;
+import com.James.Exception.method_Not_Found_Exception;
 import com.James.Listeners.dataChangedListener;
-import com.James.Model.SharedProvider;
+import com.James.Model.sharedProvider;
 import com.James.Model.providerInvoker;
+import com.James.RemoteCall.remoteCallHelper;
 import com.James.basic.Enum.Code;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
@@ -77,7 +78,7 @@ public class Invoker {
 //        watchZKChildChange(sb.toString());
         watchZKDataChange(sb.toString());
 
-        InvokerHelper.INSTANCE.setWatchedInvokers(CommonConfig.SLASH.concat(server_name), this);
+        InvokerHelper.getInstance().setWatchedInvokers(CommonConfig.SLASH.concat(server_name), this);
 
       }
 
@@ -208,18 +209,18 @@ public class Invoker {
       for(String method : methods){
 
         List<String> str_providers =zkclient.getChildren(path.concat(CommonConfig.SLASH).concat(method));
-        List<SharedProvider> SharedProviders =new ArrayList<>();
+        List<sharedProvider> sharedProviders =new ArrayList<>();
 
         for(String str_provider:str_providers) {
 
-          SharedProvider sharedProvider =
+          sharedProvider sharedProvider =
               JsonConvert.toObject(zkclient.getContent(path.concat(CommonConfig.SLASH).concat(method).concat(CommonConfig.SLASH).concat(str_provider)),
-                  SharedProvider.class);
-          SharedProviders.add(sharedProvider);
+                  com.James.Model.sharedProvider.class);
+          sharedProviders.add(sharedProvider);
         }
-        if(SharedProviders.size()>0){
+        if(sharedProviders.size()>0){
           LOGGER.info(method + "$");
-          ProviderInvoker.init(method,SharedProviders);
+          ProviderInvoker.init(method, sharedProviders);
         }
       }
       return ProviderInvoker;
@@ -236,7 +237,7 @@ public class Invoker {
   //调用
   public Return call(String method,Parameter parameter){
     try{
-      SharedProvider sharedProvider;
+      sharedProvider sharedProvider;
       try{
         sharedProvider = versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,
             parameter.get("trackingID"));
@@ -249,9 +250,9 @@ public class Invoker {
       //判断协议
       switch (sharedProvider.getProtocol()) {
         case http :
-           return InvokerHelper.INSTANCE.http_call(sharedProvider,parameter);
+           return remoteCallHelper.http_call(sharedProvider, parameter);
         case avro :
-          return InvokerHelper.INSTANCE.avro_call(sharedProvider,parameter);
+          return remoteCallHelper.avro_call(sharedProvider, parameter);
 //        case protoc:
 //          //TODO
 //          break;
@@ -263,7 +264,7 @@ public class Invoker {
           return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
       }
 
-    }catch(Method_Not_Found_Exception e){
+    }catch(method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("调用异常",e);
       return Return.FAIL(Code.error.code,Code.error.name());
@@ -272,12 +273,11 @@ public class Invoker {
   }
 
   //随机取得可用节点
-  public SharedProvider getAvailableProvider(String method){
+  public sharedProvider getAvailableProvider(String method){
     try{
 
-
       return versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,String.valueOf(System.currentTimeMillis()));
-    }catch(Method_Not_Found_Exception e){
+    }catch(method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("没有可用服务节点");
       return null;
@@ -286,10 +286,10 @@ public class Invoker {
   }
 
   //取得固定的某个节点
-  public SharedProvider getAvailableProvider(String method,String seed){
+  public sharedProvider getAvailableProvider(String method,String seed){
     try{
       return versionedProviderInvokers.get(CommonConfig.DEFAULTVERSION).get(method,seed);
-    }catch(Method_Not_Found_Exception e){
+    }catch(method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("没有可用服务节点");
       return null;

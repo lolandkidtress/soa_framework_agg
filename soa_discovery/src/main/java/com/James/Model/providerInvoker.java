@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Exception.Method_Not_Found_Exception;
-import com.James.HashFunction.IHashFunction;
+import com.James.Exception.method_Not_Found_Exception;
+import com.James.HashFunction.iHashFunction;
 import com.James.basic.UtilsTools.CommonConfig;
 
 
@@ -22,16 +22,16 @@ public class providerInvoker {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(providerInvoker.class.getName());
 
-  public IHashFunction algo = IHashFunction.MURMUR_HASH;
+  public iHashFunction algo = iHashFunction.MURMUR_HASH;
 
 
   //key:method,value:hash环
   private ConcurrentHashMap<String,TreeMap> methodTreeMapNodes= new ConcurrentHashMap();
 
 //  //一致性hash环
-//  public TreeMap<Long, SharedProvider> TreeMapNodes = new TreeMap<>();
+//  public TreeMap<Long, sharedProvider> TreeMapNodes = new TreeMap<>();
 //
-//  public TreeMap<Long, SharedProvider> getTreeMap(){
+//  public TreeMap<Long, sharedProvider> getTreeMap(){
 //    return this.TreeMapNodes;
 //  }
 
@@ -43,9 +43,9 @@ public class providerInvoker {
   }
 
   //每个method一个hash环
-  public providerInvoker init(String method,List<SharedProvider> sharedProviders){
-    TreeMap<Long, SharedProvider> TreeMapNodes = new TreeMap<>();
-    for(SharedProvider sharedProvider: sharedProviders){
+  public providerInvoker init(String method,List<sharedProvider> sharedProviders){
+    TreeMap<Long, sharedProvider> TreeMapNodes = new TreeMap<>();
+    for(com.James.Model.sharedProvider sharedProvider: sharedProviders){
       TreeMapNodes = add(TreeMapNodes,sharedProvider);
     }
     methodTreeMapNodes.put(method,TreeMapNodes);
@@ -56,24 +56,24 @@ public class providerInvoker {
 
 
   //在环上获取节点
-  public SharedProvider get(String method,String seed) throws Method_Not_Found_Exception {
+  public sharedProvider get(String method,String seed) throws method_Not_Found_Exception {
     TreeMap TreeMapNodes = methodTreeMapNodes.get(method);
     if(TreeMapNodes==null){
-      throw new Method_Not_Found_Exception();
+      throw new method_Not_Found_Exception();
     }
-    SortedMap<Long, SharedProvider> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
+    SortedMap<Long, sharedProvider> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
     if (tail.isEmpty()) {
-      Map.Entry<Long, SharedProvider> firstEntry = TreeMapNodes.firstEntry();
+      Map.Entry<Long, sharedProvider> firstEntry = TreeMapNodes.firstEntry();
       if (firstEntry != null) {
         return firstEntry.getValue();
       }
-      throw new Method_Not_Found_Exception();
+      throw new method_Not_Found_Exception();
     }
     return tail.get(tail.firstKey());
   }
 
   //计算一致性hash的key后加入环中
-  private TreeMap add(TreeMap TreeMapNodes ,SharedProvider sharedProvider) {
+  private TreeMap add(TreeMap TreeMapNodes ,sharedProvider sharedProvider) {
     for (int n = 0; n < basic_virtual_node_number ; n++) {
       try {
         Long key = this.algo.hash(
@@ -93,7 +93,7 @@ public class providerInvoker {
   }
 
   //从环中删除
-  public TreeMap remove(String method,SharedProvider sharedProvider) {
+  public TreeMap remove(String method,sharedProvider sharedProvider) {
     TreeMap TreeMapNodes = methodTreeMapNodes.get(method);
     for (int n = 0; n < basic_virtual_node_number ; n++) {
       try {

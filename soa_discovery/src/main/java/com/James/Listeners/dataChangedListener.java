@@ -19,13 +19,14 @@ public class dataChangedListener implements iListeners{
   public void DataChanged(String path, String type) {
     LOGGER.info(path + "接收到"+type+"事件");
 
-    switch (type) {
+//    switch (type) {
+//
+//      //TODO
+//      case "" :
+//
+//    }
 
-      //TODO
-      case "" :
-
-    }
-    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    Invoker invoker = InvokerHelper.getInstance().getWatchedInvokers(path);
     invoker.watchZKDataChange(path);
   }
 
@@ -39,7 +40,7 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    Invoker invoker = InvokerHelper.getInstance().getWatchedInvokers(path);
     invoker.watchZKConnectStat(path);
   }
 
@@ -53,7 +54,7 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    Invoker invoker = InvokerHelper.getInstance().getWatchedInvokers(path);
     invoker.watchZKConnectStat(path);
   }
 
@@ -67,7 +68,7 @@ public class dataChangedListener implements iListeners{
       case "" :
 
     }
-    Invoker invoker = InvokerHelper.INSTANCE.getWatchedInvokers(path);
+    Invoker invoker = InvokerHelper.getInstance().getWatchedInvokers(path);
     invoker.watchZKChildChange(path);
   }
 }

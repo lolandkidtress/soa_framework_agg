@@ -19,23 +19,29 @@ public class CommonConfig {
 
   public final static String HTTP_PROTOCOL_PREFIX = "http://";
 
+  //默认的提供服务的http端口
   public final static String defaultHttpPort = "9090";
+  //默认的提供服务的netty端口
   public final static String defaultAvroPort = "46111";
+  //监控用端口
+  public final static String nanoHttpPort = "9091";
 
 
 
 //  public enum SUBMIT_MODE {
 //    get,post,put,delete
 //  }
-
+  //http请求方式
   public enum RequestMethod {
     GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
   }
 
+  //支持的协议
   public enum PROTOCOL {
     http,thrift,avro,protoc
   }
 
+  //zk事件
   public enum zkEventType{
     DataChanged,ConnectionRecover,ConnectionLost,NodeChildrenChanged,None
   }

@@ -1,15 +1,21 @@
-# soa_framework_agg
-分布式框架
+#服务发现调用框架
 
-实现功能
-1.agent+javasist实现的代码注入功能
-2.kafka的生产消费
-3.对象和JSON转换的功能
-4.mongo/mysql连接池
-5.AVRO RPC服务发现
-6.HTTP 服务发现
+##FEATURE
 
-TODO:
+* 1.agent+javasist实现的代码注入功能 
+* 2.kafka的异步消息  
+* 3.AVRO RPC服现 
+* 4.HTTP服务
+
+
+##FAQ/CONTACT
+在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流
+
+* 邮件(lolandkidtress#gmail.com, 把#换成@)
+* QQ: 248954468
+
+
+##TODO:
 嵌入nanohttp用于监控
 avro的client连接池
 流量控制

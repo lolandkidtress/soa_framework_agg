@@ -15,6 +15,8 @@ import UtilsTools.JsonConvert;
  */
 public class Launch {
 
+
+  //代码注入sample
   public void hotInject(){
     hot_Injection injection = new hot_Injection();
     injection.inject();
@@ -27,6 +29,7 @@ public class Launch {
 
   }
 
+  //服务发现sample
   public void discovery(){
     //zookeeper地址
     String zkconnect = "172.16.8.97:2181";
@@ -44,7 +47,7 @@ public class Launch {
     System.out.println(JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
 
     //调用2个接口
-//    System.out.println("start 返回:" + demoinvoke.call("start", Parameter.create()));
+    System.out.println("start 返回:" + demoinvoke.call("start", Parameter.create()));
     System.out.println("avrosend 返回:" + demoinvoke.call("avrosend", Parameter.create()));
   }
 

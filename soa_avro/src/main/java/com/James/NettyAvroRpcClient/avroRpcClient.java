@@ -29,6 +29,7 @@ import com.James.basic.UtilsTools.Return;
 
 /**
  * Created by James on 16/6/23.
+ * avro 客户端
  */
 public class avroRpcClient {
   private static final Logger LOGGER = LoggerFactory.getLogger(avroRpcClient.class.getName());

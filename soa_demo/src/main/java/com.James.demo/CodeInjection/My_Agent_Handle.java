@@ -11,6 +11,7 @@ import com.James.soa_agent.event_handle.Agent_Handle;
 
 /**
  * Created by James on 16/7/21.
+ * 注入代码的实现
  */
 public class My_Agent_Handle extends Agent_Handle {
 
@@ -37,8 +38,6 @@ public class My_Agent_Handle extends Agent_Handle {
     advice_method.setInsert_before( "attach_start_millis =System.currentTimeMillis();"
                                     .concat(classname)
                                     .concat(".insert_before_call_back( System.currentTimeMillis() );") );
-
-
 
     StringBuilder sbd = new StringBuilder();
 //    sbd.append("javasist.sample.My_Agent_Handle.insert_after_call_back(");

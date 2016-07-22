@@ -7,6 +7,8 @@ import com.James.avroProto.avrpRequestProto;
 
 /**
  * Created by James on 16/6/26.
+ * 处理方法mapping
+ *
  */
 public enum avroRequestHandleRegister {
   INSTANCE;

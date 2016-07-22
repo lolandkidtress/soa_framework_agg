@@ -7,6 +7,11 @@ package com.James.avroProto;
 
 import org.apache.avro.specific.SpecificData;
 
+/*
+ * 根据avpr自动生成
+ *
+ */
+
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Message extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {

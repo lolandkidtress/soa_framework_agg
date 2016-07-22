@@ -7,6 +7,12 @@
 * 3.AVRO RPC服现 
 * 4.HTTP服务
 
+##HOW TO RUN
+* 1.git clone
+* 2.mvn install 
+* 3.cd ./soa_demo 
+* 4.java -jar ./target/soa_demo.jar
+
 
 ##FAQ/CONTACT
 在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流
@@ -18,4 +24,5 @@
 ##TODO:
 嵌入nanohttp用于监控
 avro的client连接池
-流量控制
+服务端流量控制
+soa_demo中使用spring

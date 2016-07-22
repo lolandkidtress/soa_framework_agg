@@ -1,0 +1,48 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.James:soa_kafka:jar:V0.0.1_alpha
+[WARNING] 'version' contains an expression but should be a constant. @ com.James:soa_kafka:${global.version}, /Users/James/Documents/git-repo/soa_framework_agg/soa_kafka/pom.xml, line 13, column 14
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building soa_kafka V0.0.1_alpha
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ soa_kafka ---
+[INFO] com.James:soa_kafka:jar:V0.0.1_alpha
+[INFO] +- com.James:soa_tools:jar:V0.0.1_alpha:compile
+[INFO] +- org.apache.kafka:kafka_2.11:jar:0.8.2.2:compile
+[INFO] |  +- org.scala-lang.modules:scala-xml_2.11:jar:1.0.2:compile
+[INFO] |  +- com.yammer.metrics:metrics-core:jar:2.2.0:compile
+[INFO] |  +- net.sf.jopt-simple:jopt-simple:jar:3.2:compile
+[INFO] |  +- org.scala-lang.modules:scala-parser-combinators_2.11:jar:1.0.2:compile
+[INFO] |  +- com.101tec:zkclient:jar:0.3:compile
+[INFO] |  |  \- log4j:log4j:jar:1.2.14:compile
+[INFO] |  +- org.scala-lang:scala-library:jar:2.11.5:compile
+[INFO] |  +- org.apache.kafka:kafka-clients:jar:0.8.2.2:compile
+[INFO] |  |  +- org.xerial.snappy:snappy-java:jar:1.1.1.7:compile
+[INFO] |  |  \- net.jpountz.lz4:lz4:jar:1.2.0:compile
+[INFO] |  \- org.apache.zookeeper:zookeeper:jar:3.4.6:compile
+[INFO] |     +- org.slf4j:slf4j-log4j12:jar:1.6.1:compile
+[INFO] |     +- jline:jline:jar:0.9.94:compile
+[INFO] |     |  \- junit:junit:jar:3.8.1:compile
+[INFO] |     \- io.netty:netty:jar:3.7.0.Final:compile
+[INFO] +- org.slf4j:slf4j-simple:jar:1.7.13:compile
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.13:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-core:jar:2.6.4:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.4:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.4:compile
+[INFO] \- org.testng:testng:jar:6.9.10:provided
+[INFO]    +- com.beust:jcommander:jar:1.48:provided
+[INFO]    \- org.beanshell:bsh:jar:2.0b4:provided
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.788 s
+[INFO] Finished at: 2016-07-22T14:18:53+08:00
+[INFO] Final Memory: 16M/309M
+[INFO] ------------------------------------------------------------------------

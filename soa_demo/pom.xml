@@ -26,6 +26,13 @@
         <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_kafka</artifactId>
+            <version>V0.0.1_alpha</version>
+        </dependency>
+
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_agent</artifactId>
@@ -37,6 +44,9 @@
             <artifactId>soa_discovery</artifactId>
             <version>V0.0.1_alpha</version>
         </dependency>
+
+
+
     </dependencies>
     <build>
         <finalName>soa_demo</finalName>

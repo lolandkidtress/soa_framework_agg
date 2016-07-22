@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 /**
  * Created by James on 16/5/20.
  * kafka消费者
- * new Api
  */
 public class Kafka_Consumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Kafka_Consumer.class.getName());

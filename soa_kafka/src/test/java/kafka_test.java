@@ -16,8 +16,7 @@ public class kafka_test {
     public static void main(String[] args) throws Exception{
         Properties properties = new Properties();
         properties.put("zookeeper", "192.168.202.16:2181/kafka");
-//        properties.put("kafka","192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092");
-        properties.put("kafka","192.168.0.101:9092");
+        properties.put("kafka","192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092");
 
         Configuration configuration = null;
         try{

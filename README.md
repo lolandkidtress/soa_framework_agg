@@ -10,6 +10,7 @@
 ##Required
 * zookeeper (3.4.6)
 * kafka 0.8.* (0.9+ 不支持)
+* JDK1.8+(1.8.0.25)
 
 
 
@@ -42,6 +43,9 @@ and see the console
 
 ##TODO:
 嵌入nanohttp用于监控
+
 avro的client连接池
+
 服务端流量控制
+
 soa_demo中使用spring

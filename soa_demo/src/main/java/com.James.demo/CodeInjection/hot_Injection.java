@@ -19,6 +19,7 @@ public class hot_Injection {
   public void inject(){
 //        AOP.getInstance().add_advice_method(Execution.class, new InfoGen_AOP_Handle_Execution());
     //在handle中实现需要注入的代码
+    //通过指定的注解标识哪些方法需要被注入
     HotInjecter.getInstance().add_advice_method(Inject_annotation.class, new My_Agent_Handle());
     HotInjecter.getInstance().advice();
   }

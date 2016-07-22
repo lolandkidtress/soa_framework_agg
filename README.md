@@ -4,8 +4,8 @@
 
 * 1.agent+javasist实现的代码注入功能 
 * 2.kafka的异步消息  
-* 3.AVRO RPC服现 
-* 4.HTTP服务
+* 3.AVRO RPC服务发现和调用
+* 4.HTTP服务发现和调用
 
 ##Required
 * zookeeper (3.4.6)

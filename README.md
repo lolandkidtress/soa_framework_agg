@@ -42,10 +42,10 @@ and see the console
 
 
 ##TODO:
+
+soa_demo中使用spring mvc,提供http服务(springboot实现 2016-08-03)
+
 嵌入nanohttp用于监控
-
 avro的client连接池
-
 服务端流量控制
-
-soa_demo中使用spring
+guava的eventBus实现自动降级

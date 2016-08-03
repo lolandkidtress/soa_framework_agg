@@ -3,6 +3,9 @@ package com.James.demo;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import com.James.Invoker.Invoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
@@ -18,7 +21,9 @@ import UtilsTools.JsonConvert;
 /**
  * Created by James on 16/7/21.
  */
+@SpringBootApplication
 public class Launch {
+
 
   private static Configuration configuration = null;
   static {
@@ -54,6 +59,7 @@ public class Launch {
     String zkconnect = "192.168.202.16:2181/kafka";
 
     Properties properties = new Properties();
+    properties.setProperty("HttpPort","8080");
     properties.setProperty("zkConnect",zkconnect);
 
     //服务提供方的服务名称
@@ -97,15 +103,22 @@ public class Launch {
 
   public static void main(String[] args) throws Exception {
     Launch launch = new Launch();
-
+    //代码注入
     launch.hotInject();
-    launch.discovery();
 
+    SpringApplication.run(Launch.class, args);
+    //http服务和avro服务
+    launch.discovery();
+    //kafka测试
     launch.receiveKafka();
     launch.sendKafka();
 
-    System.exit(0);
+
+
+      Thread.currentThread().join();
+    //System.exit(0);
   }
+
 
 
 }

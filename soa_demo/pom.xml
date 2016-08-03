@@ -134,10 +134,11 @@
         <sourceDirectory>src/main/java</sourceDirectory>
 
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+            <!-- 添加后会改成BOOT-INF路径,导致注入时NoClassDefFoundError异常  -->
+            <!--<plugin>-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--</plugin>-->
 
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -45,8 +45,8 @@ and see the console
 
 soa_demo中使用spring mvc,提供http服务(springboot实现 2016-08-03)
 
-嵌入nanohttp用于监控
-avro的client连接池
-服务端流量控制
-guava的eventBus实现自动降级
-扫描服务提供者的IP时,应该判断网卡类型
+1.嵌入nanohttp用于监控
+2.avro的client连接池
+3.服务端流量控制
+4.guava的eventBus实现自动降级
+5.扫描服务提供者的IP时,应该判断网卡类型

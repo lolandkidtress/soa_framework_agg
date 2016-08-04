@@ -118,4 +118,15 @@ public class providerInvoker {
 
   //TODO
   //定时扫描不可用节点
+
+
+  //setting & getter
+
+  public ConcurrentHashMap<String, TreeMap> getMethodTreeMapNodes() {
+    return methodTreeMapNodes;
+  }
+
+  public void setMethodTreeMapNodes(ConcurrentHashMap<String, TreeMap> methodTreeMapNodes) {
+    this.methodTreeMapNodes = methodTreeMapNodes;
+  }
 }

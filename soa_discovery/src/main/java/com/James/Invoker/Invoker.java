@@ -1,5 +1,6 @@
 package com.James.Invoker;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.James.Exception.method_Not_Found_Exception;
 import com.James.Listeners.dataChangedListener;
-import com.James.Model.sharedProvider;
 import com.James.Model.providerInvoker;
+import com.James.Model.sharedProvider;
 import com.James.RemoteCall.remoteCallHelper;
 import com.James.basic.Enum.Code;
 import com.James.basic.UtilsTools.CommonConfig;
@@ -27,7 +28,10 @@ import com.James.zkTools.zkDataChangedListener;
 /**
  * Created by James on 16/6/2.
  */
-public class Invoker {
+public class Invoker implements Serializable {
+
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Invoker.class.getName());
 
@@ -78,9 +82,11 @@ public class Invoker {
 //        watchZKChildChange(sb.toString());
         watchZKDataChange(sb.toString());
 
-        InvokerHelper.getInstance().setWatchedInvokers(CommonConfig.SLASH.concat(server_name), this);
-
       }
+
+      InvokerHelper.getInstance().setWatchedInvokers(CommonConfig.SLASH.concat(server_name), this);
+
+
 
 
     }catch(Exception e){
@@ -178,12 +184,12 @@ public class Invoker {
 
   //************************************//
 
-
+  //保存带版本号的服务节点
   //key:version,value:providerInvoker
   private ConcurrentHashMap<String,providerInvoker> versionedProviderInvokers= new ConcurrentHashMap();
 
   //查找版本下的方法
-  private void buildNodeGroup(String path){
+  private ConcurrentHashMap<String,providerInvoker> buildNodeGroup(String path){
     try{
       List<String> versions =  zkclient.getChildren(path);
 
@@ -192,9 +198,11 @@ public class Invoker {
         providerInvoker ProviderInvoker = buildMethodGroup(path.concat(CommonConfig.SLASH).concat(version));
         versionedProviderInvokers.put(version, ProviderInvoker);
       }
+      return versionedProviderInvokers;
     }catch(Exception e){
       e.printStackTrace();
       LOGGER.error("初始化可用节点异常",e);
+      return null;
    }
 
   }
@@ -301,4 +309,51 @@ public class Invoker {
 
   //TODO
   //get/post/delete/put等方法的实现
+
+
+  //setter/getter
+
+  public zkClientTools getZkclient() {
+    return zkclient;
+  }
+
+  public void setZkclient(zkClientTools zkclient) {
+    this.zkclient = zkclient;
+  }
+
+  public ConcurrentHashMap<String, zkConnectionStateListener> getInvokerConnectionStateListeners() {
+    return InvokerConnectionStateListeners;
+  }
+
+  public void setInvokerConnectionStateListeners(
+      ConcurrentHashMap<String, zkConnectionStateListener> invokerConnectionStateListeners) {
+    InvokerConnectionStateListeners = invokerConnectionStateListeners;
+  }
+
+  public ConcurrentHashMap<String, zkDataChangedListener> getInvokerDataChangedListeners() {
+    return InvokerDataChangedListeners;
+  }
+
+  public void setInvokerDataChangedListeners(
+      ConcurrentHashMap<String, zkDataChangedListener> invokerDataChangedListeners) {
+    InvokerDataChangedListeners = invokerDataChangedListeners;
+  }
+
+  public ConcurrentHashMap<String, zkChildChangedListener> getInvokerzkChildChangedListeners() {
+    return InvokerzkChildChangedListeners;
+  }
+
+  public void setInvokerzkChildChangedListeners(
+      ConcurrentHashMap<String, zkChildChangedListener> invokerzkChildChangedListeners) {
+    InvokerzkChildChangedListeners = invokerzkChildChangedListeners;
+  }
+
+  public ConcurrentHashMap<String, providerInvoker> getVersionedProviderInvokers() {
+    return versionedProviderInvokers;
+  }
+
+  public void setVersionedProviderInvokers(ConcurrentHashMap<String, providerInvoker> versionedProviderInvokers) {
+    this.versionedProviderInvokers = versionedProviderInvokers;
+  }
+
 }

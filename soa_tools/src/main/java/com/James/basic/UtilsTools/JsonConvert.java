@@ -1,5 +1,10 @@
 package com.James.basic.UtilsTools;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,11 +12,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Created by James on 16/5/23.
@@ -29,6 +31,10 @@ public class JsonConvert {
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
         // 允许出现对象中没有的字段
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        // No serializer found for class XXXX and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS)
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        //pretty-printing
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     private JsonConvert() {
@@ -36,6 +42,7 @@ public class JsonConvert {
 
     public static String toJson(Object object) {
         try {
+            //return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             LOGGER.error("对象转json失败", e);

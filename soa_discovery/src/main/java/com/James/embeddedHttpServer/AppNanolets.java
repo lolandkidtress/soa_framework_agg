@@ -40,6 +40,7 @@ public class AppNanolets extends RouterNanoHTTPD {
     public void addMappings() {
         super.addMappings();
         addRoute("/monitor/invokers", InvokerHelper.class);
+        addRoute("/monitor/invokersDetail", InvokerHelper.class);
 //        addRoute("/user/:id", UserHandler.class);
 //        addRoute("/user/help", GeneralHandler.class);
 //        addRoute("/general/:param1/:param2", GeneralHandler.class);

@@ -1,8 +1,11 @@
 package com.James.Invoker;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.James.Model.providerInvoker;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.embeddedHttpServer.RouterNanoHTTPD;
 
@@ -20,12 +23,16 @@ public class InvokerHelper extends RouterNanoHTTPD.DefaultHandler {
     public static final InvokerHelper instance = new InvokerHelper();
   }
 
+  public InvokerHelper(){
+      getInstance();
+  }
+
   public static InvokerHelper getInstance() {
     return InnerInstance.instance;
   }
 
 
-  //关注的服务提供者
+  //关注的服务提供者实体
   private ConcurrentHashMap<String,Invoker> watchedInvokers = new ConcurrentHashMap();
 
   public Invoker getWatchedInvokers(String key){
@@ -36,6 +43,16 @@ public class InvokerHelper extends RouterNanoHTTPD.DefaultHandler {
     this.watchedInvokers.put(key,invoker);
   }
 
+  //关注的服务提供者描述
+  private ConcurrentHashMap<String,String> watchedInvokersDescription = new ConcurrentHashMap();
+
+  public ConcurrentHashMap<String, String> getWatchedInvokersDescription() {
+    return watchedInvokersDescription;
+  }
+
+  public void setWatchedInvokersDescription(ConcurrentHashMap<String, String> watchedInvokersDescription) {
+    this.watchedInvokersDescription = watchedInvokersDescription;
+  }
 
   @Override
   public String getText() {
@@ -61,7 +78,7 @@ public class InvokerHelper extends RouterNanoHTTPD.DefaultHandler {
 
     @Override
     public String getMimeType() {
-      return "text/html";
+      return "application/json";
     }
 
     @Override
@@ -82,11 +99,40 @@ public class InvokerHelper extends RouterNanoHTTPD.DefaultHandler {
 //        }catch(Exception e){
 //            e.printStackTrace();
 //        }
-    if(targetUri.equals("/monitor/Status")) {
-      //返回关注的服务提供者的信息
-      String text = JsonConvert.toJson(watchedInvokers);
-      return NanoHTTPD.newFixedLengthResponse(getStatus(), getMimeType(), text.toString());
+    String text ="";
 
+    if(targetUri.equals("/monitor/invokers")) {
+
+    }
+
+    if(targetUri.equals("/monitor/invokersDetail")) {
+      //返回关注的服务提供者权重分布情况
+
+      ConcurrentHashMap<String,Invoker> p_watchedInvokers = InvokerHelper.getInstance().watchedInvokers;
+      Iterator<String> it_key = p_watchedInvokers.keySet().iterator();
+
+      while(it_key.hasNext()){
+        String providerName = it_key.next();
+
+        Invoker invoker = p_watchedInvokers.get(providerName);
+        text = text.concat("provider:" + providerName + "\n");
+        ConcurrentHashMap<String, providerInvoker> versionedProviderInvokers = invoker.getVersionedProviderInvokers();
+        Iterator<String> it_ver = versionedProviderInvokers.keySet().iterator();
+
+        while(it_ver.hasNext()){
+          String ver = it_ver.next();
+          text = text.concat("version:" + ver + "\n");
+          ConcurrentHashMap<String, TreeMap> tree_Map = versionedProviderInvokers.get(ver).getMethodTreeMapNodes();
+          text = text.concat("\n");
+          text = text.concat(JsonConvert.toJson(tree_Map));
+
+        }
+
+        text = text.concat("\n\n\n");
+      }
+
+//      String text = JsonConvert.toJson(InvokerHelper.getInstance().watchedInvokers.get("sddf").getVersionedProviderInvokers());
+      return NanoHTTPD.newFixedLengthResponse(getStatus(), getMimeType(), text.toString());
     }
 
 

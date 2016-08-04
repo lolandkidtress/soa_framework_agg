@@ -24,6 +24,7 @@
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+        <soa_frame_ver>V0.0.2_alpha</soa_frame_ver>
     </properties>
 
     <parent>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_discovery</artifactId>
-            <version>V0.0.1_alpha</version>
+            <version>${soa_frame_ver}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -52,7 +53,7 @@
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_kafka</artifactId>
-            <version>V0.0.1_alpha</version>
+            <version>${soa_frame_ver}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -79,7 +80,7 @@
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_agent</artifactId>
-            <version>V0.0.1_alpha</version>
+            <version>1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

@@ -5,7 +5,7 @@
 	<groupId>com.James</groupId>
 	<artifactId>soa_framework_agg</artifactId>
 	<packaging>pom</packaging>
-	<version>V1.0</version>
+	<version>V1.1</version>
 
 	<name>soa_framework_agg</name>
 	<description>分布式服务框架</description>
@@ -18,7 +18,7 @@
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-		<global.version>V0.0.1_alpha</global.version>
+		<global.version>V0.0.2_alpha</global.version>
 		<sonar.exclusions>
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>

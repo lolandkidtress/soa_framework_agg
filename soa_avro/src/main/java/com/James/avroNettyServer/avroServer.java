@@ -11,11 +11,11 @@ import org.apache.avro.util.Utf8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.avroNettyCofig.avroConfig;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.Enum.Code;
+import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.Return;
 
 
@@ -63,13 +63,13 @@ public class avroServer {
   private static Server server;
 
   public static void startServer() throws IOException {
-    startServer(avroConfig.getDEFAULT_PORT());
+    startServer(Integer.valueOf(CommonConfig.defaultAvroPort));
 
   }
 
   public static void startServer(int port) throws IOException {
     server = new NettyServer(new SpecificResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(port));
-    LOGGER.info("avro Netty Server Started @ " + avroConfig.getDEFAULT_PORT());
+    LOGGER.info("avro Netty Server Started @ " + port);
   }
 
 

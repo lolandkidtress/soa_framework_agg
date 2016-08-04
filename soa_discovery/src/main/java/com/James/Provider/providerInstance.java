@@ -70,7 +70,6 @@ public class providerInstance {
 
   public providerInstance readConfig( Properties properties){
 
-
     this.zkConnect = properties.getProperty("zkConnect");
 
     if(this.zkConnect==null||this.zkConnect.length()<0){
@@ -90,6 +89,7 @@ public class providerInstance {
       LOGGER.error("没有配置rpc端口,使用默认地址");
     }else{
       this.defaultAvroPort = properties.getProperty("AvroPort");
+
     }
 
     LOGGER.info("rpc端口为:" + this.defaultAvroPort);
@@ -158,18 +158,18 @@ public class providerInstance {
             LOGGER.error("InstantiationException" + sharedProvider.getDeclaringClass_name());
           }
         });
+
     try{
       //启动avro服务
-      avroServer.startServer();
+      avroServer.startServer(Integer.valueOf(this.defaultAvroPort));
 //      avroRpcServer.getInstance().startServer();
     }catch(IOException ioe){
       ioe.printStackTrace();
       LOGGER.error("启动avro服务异常" );
     }
 
-
-    //TODO start jetty server
-
+    //TODO
+    //退出时发通知给zk
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       LOGGER.info("系统退出,关闭监听服务");
     }));

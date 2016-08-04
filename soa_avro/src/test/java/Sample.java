@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.James.NettyAvroRpcClient.avroRpcClient;
-import com.James.avroNettyCofig.avroConfig;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
+import com.James.basic.UtilsTools.CommonConfig;
 
 
 /**
@@ -49,7 +49,7 @@ public class Sample {
   private static Server server;
 
   public static void startServer() throws IOException {
-    startServer(avroConfig.getDEFAULT_PORT());
+    startServer(Integer.valueOf(CommonConfig.defaultAvroPort));
   }
 
   public static void startServer(int port) throws IOException {
@@ -100,7 +100,7 @@ public class Sample {
     avroServer.startServer();
     avroRpcClient client = new avroRpcClient();
 
-    String response = client.sendRequest("127.0.0.1",avroConfig.getDEFAULT_PORT(),message);
+    String response = client.sendRequest("127.0.0.1",Integer.valueOf(CommonConfig.defaultAvroPort),message);
     System.out.println("接受到请求返回" + response);
     System.exit(0);
   }

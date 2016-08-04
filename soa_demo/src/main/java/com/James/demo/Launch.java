@@ -7,6 +7,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 import com.James.Invoker.Invoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
@@ -25,9 +29,23 @@ import UtilsTools.JsonConvert;
  * Created by James on 16/7/21.
  */
 @SpringBootApplication
-public class Launch {
+public class Launch extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
+
+  @Override
+  protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+    return builder.sources(Launch.class);
+  }
+
+  @Override
+  public void customize(ConfigurableEmbeddedServletContainer container) {
+    //自定义port
+    container.setPort(httpPort);
+  }
 
   private static final Logger logger = LogManager.getLogger(Launch.class.getName());
+  private final static int httpPort = 8083;
+  private final static int nanoPort = 9093;
+  private final static int avroPort = 48083;
 
   private static Configuration configuration = null;
   static {
@@ -69,7 +87,9 @@ public class Launch {
     String zkconnect = "192.168.202.16:2181/kafka";
 
     Properties properties = new Properties();
-    properties.setProperty("HttpPort","8080");
+    properties.setProperty("HttpPort",String.valueOf(httpPort));
+    properties.setProperty("AvroPort",String.valueOf(avroPort));
+
     properties.setProperty("zkConnect",zkconnect);
 
     //服务提供方的服务名称
@@ -114,15 +134,16 @@ public class Launch {
   public static void main(String[] args) throws Exception {
     Launch launch = new Launch();
     //代码注入
-    launch.hotInject();
+//    launch.hotInject();
 
+    //指定http port
     SpringApplication.run(Launch.class, args);
-    new AppNanolets(9091);
+    new AppNanolets(nanoPort);
     //http服务和avro服务
     launch.discovery();
 //    //kafka测试
-    launch.receiveKafka();
-    launch.sendKafka();
+//    launch.receiveKafka();
+//    launch.sendKafka();
 
 
 

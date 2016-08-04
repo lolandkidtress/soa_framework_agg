@@ -11,7 +11,7 @@
     <groupId>com.James</groupId>
     <artifactId>soa_agent</artifactId>
     <packaging>jar</packaging>
-    <version>V0.0.1_alpha</version>
+    <version>1.0</version>
 
     <dependencies>
         <dependency>

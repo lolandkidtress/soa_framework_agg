@@ -52,15 +52,15 @@ public class Utils {
 
     public static String getLocalIP(){
         String ip="";
-        try{
-
-            ip = InetAddress.getLocalHost().getHostAddress();
-
-
-            return ip;
-        }catch(UnknownHostException e1){
-            LOGGER.error("通过InetAddress.getLocalHost().getHostAddress()取得hostip失败",e1);
-        }
+//        try{
+//
+//            ip = InetAddress.getLocalHost().getHostAddress();
+//
+//
+//            return ip;
+//        }catch(UnknownHostException e1){
+//            LOGGER.error("通过InetAddress.getLocalHost().getHostAddress()取得hostip失败",e1);
+//        }
 
         try{
             Enumeration e = NetworkInterface.getNetworkInterfaces();

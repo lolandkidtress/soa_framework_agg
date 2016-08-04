@@ -15,6 +15,7 @@ import com.James.Provider.providerInstance;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.demo.CodeInjection.hot_Injection;
 import com.James.demo.Kafka.MsgCosum;
+import com.James.embeddedHttpServer.AppNanolets;
 import com.James.kafka_Config.Configuration;
 
 import UtilsTools.JsonConvert;
@@ -101,7 +102,7 @@ public class Launch {
       Kafka_Producer.getInstance().start(configuration);
       int i=0;
 
-      while(i<=1000){
+      while(i<=10){
         i++;
         Kafka_Producer.getInstance().send("soa_test","key",String.valueOf(i));
 
@@ -116,9 +117,10 @@ public class Launch {
     launch.hotInject();
 
     SpringApplication.run(Launch.class, args);
+    new AppNanolets(9091);
     //http服务和avro服务
     launch.discovery();
-    //kafka测试
+//    //kafka测试
     launch.receiveKafka();
     launch.sendKafka();
 

@@ -56,11 +56,11 @@ public class remoteCallHelper {
       }
     }
 
-    if(sharedProvider.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
-      //TODO
-    }
+//    if(sharedProvider.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
+//      //TODO
+//    }
 
-    return Return.FAIL(Code.method_notallow.code,Code.method_notallow.name());
+    return Return.FAIL(Code.method_notsupport.code,Code.method_notsupport.name());
 
   }
 

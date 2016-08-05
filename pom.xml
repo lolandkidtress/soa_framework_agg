@@ -5,7 +5,7 @@
 	<groupId>com.James</groupId>
 	<artifactId>soa_framework_agg</artifactId>
 	<packaging>pom</packaging>
-	<version>V1.1</version>
+	<version>V1.0</version>
 
 	<name>soa_framework_agg</name>
 	<description>分布式服务框架</description>

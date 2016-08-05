@@ -16,13 +16,13 @@ import com.James.Invoker.Invoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
 import com.James.Provider.providerInstance;
+import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.demo.CodeInjection.hot_Injection;
 import com.James.demo.Kafka.MsgCosum;
 import com.James.embeddedHttpServer.AppNanolets;
 import com.James.kafka_Config.Configuration;
 
-import UtilsTools.JsonConvert;
 
 
 /**
@@ -86,6 +86,7 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
     //zookeeper地址
     String zkconnect = "192.168.202.16:2181/kafka";
 
+    //配置信息
     Properties properties = new Properties();
     properties.setProperty("HttpPort",String.valueOf(httpPort));
     properties.setProperty("AvroPort",String.valueOf(avroPort));
@@ -142,8 +143,8 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
     //http服务和avro服务
     launch.discovery();
 //    //kafka测试
-//    launch.receiveKafka();
-//    launch.sendKafka();
+    launch.receiveKafka();
+    launch.sendKafka();
 
 
 

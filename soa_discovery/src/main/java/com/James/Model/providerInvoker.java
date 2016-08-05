@@ -17,6 +17,8 @@ import com.James.basic.UtilsTools.CommonConfig;
 
 /**
  * Created by James on 16/6/2.
+ * 有多个sharedProvider组成的一组服务提供组
+ * 通过一致性hash实现负载均衡
  */
 public class providerInvoker {
 

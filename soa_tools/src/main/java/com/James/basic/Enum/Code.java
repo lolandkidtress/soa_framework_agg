@@ -4,24 +4,29 @@ package com.James.basic.Enum;
  * Created by James on 16/5/23.
  */
 public enum Code {
-    success(200, "成功"), //
+    //10000 成功
+    success(10200, "成功"), //
 
-    method_notallow(405,"不支持的请求方法"),
-    parameters_incorrect(400, "参数不正确"), //
-    parameters_invalid(401, "特定参数不符合条件(eg:没有这个用户)"), //
+    //20000 参数方法返回值错误
+    parameters_incorrect(200100, "参数不正确"), //
+    generate_return_error(200101, "处理返回值错误"), //
+
     service_notfound(402, "没有这个服务"), //
-    node_unavailable(403, "没有可用的服务节点"), //
 
-    error(500, "执行错误"), //
-    authentication_fail(501, "认证失败"), //
-    roles_fail(502, "授权失败"), //
-    session_expiration(503, "Session 过期"), //
-    session_lose(504, "Session 丢失"), //
 
-    timeout(510, "调用超时"), //
-    generate_return_error(511, "处理返回值错误"), //
-    limit(512, "接口调用次数超过限制"), //
-    limit_by_group(513, "用户调用次数超过限制");
+    //30000 不支持的方法协议,服务不可用
+    method_notsupport(300100,"不支持的请求方法"),
+    protocol_notsupport(300200,"不支持的协议"),
+    node_unavailable(300300, "没有可用的服务节点"), //
+
+    //40000 异常
+    error(400100, "执行错误"), //
+
+    //50000 流程控制错误
+    over_limit(500100, "接口调用次数超过限制");
+
+
+
     public String note;
     public Integer code;
 

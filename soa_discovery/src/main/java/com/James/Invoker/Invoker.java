@@ -27,6 +27,7 @@ import com.James.zkTools.zkDataChangedListener;
 
 /**
  * Created by James on 16/6/2.
+ * 服务调用方
  */
 public class Invoker implements Serializable {
 
@@ -74,7 +75,7 @@ public class Invoker implements Serializable {
         sb.append(CommonConfig.SLASH);
         sb.append(server_name);
 
-        //创建环
+        //扫描zk路径,根据版本方法名生成hash环
         buildNodeGroup(sb.toString());
         //添加watch
         //watch是一次性的,触发后,需要重新添加watch
@@ -85,9 +86,6 @@ public class Invoker implements Serializable {
       }
 
       InvokerHelper.getInstance().setWatchedInvokers(CommonConfig.SLASH.concat(server_name), this);
-
-
-
 
     }catch(Exception e){
       e.printStackTrace();
@@ -188,13 +186,14 @@ public class Invoker implements Serializable {
   //key:version,value:providerInvoker
   private ConcurrentHashMap<String,providerInvoker> versionedProviderInvokers= new ConcurrentHashMap();
 
-  //查找版本下的方法
+  //扫描不同的版本下面方法和注册的节点,生成hash环
   private ConcurrentHashMap<String,providerInvoker> buildNodeGroup(String path){
     try{
       List<String> versions =  zkclient.getChildren(path);
 
       for(String version : versions){
         LOGGER.info("取得版本" + version );
+        //
         providerInvoker ProviderInvoker = buildMethodGroup(path.concat(CommonConfig.SLASH).concat(version));
         versionedProviderInvokers.put(version, ProviderInvoker);
       }
@@ -207,6 +206,11 @@ public class Invoker implements Serializable {
 
   }
 
+  /**
+   * @param path
+   *
+   * @return
+   */
   //方法下的节点做一致性hash
   private providerInvoker buildMethodGroup(String path){
     try{
@@ -227,7 +231,10 @@ public class Invoker implements Serializable {
           sharedProviders.add(sharedProvider);
         }
         if(sharedProviders.size()>0){
-          LOGGER.info(method + "$");
+
+          InvokerHelper.getInstance().addWatchedProvider(sharedProviders);
+          LOGGER.info("组装" + method + "的hash环");
+
           ProviderInvoker.init(method, sharedProviders);
         }
       }
@@ -239,7 +246,6 @@ public class Invoker implements Serializable {
 
     }
   }
-
 
   /**********************************/
   //调用
@@ -269,7 +275,7 @@ public class Invoker implements Serializable {
 //          break;
         default:
           LOGGER.error(method + "不支持的协议");
-          return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
+          return Return.FAIL(Code.protocol_notsupport.code,Code.protocol_notsupport.name());
       }
 
     }catch(method_Not_Found_Exception e){
@@ -304,11 +310,6 @@ public class Invoker implements Serializable {
     }
 
   }
-
-
-
-  //TODO
-  //get/post/delete/put等方法的实现
 
 
   //setter/getter

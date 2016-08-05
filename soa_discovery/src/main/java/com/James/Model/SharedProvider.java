@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 /**
  * Created by James on 16/5/30.
  * 服务提供方
+ * 最小的服务单位
  * 向zk注册自身的信息
  *
  */

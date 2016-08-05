@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_agent</artifactId>
-            <version>V0.0.1_alpha</version>
+            <version>1.0</version>
         </dependency>
 
         <!--  zkclient -->

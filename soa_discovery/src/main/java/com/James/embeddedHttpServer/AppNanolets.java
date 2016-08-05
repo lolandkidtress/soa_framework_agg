@@ -2,7 +2,7 @@ package com.James.embeddedHttpServer;
 
 import java.io.IOException;
 
-import com.James.Invoker.InvokerHelper;
+import com.James.Invoker.InvokeMonitor;
 import com.James.basic.UtilsTools.CommonConfig;
 
 
@@ -39,8 +39,8 @@ public class AppNanolets extends RouterNanoHTTPD {
     @Override
     public void addMappings() {
         super.addMappings();
-        addRoute("/monitor/invokers", InvokerHelper.class);
-        addRoute("/monitor/invokersDetail", InvokerHelper.class);
+        addRoute("/monitor/providers", InvokeMonitor.class);
+        addRoute("/monitor/providerTreeMap", InvokeMonitor.class);
 //        addRoute("/user/:id", UserHandler.class);
 //        addRoute("/user/help", GeneralHandler.class);
 //        addRoute("/general/:param1/:param2", GeneralHandler.class);

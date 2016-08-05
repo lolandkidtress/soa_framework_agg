@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.James.soa_agent.event_handle.Agent_Handle;
 
-import UtilsTools.JsonConvert;
+import UtilsTools.agentJsonConvert;
 import UtilsTools.NativePath;
 
 
@@ -146,7 +146,7 @@ public class HotInjecter {
         advice_class.setMethods(methods);
         advice_class.setFields(fields);
 
-        Agent_Cache.class_advice_map.put(class_name, JsonConvert.toJson(advice_class));
+        Agent_Cache.class_advice_map.put(class_name, agentJsonConvert.toJson(advice_class));
     }
 
     public Boolean isadvice = false;

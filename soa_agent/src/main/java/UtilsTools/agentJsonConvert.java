@@ -1,5 +1,10 @@
 package UtilsTools;
 
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -7,18 +12,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 /**
  * Created by James on 16/5/23.
  */
-public class JsonConvert {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JsonConvert.class.getName());
+public class agentJsonConvert {
+    private static final Logger LOGGER = LoggerFactory.getLogger(agentJsonConvert.class.getName());
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     static {
@@ -30,9 +31,11 @@ public class JsonConvert {
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
         // 允许出现对象中没有的字段
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        //pretty-printing
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    private JsonConvert() {
+    private agentJsonConvert() {
     }
 
     public static String toJson(Object object) {

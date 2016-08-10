@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Exception.method_Not_Found_Exception;
+import com.James.Exception.Method_Not_Found_Exception;
 import com.James.HashFunction.iHashFunction;
 import com.James.basic.UtilsTools.CommonConfig;
 
@@ -54,10 +54,10 @@ public class provider {
 
 
   //在环上获取节点
-  public sharedNode get(String version,String seed) throws method_Not_Found_Exception {
+  public sharedNode get(String version,String seed) throws Method_Not_Found_Exception {
     TreeMap TreeMapNodes = methodTreeMapNodes.get(version);
     if(TreeMapNodes==null){
-      throw new method_Not_Found_Exception();
+      throw new Method_Not_Found_Exception();
     }
     SortedMap<Long, sharedNode> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
     if (tail.isEmpty()) {
@@ -65,7 +65,7 @@ public class provider {
       if (firstEntry != null) {
         return firstEntry.getValue();
       }
-      throw new method_Not_Found_Exception();
+      throw new Method_Not_Found_Exception();
     }
     return tail.get(tail.firstKey());
   }

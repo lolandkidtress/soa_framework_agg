@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Exception.method_Not_Found_Exception;
+import com.James.Exception.Method_Not_Found_Exception;
 import com.James.Model.provider;
 import com.James.Model.sharedNode;
 import com.James.RemoteCall.remoteCallHelper;
@@ -253,7 +253,7 @@ public class Invoker implements Serializable {
           return Return.FAIL(Code.protocol_notsupport.code,Code.protocol_notsupport.name());
       }
 
-    }catch(method_Not_Found_Exception e){
+    }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("调用异常",e);
       return Return.FAIL(Code.error.code,Code.error.name());
@@ -268,7 +268,7 @@ public class Invoker implements Serializable {
     try{
 
       return methodProviderInvokers.get(method).get(CommonConfig.DEFAULTVERSION,String.valueOf(System.currentTimeMillis()));
-    }catch(method_Not_Found_Exception e){
+    }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("没有可用服务节点");
       return null;
@@ -280,7 +280,7 @@ public class Invoker implements Serializable {
   public sharedNode getAvailableProvider(String method,String seed){
     try{
       return methodProviderInvokers.get(method).get(CommonConfig.DEFAULTVERSION,seed);
-    }catch(method_Not_Found_Exception e){
+    }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("没有可用服务节点");
       return null;

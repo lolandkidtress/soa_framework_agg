@@ -5,8 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
@@ -20,6 +18,7 @@ import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.demo.CodeInjection.hot_Injection;
 import com.James.demo.Kafka.MsgCosum;
+import com.James.demo.jettySpring.JettyServer;
 import com.James.embeddedHttpServer.AppNanolets;
 import com.James.kafka_Config.Configuration;
 
@@ -28,7 +27,6 @@ import com.James.kafka_Config.Configuration;
 /**
  * Created by James on 16/7/21.
  */
-@SpringBootApplication
 public class Launch extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
   @Override
@@ -148,14 +146,16 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
     launch.hotInject();
 
 //    //指定http port
-    SpringApplication.run(Launch.class, args);
+//    SpringApplication.run(Launch.class, args);
+    JettyServer.startJetty(httpPort);
+    TimeUnit.SECONDS.sleep(5);
     new AppNanolets(nanoPort);
     //http服务和avro服务
     launch.registerServer();
     launch.discoryServer();
 //    //kafka测试
-    launch.receiveKafka();
-    launch.sendKafka();
+//    launch.receiveKafka();
+//    launch.sendKafka();
 
 
 

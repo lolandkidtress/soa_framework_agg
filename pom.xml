@@ -40,6 +40,7 @@
 		<!--<module>soa_agent</module>-->
 		<module>soa_tools</module>
 		<module>soa_discovery</module>
+		<module>soa_mock</module>
 		<!--<module>soa_demo</module>-->
 
 

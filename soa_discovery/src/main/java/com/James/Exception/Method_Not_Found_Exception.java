@@ -8,11 +8,11 @@ import com.James.basic.Enum.Code;
 /**
  * Created by James on 16/6/8.
  */
-public class method_Not_Found_Exception extends IOException {
+public class Method_Not_Found_Exception extends IOException {
   private Integer code;
   private String message;
 
-  public method_Not_Found_Exception() {
+  public Method_Not_Found_Exception() {
     super();
     this.code = Code.service_notfound.code;
     this.message = Code.service_notfound.name();

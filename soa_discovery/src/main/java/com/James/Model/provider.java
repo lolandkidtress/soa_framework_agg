@@ -1,7 +1,6 @@
 package com.James.Model;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -20,52 +19,49 @@ import com.James.basic.UtilsTools.CommonConfig;
  * 有多个sharedProvider组成的一组服务提供组
  * 通过一致性hash实现负载均衡
  */
-public class providerInvoker {
+public class provider {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(providerInvoker.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(provider.class.getName());
 
   public iHashFunction algo = iHashFunction.MURMUR_HASH;
 
 
-  //key:method,value:hash环
+  //key:version,value:hash环
   private ConcurrentHashMap<String,TreeMap> methodTreeMapNodes= new ConcurrentHashMap();
 
 //  //一致性hash环
-//  public TreeMap<Long, sharedProvider> TreeMapNodes = new TreeMap<>();
+//  public TreeMap<Long, sharedNode> TreeMapNodes = new TreeMap<>();
 //
-//  public TreeMap<Long, sharedProvider> getTreeMap(){
+//  public TreeMap<Long, sharedNode> getTreeMap(){
 //    return this.TreeMapNodes;
 //  }
 
   //数字越大,虚拟节点越多,分布越平均
-  public static final int basic_virtual_node_number = 40;
+  public static final int basic_virtual_node_number = 20;
 
-  public providerInvoker(){
+  public provider(){
 
   }
 
-  //每个method一个hash环
-  public providerInvoker init(String method,List<sharedProvider> sharedProviders){
-    TreeMap<Long, sharedProvider> TreeMapNodes = new TreeMap<>();
-    for(com.James.Model.sharedProvider sharedProvider: sharedProviders){
-      TreeMapNodes = add(TreeMapNodes,sharedProvider);
-    }
-    methodTreeMapNodes.put(method,TreeMapNodes);
+  //每个version一个hash环
+  public provider init(String version,sharedNode SharedNode){
+    TreeMap<Long, sharedNode> TreeMapNodes = methodTreeMapNodes.getOrDefault(version,new TreeMap<>());
+    TreeMapNodes = add(TreeMapNodes, SharedNode);
+    methodTreeMapNodes.put(version,TreeMapNodes);
 
     return this;
   }
 
 
-
   //在环上获取节点
-  public sharedProvider get(String method,String seed) throws method_Not_Found_Exception {
-    TreeMap TreeMapNodes = methodTreeMapNodes.get(method);
+  public sharedNode get(String version,String seed) throws method_Not_Found_Exception {
+    TreeMap TreeMapNodes = methodTreeMapNodes.get(version);
     if(TreeMapNodes==null){
       throw new method_Not_Found_Exception();
     }
-    SortedMap<Long, sharedProvider> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
+    SortedMap<Long, sharedNode> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
     if (tail.isEmpty()) {
-      Map.Entry<Long, sharedProvider> firstEntry = TreeMapNodes.firstEntry();
+      Map.Entry<Long, sharedNode> firstEntry = TreeMapNodes.firstEntry();
       if (firstEntry != null) {
         return firstEntry.getValue();
       }
@@ -75,16 +71,16 @@ public class providerInvoker {
   }
 
   //计算一致性hash的key后加入环中
-  private TreeMap add(TreeMap TreeMapNodes ,sharedProvider sharedProvider) {
+  private TreeMap add(TreeMap TreeMapNodes ,sharedNode sharedNode) {
     for (int n = 0; n < basic_virtual_node_number ; n++) {
       try {
         Long key = this.algo.hash(
-            new StringBuilder(sharedProvider.getIdentityID())
+            new StringBuilder(sharedNode.getIdentityID())
                 .append("*")
                 .append(n).toString()
             , CommonConfig.CHARSET);
 
-        TreeMapNodes.put(key, sharedProvider);
+        TreeMapNodes.put(key, sharedNode);
 
       } catch (UnsupportedEncodingException e) {
         LOGGER.error("添加节点失败", e);
@@ -95,12 +91,12 @@ public class providerInvoker {
   }
 
   //从环中删除
-  public TreeMap remove(String method,sharedProvider sharedProvider) {
-    TreeMap TreeMapNodes = methodTreeMapNodes.get(method);
+  public TreeMap remove(String version,sharedNode sharedNode) {
+    TreeMap TreeMapNodes = methodTreeMapNodes.get(version);
     for (int n = 0; n < basic_virtual_node_number ; n++) {
       try {
         Long key = this.algo.hash(
-            new StringBuilder(sharedProvider.getIdentityID())
+            new StringBuilder(sharedNode.getIdentityID())
                 .append("*")
                 .append(n).toString()
             , CommonConfig.CHARSET);

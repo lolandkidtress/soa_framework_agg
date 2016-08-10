@@ -35,6 +35,7 @@
 and see the console
 or 
 http://localhost:9093/monitor/providers 中查看服务提供节点信息
+http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环的分布情况
 
 ##FAQ/CONTACT
 在使用中有任何问题，欢迎反馈给我，可以用以下联系方式跟我交流

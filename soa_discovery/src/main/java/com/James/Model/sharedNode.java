@@ -17,11 +17,12 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * Created by James on 16/5/30.
  * 服务提供方
  * 最小的服务单位
+ * 到方法级
  * 向zk注册自身的信息
  *
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class sharedProvider {
+public class sharedNode {
 
   protected String author;
   //服务名称
@@ -68,7 +69,7 @@ public class sharedProvider {
   protected Timestamp time = new Timestamp(Clock.system(CommonConfig.ZONDID) .millis());
 
 
-  public sharedProvider(){
+  public sharedNode(){
 
     this.server_name = providerInstance.getInstance().getServerName();
     this.ip=Utils.getLocalIP();
@@ -229,5 +230,16 @@ public class sharedProvider {
     return false;
   }
 
+  @Override
+  public int hashCode() {
+    return this.identityID.hashCode();
+  }
 
+  @Override
+  public boolean equals(Object obj) {
+
+    sharedNode p= (sharedNode)obj;
+
+    return this.getIdentityID().equals(p.getIdentityID());
+  }
 }

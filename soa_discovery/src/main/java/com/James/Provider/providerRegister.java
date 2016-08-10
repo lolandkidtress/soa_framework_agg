@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Model.sharedProvider;
+import com.James.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.zkTools.zkClientTools;
@@ -24,60 +24,45 @@ public enum providerRegister {
 
   private zkClientTools zkclient;
   //注册服务
-  public providerRegister registerServers(List<sharedProvider> sharedProviders,zkClientTools zkclient){
+  public providerRegister registerServers(List<sharedNode> sharedNodes,zkClientTools zkclient){
     this.zkclient = zkclient;
 
     //节点信息写入zk
-    // 目录格式: providers/{服务名}/{version}/{方法名}/{identityID}
-    sharedProviders.forEach(sharedProvider -> {
+    // 目录格式: /{服务名}/{identityID}
+    sharedNodes.forEach(SharedNode -> {
 
-      //写2处
-      //非默认版本号
-      if (!sharedProvider.isDefaultVersion()) {
-        StringBuilder sb = new StringBuilder();
-        sb = createServerPath(sharedProvider);
-
-        sb = createVersionPath(sb, sharedProvider,false);
-        sb = createMethodPath(sb, sharedProvider);
-        sb = createMethodNode(sb, sharedProvider);
-        setServerData(sb, sharedProvider);
-      }
-
-      //默认版本
       StringBuilder sb = new StringBuilder();
-      sb = createServerPath(sharedProvider);
+      sb = createServerPath(SharedNode);
+      sb = creategetIdentityIDPath(sb,SharedNode);
 
-      sb = createVersionPath(sb, sharedProvider,true);
-      sb = createMethodPath(sb, sharedProvider);
-      sb = createMethodNode(sb, sharedProvider);
-      setServerData(sb, sharedProvider);
+      setServerData(sb, SharedNode);
 
 
     });
 
-    Map<String,String> map = new HashMap();
-    map.put("updated", String.valueOf(System.currentTimeMillis()));
-    try{
-      //更新根节点的时间,用于触发事件
-      this.zkclient.setContent(CommonConfig.SLASH.concat(providerInstance.getInstance().getServerName()) , JsonConvert.toJson(map));
-
-    }catch (Exception e){
-      e.printStackTrace();
-      LOGGER.error("更新根节点数据错误",e);
-    }
+//    Map<String,String> map = new HashMap();
+//    map.put("updated", String.valueOf(System.currentTimeMillis()));
+//    try{
+//      //更新根节点的时间,用于触发事件
+//      this.zkclient.setContent(CommonConfig.SLASH.concat(providerInstance.getInstance().getServerName()) , JsonConvert.toJson(map));
+//
+//    }catch (Exception e){
+//      e.printStackTrace();
+//      LOGGER.error("更新根节点数据错误",e);
+//    }
 
 
     return this;
   }
 
   //创建Server的path路径
-  private StringBuilder createServerPath(sharedProvider sharedProvider){
+  private StringBuilder createServerPath(sharedNode sharedNode){
     try{
       StringBuilder sb = new StringBuilder();
       //namespace方式制定根目录
 //      sb.append(zkInstance.INSTANCE.providerMangerPath);
       sb.append(CommonConfig.SLASH);
-      sb.append(sharedProvider.getServer_name());
+      sb.append(sharedNode.getServer_name());
 
       if(!this.zkclient.checkExists(sb.toString() )){
         this.zkclient.createPERSISTENTNode(sb.toString());
@@ -91,53 +76,12 @@ public enum providerRegister {
   }
 
   //创建Server / defaultVersion 的path路径
-  private StringBuilder createVersionPath(StringBuilder sb,sharedProvider sharedProvider,boolean isDefault){
+  private StringBuilder creategetIdentityIDPath(StringBuilder sb,sharedNode SharedNode){
     try{
 
       sb.append(CommonConfig.SLASH);
-      if(isDefault){
-        sb.append(CommonConfig.DEFAULTVERSION);
-      }else{
-        sb.append(sharedProvider.getVersion());
-      }
+      sb.append(SharedNode.getIdentityID());
 
-
-      if(!this.zkclient.checkExists(sb.toString()) ){
-        this.zkclient.createPERSISTENTNode(sb.toString());
-      }
-      return sb;
-    }catch(Exception e) {
-      e.printStackTrace();
-      LOGGER.error("创建目录错误", e);
-      return null;
-    }
-  }
-
-  //创建Server / version/ method 的path路径
-  private StringBuilder createMethodPath(StringBuilder sb,sharedProvider sharedProvider){
-    try{
-
-      sb.append(CommonConfig.SLASH);
-      sb.append(sharedProvider.getMethod_name());
-
-      if(!this.zkclient.checkExists(sb.toString()) ){
-        this.zkclient.createPERSISTENTNode(sb.toString());
-      }
-      return sb;
-
-    }catch(Exception e) {
-      e.printStackTrace();
-      LOGGER.error("创建目录错误", e);
-      return null;
-    }
-  }
-
-  //method 的服务节点
-  private StringBuilder createMethodNode(StringBuilder sb,sharedProvider sharedProvider){
-    try{
-
-      sb.append(CommonConfig.SLASH);
-      sb.append(sharedProvider.getIdentityID());
 
       if(!this.zkclient.checkExists(sb.toString()) ){
         this.zkclient.createEPHEMERALNode(sb.toString());
@@ -151,12 +95,21 @@ public enum providerRegister {
   }
 
   //写入数据
-  private void setServerData(StringBuilder sb,sharedProvider sharedProvider){
+  //default版本和指定的版本
+  //各写一份
+  private void setServerData(StringBuilder pathsb,sharedNode SharedNode){
     try{
 
-      this.zkclient.setContent(sb.toString(), JsonConvert.toJson(sharedProvider));
+      Map<String,sharedNode> data = new HashMap<>();
+      if (!SharedNode.isDefaultVersion()) {
+        data.put(CommonConfig.DEFAULTVERSION, SharedNode);
 
-      LOGGER.info(sb.toString() +"写入服务节点成功");
+      }
+
+      data.put(SharedNode.getVersion(), SharedNode);
+      this.zkclient.setContent(pathsb.toString(), JsonConvert.toJson(data));
+
+      LOGGER.info(pathsb.toString() + "写入服务节点成功");
     }catch(Exception e) {
       e.printStackTrace();
       LOGGER.error("写入服务节点失败", e);

@@ -15,7 +15,7 @@ import com.James.Annotation.OutputParamAnnotation;
 import com.James.Annotation.descriptionAnnotation;
 import com.James.Model.inputParam;
 import com.James.Model.outputParam;
-import com.James.Model.sharedProvider;
+import com.James.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.soa_agent.HotInjecter;
 
@@ -91,9 +91,9 @@ public class providerScanner {
   //扫描指定的class
   //读取desc信息
   //读取方法上的入参和出参
-  public static List<sharedProvider> readClasses(Class<?> clazz){
+  public static List<sharedNode> readClasses(Class<?> clazz){
 
-    List<sharedProvider> sharedProviders =new ArrayList<>();
+    List<sharedNode> sharedNodes =new ArrayList<>();
 
     Method[] methods = clazz.getMethods();
     for(Method method : methods){
@@ -101,9 +101,9 @@ public class providerScanner {
       Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
       Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
-      sharedProvider sharedProvider = new sharedProvider();
+      sharedNode sharedNode = new sharedNode();
       //读取desc信息
-      sharedProvider = getDescribe(sharedProvider,method);
+      sharedNode = getDescribe(sharedNode,method);
 
       //Inparam,Outparam
       for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){
@@ -114,7 +114,7 @@ public class providerScanner {
         inputParam.setRequired(inParam.Required());
         inputParam.setDefault_value(inParam.default_value());
 
-        sharedProvider.addInputParam(inputParam);
+        sharedNode.addInputParam(inputParam);
 
       }
 
@@ -127,17 +127,17 @@ public class providerScanner {
         outputParam.setRequired(outParam.Required());
         outputParam.setDefault_value(outParam.default_value());
 
-        sharedProvider.addOutputParam(outputParam);
+        sharedNode.addOutputParam(outputParam);
       }
 
-      sharedProviders.add(sharedProvider);
+      sharedNodes.add(sharedNode);
     }
 
-    return sharedProviders;
+    return sharedNodes;
 
   }
 
-  public static sharedProvider getDescribe(sharedProvider sharedProvider,Method method) {
+  public static sharedNode getDescribe(sharedNode sharedNode,Method method) {
 
     descriptionAnnotation describe = method.getAnnotation(descriptionAnnotation.class);
     InputParamAnnotation inParam = method.getAnnotation(InputParamAnnotation.class);
@@ -145,33 +145,33 @@ public class providerScanner {
 
     if (describe != null) {
       LOGGER.info("开始扫描" + method.getDeclaringClass().getName() + "类下的" + method.getName() + "方法");
-      sharedProvider.setAuthor(describe.author());
+      sharedNode.setAuthor(describe.author());
 
-      sharedProvider.setDescribe(describe.desc());
-      sharedProvider.setVersion(describe.version());
+      sharedNode.setDescribe(describe.desc());
+      sharedNode.setVersion(describe.version());
 
-      sharedProvider.setProtocol(CommonConfig.PROTOCOL.valueOf(describe.protocol()));
+      sharedNode.setProtocol(CommonConfig.PROTOCOL.valueOf(describe.protocol()));
 
-      sharedProvider.setSubmit_mode(describe.submit_mode());
+      sharedNode.setSubmit_mode(describe.submit_mode());
 
       if(describe.protocol().equals(CommonConfig.PROTOCOL.avro.name())){
-        sharedProvider.setMethod_name(describe.name());
+        sharedNode.setMethod_name(describe.name());
         //avro需要全限定名
-        sharedProvider.setDeclaringClass_name(method.getDeclaringClass().getName());
-        sharedProvider.setRpc_port(providerInstance.getInstance().getDefaultAvroPort());
+        sharedNode.setDeclaringClass_name(method.getDeclaringClass().getName());
+        sharedNode.setRpc_port(providerInstance.getInstance().getDefaultAvroPort());
       }
 
       if(describe.protocol().equals(CommonConfig.PROTOCOL.http.name())){
-        sharedProvider.setMethod_name(describe.name());
-        sharedProvider.setHttp_port(providerInstance.getInstance().getDefaultHttpPort());
-        sharedProvider.setHttp_context(providerInstance.getInstance().getDefaultHttpContext());
+        sharedNode.setMethod_name(describe.name());
+        sharedNode.setHttp_port(providerInstance.getInstance().getDefaultHttpPort());
+        sharedNode.setHttp_context(providerInstance.getInstance().getDefaultHttpContext());
       }
 
-      if(!sharedProvider.isAvailable()) {
-        LOGGER.error(sharedProvider.getMethod_name()+"不可用");
+      if(!sharedNode.isAvailable()) {
+        LOGGER.error(sharedNode.getMethod_name()+"不可用");
       }
     }
 
-    return sharedProvider;
+    return sharedNode;
   }
 }

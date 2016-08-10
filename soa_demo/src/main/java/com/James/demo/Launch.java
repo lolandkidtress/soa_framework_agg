@@ -43,15 +43,20 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
   }
 
   private static final Logger logger = LogManager.getLogger(Launch.class.getName());
-  private final static int httpPort = 8083;
-  private final static int nanoPort = 9093;
-  private final static int avroPort = 48083;
+  private final static int httpPort = 8084;
+  private final static int nanoPort = 9094;
+  private final static int avroPort = 48084;
+
 
   private static Configuration configuration = null;
+  private static String zkconnect = "127.0.0.1:2181";
+  private static String kafka = "127.0.0.1:9091";
+  private static Properties properties = new Properties();
+
   static {
-    Properties properties = new Properties();
-    properties.put("zookeeper", "192.168.202.16:2181/kafka");
-    properties.put("kafka","192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092");
+
+    properties.put("zookeeper", zkconnect);
+    properties.put("kafka",kafka);
 
     try{
       configuration = Configuration.getInstance().initialization(properties);
@@ -80,21 +85,24 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
   }
 
   //服务发现sample
-  public void discovery(){
+  public void registerServer(){
 
-    logger.info("服务发现开始启动");
-    //zookeeper地址
-    String zkconnect = "192.168.202.16:2181/kafka";
+    logger.info("注册自身开始启动");
 
     //配置信息
-    Properties properties = new Properties();
-    properties.setProperty("HttpPort",String.valueOf(httpPort));
-    properties.setProperty("AvroPort",String.valueOf(avroPort));
-
-    properties.setProperty("zkConnect",zkconnect);
+    properties.setProperty("HttpPort", String.valueOf(httpPort));
+    properties.setProperty("AvroPort", String.valueOf(avroPort));
 
     //服务提供方的服务名称
     providerInstance.getInstance().readConfig(properties).startServer("com.James.demo");
+
+  }
+
+  //服务发现sample
+  public void discoryServer(){
+
+    logger.info("服务发现开始启动");
+
     //调用方
     Invoker demoinvoke = Invoker.create("com.James.demo",zkconnect);
 
@@ -106,6 +114,8 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
     logger.info("start 返回:" + demoinvoke.call("start", Parameter.create()));
     logger.info("avrosend 返回:" + demoinvoke.call("avrosend", Parameter.create()));
   }
+
+
 
   //kafka收消息sample
   //消息处理在MsgCosum中处理
@@ -135,13 +145,14 @@ public class Launch extends SpringBootServletInitializer implements EmbeddedServ
   public static void main(String[] args) throws Exception {
     Launch launch = new Launch();
     //代码注入
-//    launch.hotInject();
+    launch.hotInject();
 
-    //指定http port
+//    //指定http port
     SpringApplication.run(Launch.class, args);
     new AppNanolets(nanoPort);
     //http服务和avro服务
-    launch.discovery();
+    launch.registerServer();
+    launch.discoryServer();
 //    //kafka测试
     launch.receiveKafka();
     launch.sendKafka();

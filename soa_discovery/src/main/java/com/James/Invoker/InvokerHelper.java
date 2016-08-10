@@ -1,10 +1,9 @@
 package com.James.Invoker;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.James.Model.sharedProvider;
+import com.James.Model.sharedNode;
 
 
 /**
@@ -31,19 +30,19 @@ public class InvokerHelper  {
   private ConcurrentHashMap<String,Invoker> watchedInvokers = new ConcurrentHashMap();
 
   //服务名和服务节点信息映射
-  private ConcurrentHashMap<String,HashSet<sharedProvider>> watchedProviders = new ConcurrentHashMap();
+  private ConcurrentHashMap<String,HashSet<sharedNode>> watchedProviders = new ConcurrentHashMap();
 
   //
-  public void addWatchedProvider(List<sharedProvider> sharedProviders){
-    sharedProviders.forEach(sharedProvider -> {
-      String server_name = sharedProvider.getServer_name();
-      HashSet<sharedProvider> ps = watchedProviders.getOrDefault(server_name,new HashSet<>());
-      ps.add(sharedProvider);
-      watchedProviders.put(server_name,ps);
+  public void addWatchedProvider(sharedNode SharedNode){
 
-    });
+      HashSet<sharedNode> ps = watchedProviders.getOrDefault(SharedNode.getServer_name(),new HashSet<>());
+      ps.add(SharedNode);
+      watchedProviders.put(SharedNode.getServer_name(), ps);
   }
 
+  public ConcurrentHashMap<String,Invoker> getWatchedInvokers(){
+    return watchedInvokers;
+  }
 
   public Invoker getWatchedInvokers(String key){
     return watchedInvokers.get(key);
@@ -53,11 +52,12 @@ public class InvokerHelper  {
     this.watchedInvokers.put(key,invoker);
   }
 
-  public ConcurrentHashMap<String, HashSet<sharedProvider>> getWatchedProvider() {
+
+  public ConcurrentHashMap<String, HashSet<sharedNode>> getWatchedProvider() {
     return watchedProviders;
   }
 
-  public void setWatchedProvider(ConcurrentHashMap<String, HashSet<sharedProvider>> watchedProvider) {
+  public void setWatchedProvider(ConcurrentHashMap<String, HashSet<sharedNode>> watchedProvider) {
     this.watchedProviders = watchedProvider;
   }
 }

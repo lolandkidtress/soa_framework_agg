@@ -10,7 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Model.sharedProvider;
+import com.James.Model.sharedNode;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
@@ -34,7 +34,7 @@ public class providerInstance {
   }
 
   //需要注册到zk的服务
-  private List<sharedProvider> _sharedProviders = new ArrayList<>();
+  private List<sharedNode> _sharedNodes = new ArrayList<>();
 
   //已扫描到的服务,用于重命检验
   private static Set readMethodName = new HashSet<String>();
@@ -70,7 +70,7 @@ public class providerInstance {
 
   public providerInstance readConfig( Properties properties){
 
-    this.zkConnect = properties.getProperty("zkConnect");
+    this.zkConnect = properties.getProperty("zookeeper");
 
     if(this.zkConnect==null||this.zkConnect.length()<0){
       LOGGER.error("没有配置zk连接");
@@ -120,7 +120,7 @@ public class providerInstance {
           if (readMethodName.contains(sharedProvider.getIdentityID())) {
             LOGGER.error(providerClass.getName() + "扫描到重复定义: " + sharedProvider.getIdentityID());
           } else {
-            _sharedProviders.add(sharedProvider);
+            _sharedNodes.add(sharedProvider);
             readMethodName.add(sharedProvider.getIdentityID());
           }
 
@@ -128,16 +128,16 @@ public class providerInstance {
       });
     });
 
-    if(_sharedProviders.size()>0){
+    if(_sharedNodes.size()>0){
 
       //往zk中写入注册的服务
-      providerRegister.INSTANCE.registerServers(_sharedProviders,zkclient);
+      providerRegister.INSTANCE.registerServers(_sharedNodes,zkclient);
       LOGGER.info("注册自身服务结束");
     }else{
       LOGGER.error("没有需要注册的服务");
     }
 
-    _sharedProviders.stream()
+    _sharedNodes.stream()
         .filter(sharedProvider -> sharedProvider.getProtocol().equals(CommonConfig.PROTOCOL.avro))
         .forEach(sharedProvider -> {
           try {
@@ -146,7 +146,7 @@ public class providerInstance {
             avroRequestHandleRegister.INSTANCE.addRequestHandle(sharedProvider.getMethod_name(),
                 (avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance());
 //            avroRpcServer.getInstance().addRegisterServers("test",
-//                (avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance());
+//                (avrpRequestProto) Class.forName(sharedNode.getDeclaringClass_name()).newInstance());
           } catch (ClassNotFoundException e) {
             e.printStackTrace();
             LOGGER.error("ClassNotFoundException" + sharedProvider.getDeclaringClass_name());

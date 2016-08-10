@@ -7,7 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.James.Model.sharedProvider;
+import com.James.Model.sharedNode;
 import com.James.NettyAvroRpcClient.avroRpcClient;
 import com.James.avroProto.Message;
 import com.James.basic.Enum.Code;
@@ -26,27 +26,27 @@ public class remoteCallHelper {
   private static final Logger LOGGER = LoggerFactory.getLogger(remoteCallHelper.class.getName());
   private static OkHttpTools okHttpTools =  new OkHttpTools();
 
-  public static Return http_call(sharedProvider sharedProvider,Parameter parameter){
+  public static Return http_call(sharedNode sharedNode,Parameter parameter){
 
 
     StringBuffer sb = new StringBuffer();
     sb.append(CommonConfig.HTTP_PROTOCOL_PREFIX);
-    sb.append(sharedProvider.getIP());
+    sb.append(sharedNode.getIP());
 
     sb.append(CommonConfig.COLON);
-    sb.append(sharedProvider.getHttp_port());
-    if(sharedProvider.getHttp_context()!=null&&sharedProvider.getHttp_context().length()>0){
+    sb.append(sharedNode.getHttp_port());
+    if(sharedNode.getHttp_context()!=null&& sharedNode.getHttp_context().length()>0){
       sb.append(CommonConfig.SLASH);
-      sb.append(sharedProvider.getHttp_context());
+      sb.append(sharedNode.getHttp_context());
     }
 
     sb.append(CommonConfig.SLASH);
-    sb.append(sharedProvider.getMethod_name());
+    sb.append(sharedNode.getMethod_name());
 
 
     Map<String, String> headers = new HashMap<>();
 
-    if(sharedProvider.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
+    if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
       try {
         return Return.create(okHttpTools.do_get(sb.toString(), parameter, headers ));
       }catch(IOException e){
@@ -56,7 +56,7 @@ public class remoteCallHelper {
       }
     }
 
-//    if(sharedProvider.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
+//    if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
 //      //TODO
 //    }
 
@@ -65,13 +65,13 @@ public class remoteCallHelper {
   }
 
   //TODO netty client 连接池
-  public static Return avro_call(sharedProvider sharedProvider,Parameter parameter) {
+  public static Return avro_call(sharedNode sharedNode,Parameter parameter) {
 
     Message message = new Message();
     message.setParam(JsonConvert.toJson(parameter));
-    message.setRequestName(sharedProvider.getMethod_name());
+    message.setRequestName(sharedNode.getMethod_name());
 
-    Return rpc_ret = avroRpcClient.call(sharedProvider.getIP(), Integer.valueOf(sharedProvider.getRpc_port()), message);
+    Return rpc_ret = avroRpcClient.call(sharedNode.getIP(), Integer.valueOf(sharedNode.getRpc_port()), message);
 
     return rpc_ret;
   }

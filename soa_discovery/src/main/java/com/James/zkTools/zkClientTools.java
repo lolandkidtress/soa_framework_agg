@@ -7,10 +7,8 @@ import java.util.List;
 import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.api.transaction.CuratorTransaction;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
-import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
@@ -137,35 +135,6 @@ public class zkClientTools {
         client.commit();
     }
 
-    public void watchedData(CuratorFramework client, String path,CuratorListener listener) throws Exception{
-
-        //getting event/async notifications
-        client.getCuratorListenable().addListener(listener);
-
-        zkTools.getData().watched().forPath(path);
-
-    }
-
-    public void watchedChildChanged(CuratorFramework client, String path,CuratorListener listener) throws Exception{
-
-        //getting event/async notifications
-        client.getCuratorListenable().addListener(listener);
-
-        zkTools.getChildren().watched().forPath(path);
-//        byte[] bytes = zkTools.getData().watched().forPath(path);
-//        if(bytes!=null){
-//            return new String(bytes,StandardCharsets.UTF_8);
-//        }else{
-//            return "";
-//        }
-    }
-
-    public void watchConnectStat(CuratorFramework client, String path,ConnectionStateListener listener) throws Exception{
-
-        //getting event/async notifications
-        client.getConnectionStateListenable().addListener(listener);
-
-    }
 
     public boolean checkExists(String Path) throws Exception{
 
@@ -179,11 +148,10 @@ public class zkClientTools {
 
     public void guaranteeddeleteNode(String Path) throws Exception {
         zkTools.delete().guaranteed().forPath(Path);
-
     }
 
     public CuratorFramework getCuratorFramework(){
-        return zkTools;
+        return this.zkTools;
     }
 
     public void setCuratorFramework(CuratorFramework client){

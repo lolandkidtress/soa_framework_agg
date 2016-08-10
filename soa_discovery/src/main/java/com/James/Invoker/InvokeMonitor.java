@@ -72,7 +72,7 @@ public class InvokeMonitor extends RouterNanoHTTPD.DefaultHandler{
     if(targetUri.equals("/monitor/providerTreeMap")) {
       //返回关注的服务提供者权重分布情况
 
-
+      text = JsonConvert.toJson(InvokerHelper.getInstance().getWatchedInvokers());
 //      String text = JsonConvert.toJson(InvokerHelper.getInstance().watchedInvokers.get("sddf").getVersionedProviderInvokers());
       return NanoHTTPD.newFixedLengthResponse(getStatus(), getMimeType(), text.toString());
     }

@@ -2,8 +2,8 @@ package com.James.demo.jettySpring;
 
 import java.io.IOException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -18,7 +18,7 @@ import javax.servlet.ServletRegistration;
  * spring mvc 的监听器
  */
 public class soaWebApplicationInitializer implements WebApplicationInitializer {
-  private static final Logger LOGGER = LogManager.getLogger(soaWebApplicationInitializer.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(soaWebApplicationInitializer.class.getName());
   private static ServletContext servletContext;
   private static String mapping_path;
   private static String mapping_pattern;

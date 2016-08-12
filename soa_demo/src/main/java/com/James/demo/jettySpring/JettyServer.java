@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -29,7 +30,7 @@ import com.James.basic.UtilsTools.NativePath;
  * Created by James on 16/8/10.
  **/
 public class JettyServer {
-  private static final Logger LOGGER = LogManager.getLogger(JettyServer.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(JettyServer.class.getName());
 
   private static class InnerInstance {
     public static final JettyServer instance = new JettyServer();
@@ -135,6 +136,7 @@ public class JettyServer {
     soaWebApplicationInitializer.config_mvc("classpath:dispatcher-servlet.xml", "/*");
     JettyServer.getInstance().start(port, "/");
   }
+
   public static void main(String[] args) throws Exception {
 
     startJetty(9090);

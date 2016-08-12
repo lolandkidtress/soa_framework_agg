@@ -29,7 +29,7 @@ public class RemoteMethod implements avrpRequestProto {
   @Override
   public Utf8 send(Message message)
       throws AvroRemoteException {
-    System.out.println("取得的参数为:" + message.getParam() );
+    System.out.println("avro取得的参数为:" + message.getParam() );
     return new Utf8("avrosend");
   }
 
@@ -40,8 +40,8 @@ public class RemoteMethod implements avrpRequestProto {
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
   public Return start(){
-      System.out.println("start");
-      return Return.SUCCESS(200,"调用start接口给成功");
+      System.out.println("调用到start");
+      return Return.SUCCESS(200,"调用start接口返回成功");
   }
 
   //重复的name会有报错

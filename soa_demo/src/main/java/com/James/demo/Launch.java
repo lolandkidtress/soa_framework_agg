@@ -3,12 +3,8 @@ package com.James.demo;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Invoker.Invoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
@@ -27,20 +23,9 @@ import com.James.kafka_Config.Configuration;
 /**
  * Created by James on 16/7/21.
  */
-public class Launch extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
+public class Launch  {
 
-  @Override
-  protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-    return builder.sources(Launch.class);
-  }
-
-  @Override
-  public void customize(ConfigurableEmbeddedServletContainer container) {
-    //自定义port
-    container.setPort(httpPort);
-  }
-
-  private static final Logger logger = LogManager.getLogger(Launch.class.getName());
+  private static final Log logger = LogFactory.getLog(Launch.class.getName());
   private final static int httpPort = 8084;
   private final static int nanoPort = 9094;
   private final static int avroPort = 48084;

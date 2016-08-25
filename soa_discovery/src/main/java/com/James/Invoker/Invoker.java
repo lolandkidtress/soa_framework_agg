@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import com.James.Exception.Method_Not_Found_Exception;
 import com.James.Model.provider;
@@ -33,7 +35,7 @@ public class Invoker implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Invoker.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(Invoker.class.getName());
 
   private zkClientTools zkclient;
 

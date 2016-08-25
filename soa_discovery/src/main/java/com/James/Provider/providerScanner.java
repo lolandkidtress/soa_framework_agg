@@ -7,8 +7,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Annotation.InputParamAnnotation;
 import com.James.Annotation.OutputParamAnnotation;
@@ -27,7 +27,7 @@ import com.James.soa_agent.HotInjecter;
  */
 public class providerScanner {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(providerScanner.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(providerScanner.class.getName());
 
 
 

@@ -19,13 +19,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.soa_agent.event_handle.Agent_Handle;
 
-import UtilsTools.agentJsonConvert;
 import UtilsTools.NativePath;
+import UtilsTools.agentJsonConvert;
 
 
 /**
@@ -33,7 +33,7 @@ import UtilsTools.NativePath;
  */
 public class HotInjecter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HotInjecter.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(HotInjecter.class.getName());
     private static class InnerInstance {
 
         public static final HotInjecter instance = new HotInjecter();

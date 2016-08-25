@@ -13,8 +13,9 @@ import org.apache.curator.retry.RetryNTimes;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by James on 16/4/7.
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class zkClientTools {
-    public static final Logger LOGGER = LoggerFactory.getLogger(zkClientTools.class.getName());
+    public static final Log LOGGER = LogFactory.getLog(zkClientTools.class.getName());
 
     public static Charset charset = StandardCharsets.UTF_8;
 

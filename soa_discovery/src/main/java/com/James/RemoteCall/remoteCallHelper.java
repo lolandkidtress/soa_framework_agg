@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Model.sharedNode;
 import com.James.NettyAvroRpcClient.avroRpcClient;
@@ -23,7 +23,7 @@ import com.James.http_client.OkHttpTools;
  */
 public class remoteCallHelper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(remoteCallHelper.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(remoteCallHelper.class.getName());
   private static OkHttpTools okHttpTools =  new OkHttpTools();
 
   public static Return http_call(sharedNode sharedNode,Parameter parameter){

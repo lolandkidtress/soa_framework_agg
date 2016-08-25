@@ -2,8 +2,8 @@ package UtilsTools;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * Created by James on 16/5/23.
  */
 public class agentJsonConvert {
-    private static final Logger LOGGER = LoggerFactory.getLogger(agentJsonConvert.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(agentJsonConvert.class.getName());
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     static {

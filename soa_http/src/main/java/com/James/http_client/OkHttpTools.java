@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.http_exception.Http_Fail_Exception;
@@ -25,7 +25,7 @@ import okhttp3.OkHttpClient;
  */
 public class OkHttpTools {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(OkHttpClient.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(OkHttpClient.class.getName());
   // 当使用长轮循时需要注意不能超过此时间
   public static Integer socket_timeout = 30_000;// 数据传输时间
   public static Integer connect_timeout = 3_000;// 连接时间

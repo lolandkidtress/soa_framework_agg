@@ -1,21 +1,22 @@
 package com.James.Kafka_Tools;
 
-import com.James.kafka_Config.Configuration;
-import com.James.basic.UtilsTools.Logger_Once;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
+import com.James.basic.UtilsTools.Logger_Once;
+import com.James.kafka_Config.Configuration;
 
 /**
  * Created by James on 16/5/20.
  * kafka 生产者
  */
 public class Kafka_Producer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Kafka_Producer.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(Kafka_Producer.class.getName());
 
     private static Properties props = new Properties();
 

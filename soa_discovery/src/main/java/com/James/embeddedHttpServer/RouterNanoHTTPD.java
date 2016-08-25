@@ -16,10 +16,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response.IStatus;
@@ -35,7 +38,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
     /**
      * logger to log to.
      */
-    private static final Logger LOG = Logger.getLogger(RouterNanoHTTPD.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(RouterNanoHTTPD.class.getName());
 
     public interface UriResponder {
 
@@ -367,7 +370,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
                     }
                 } catch (Exception e) {
                     error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
-                    LOG.log(Level.SEVERE, error, e);
+                    LOGGER.error( error, e);
                 }
             }
             return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, "text/plain", error);
@@ -393,7 +396,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
             if (initParameter.length > parameterIndex) {
                 return paramClazz.cast(initParameter[parameterIndex]);
             }
-            LOG.severe("init parameter index not available " + parameterIndex);
+            LOGGER.info("init parameter index not available " + parameterIndex);
             return null;
         }
 

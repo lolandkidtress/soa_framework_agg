@@ -6,8 +6,9 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 
 /**
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
 public class Utils {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(Utils.class.getName());
     /**
      * @param e
      *            异常类

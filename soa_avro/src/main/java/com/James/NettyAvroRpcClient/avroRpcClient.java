@@ -16,8 +16,8 @@ import org.apache.avro.ipc.NettyTransceiver;
 import org.apache.avro.ipc.specific.SpecificRequestor;
 import org.apache.avro.util.Utf8;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
@@ -32,7 +32,7 @@ import com.James.basic.UtilsTools.Return;
  * avro 客户端
  */
 public class avroRpcClient {
-  private static final Logger LOGGER = LoggerFactory.getLogger(avroRpcClient.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(avroRpcClient.class.getName());
 
   private static class InnerInstance {
     public static final avroRpcClient instance = new avroRpcClient();

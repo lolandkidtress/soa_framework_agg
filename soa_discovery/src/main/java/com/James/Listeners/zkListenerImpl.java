@@ -1,7 +1,8 @@
 package com.James.Listeners;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 import com.James.Invoker.Invoker;
 import com.James.Invoker.InvokerHelper;
@@ -12,7 +13,7 @@ import com.James.Invoker.InvokerHelper;
  */
 public class zkListenerImpl implements iListeners{
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(zkListenerImpl.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(zkListenerImpl.class.getName());
 
   @Override
   public void Handle(String path, String type) {

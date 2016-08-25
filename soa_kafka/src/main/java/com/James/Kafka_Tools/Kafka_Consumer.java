@@ -1,20 +1,22 @@
 package com.James.Kafka_Tools;
 
-import com.James.kafka_Config.Configuration;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.KafkaStream;
-import kafka.javaapi.consumer.ConsumerConnector;
-import kafka.serializer.StringDecoder;
-import kafka.utils.VerifiableProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.James.kafka_Config.Configuration;
+
+import kafka.consumer.ConsumerConfig;
+import kafka.consumer.KafkaStream;
+import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.serializer.StringDecoder;
+import kafka.utils.VerifiableProperties;
 
 
 
@@ -23,7 +25,7 @@ import java.util.concurrent.Executors;
  * kafka消费者
  */
 public class Kafka_Consumer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Kafka_Consumer.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(Kafka_Consumer.class.getName());
 
     private static Properties props = new Properties();
 

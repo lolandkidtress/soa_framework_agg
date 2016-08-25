@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Model.sharedNode;
 import com.James.avroNettyServer.avroServer;
@@ -23,7 +23,7 @@ import com.James.zkTools.zkClientTools;
  * 服务提供方
  */
 public class providerInstance {
-  private static final Logger LOGGER = LoggerFactory.getLogger(providerInstance.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(providerInstance.class.getName());
 
   private static class InnerInstance {
     public static final providerInstance instance = new providerInstance();

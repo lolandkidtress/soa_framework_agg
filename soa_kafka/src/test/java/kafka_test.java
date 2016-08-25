@@ -1,7 +1,7 @@
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
@@ -11,7 +11,7 @@ import com.James.kafka_Config.Configuration;
  * Created by James on 16/5/20.
  */
 public class kafka_test {
-    private static final Logger LOGGER = LoggerFactory.getLogger(kafka_test.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(kafka_test.class.getName());
 
     public static void main(String[] args) throws Exception{
         Properties properties = new Properties();

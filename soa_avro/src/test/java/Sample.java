@@ -6,8 +6,8 @@ import org.apache.avro.ipc.NettyServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.avro.util.Utf8;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.NettyAvroRpcClient.avroRpcClient;
 import com.James.avroNettyServer.avroServer;
@@ -21,7 +21,7 @@ import com.James.basic.UtilsTools.CommonConfig;
  * Created by James on 16/6/26.
  */
 public class Sample {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Sample.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(Sample.class.getName());
 
   public static class avrpRequestProtoImpl implements avrpRequestProto {
     // in this simple example just return details of the message

@@ -4,8 +4,9 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Listeners.iListeners;
 
@@ -20,7 +21,7 @@ public class zkWatch implements CuratorWatcher {
   //watch事件处理类
   private iListeners fireListener;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(zkWatch.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(zkWatch.class.getName());
 
   public zkWatch(String Path, CuratorFramework ZkTools, iListeners after){
     this.fireListener=after;

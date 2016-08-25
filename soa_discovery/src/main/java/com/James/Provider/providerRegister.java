@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
@@ -20,7 +20,7 @@ import com.James.zkTools.zkClientTools;
 public enum providerRegister {
   INSTANCE;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(providerRegister.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(providerRegister.class.getName());
 
   private zkClientTools zkclient;
   //注册服务

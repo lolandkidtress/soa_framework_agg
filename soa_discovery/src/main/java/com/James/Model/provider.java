@@ -6,8 +6,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.James.Exception.Method_Not_Found_Exception;
 import com.James.HashFunction.iHashFunction;
@@ -21,7 +21,7 @@ import com.James.basic.UtilsTools.CommonConfig;
  */
 public class provider {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(provider.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(provider.class.getName());
 
   public iHashFunction algo = iHashFunction.MURMUR_HASH;
 

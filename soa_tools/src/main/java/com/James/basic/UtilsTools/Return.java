@@ -1,21 +1,22 @@
 package com.James.basic.UtilsTools;
 
 
-import com.James.basic.Enum.Code;
-import com.fasterxml.jackson.core.type.TypeReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.James.basic.Enum.Code;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Created by James on 16/5/23.
  */
 public class Return extends HashMap<String, Object> {
     private static final long serialVersionUID = 2203513787220720192L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Return.class.getName());
+    private static final Log LOGGER = LogFactory.getLog(Return.class.getName());
 
     public enum Return_Fields {
         success, code, note

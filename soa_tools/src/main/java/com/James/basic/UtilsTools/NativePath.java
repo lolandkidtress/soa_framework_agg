@@ -1,10 +1,10 @@
 package com.James.basic.UtilsTools;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by James on 16/5/20.
@@ -12,7 +12,7 @@ import java.nio.file.Paths;
  * 获取linux和windows平台下各种环境下基于classpath的路径 测试过jetty和tomcat
  */
 public class NativePath {
-        private static final Logger LOGGER = LoggerFactory.getLogger(NativePath.class.getName());
+        private static final Log LOGGER = LogFactory.getLog(NativePath.class.getName());
 
         /**
          * 获取配置文件路径

@@ -1,4 +1,4 @@
-package com.James.Annotation;
+package com.James.basic.Annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

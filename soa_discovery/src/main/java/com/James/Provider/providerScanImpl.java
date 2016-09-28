@@ -10,74 +10,37 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Annotation.InputParamAnnotation;
-import com.James.Annotation.OutputParamAnnotation;
-import com.James.Annotation.descriptionAnnotation;
 import com.James.Model.inputParam;
+import com.James.Model.mockPolicy;
 import com.James.Model.outputParam;
 import com.James.Model.sharedNode;
+import com.James.basic.Annotation.InputParamAnnotation;
+import com.James.basic.Annotation.OutputParamAnnotation;
+import com.James.basic.Annotation.descriptionAnnotation;
+import com.James.basic.Annotation.mockAnnotation;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.soa_agent.HotInjecter;
+import com.James.soa_agent.event_handle.ScanAnnotationClass_Handle;
 
 
 /**
- * Created by James on 16/5/30.
+ * Created by James on 16/9/28.
  * 服务扫描
  * 通过注解扫描
  */
-public class providerScanner {
+public class providerScanImpl implements ScanAnnotationClass_Handle {
+  private static final Log LOGGER = LogFactory.getLog(providerScanImpl.class.getName());
 
-  private static final Log LOGGER = LogFactory.getLog(providerScanner.class.getName());
+  @Override
+  public Object attach_annotation(Set<Class<?>> Classes,Class<? extends Annotation> annotationClass) {
 
-
-
-  //扫描所有的class
-  //返回带有指定注解的类
-  public static List<Class<?>> scanClass(Annotation annotationClass){
-    List<Class<?>> classes = new ArrayList<>();
-    Set<Class<?>> classset = HotInjecter.getInstance().getClasses();
-
-    classset.forEach(clazz ->{
-      Method[] methods = clazz.getMethods();
-      for(Method method : methods){
-        Annotation pAnnotation = method.getAnnotation(annotationClass.getClass());
-        if(pAnnotation!=null){
-          classes.add(clazz);
-        }
-      }
-    });
-
-    return classes;
-  }
-
-  //扫描所有的class
-  //返回带有descriptionAnnotation的类
-  public static Set<Class<?>> scanClasses(){
     Set<Class<?>> classes = new LinkedHashSet();
     Set<Class<?>> classset = HotInjecter.getInstance().getClasses();
 
     classset.forEach(clazz ->{
       Method[] methods = clazz.getMethods();
       for(Method method : methods){
-        Annotation pAnnotation = method.getAnnotation(descriptionAnnotation.class);
-        if(pAnnotation!=null){
-          classes.add(clazz);
-        }
-      }
-    });
-
-    return classes;
-  }
-
-  //TODO 可以将RequestMapping传入
-  public static Set<Class<?>> scanClasses(Class<? extends Annotation> annoClass){
-    Set<Class<?>> classes = new LinkedHashSet();
-    Set<Class<?>> classset = HotInjecter.getInstance().getClasses();
-
-    classset.forEach(clazz ->{
-      Method[] methods = clazz.getMethods();
-      for(Method method : methods){
-        Annotation pAnnotation = method.getAnnotation(annoClass);
+        Annotation pAnnotation = method.getAnnotation(annotationClass);
         if(pAnnotation!=null){
           classes.add(clazz);
         }
@@ -97,13 +60,31 @@ public class providerScanner {
 
     Method[] methods = clazz.getMethods();
     for(Method method : methods){
-      Annotation providerAnno = method.getAnnotation(descriptionAnnotation.class);
-      Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
-      Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
+//      Annotation providerAnno = method.getAnnotation(descriptionAnnotation.class);
+//      Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
+//      Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
       sharedNode sharedNode = new sharedNode();
       //读取desc信息
       sharedNode = getDescribe(sharedNode,method);
+
+      //降级 policy
+      mockAnnotation mockAnno = method.getAnnotation(mockAnnotation.class);
+      if (mockAnno != null) {
+        descriptionAnnotation desAnnotation = method.getAnnotation(descriptionAnnotation.class);
+        if(desAnnotation!=null) {
+          mockPolicy MockPolicy = new mockPolicy();
+          MockPolicy.setName(mockAnno.name());
+          MockPolicy.setPolicy(mockAnno.policy());
+          MockPolicy.setAllowFailPeriod(mockAnno.allowFailPeriod());
+          MockPolicy.setAllowFailTimes(mockAnno.allowFailTimes());
+          MockPolicy.setFreezingTime(mockAnno.freezingTime());
+
+          sharedNode.setMockPolicy(MockPolicy);
+        }else{
+          LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
+        }
+      }
 
       //Inparam,Outparam
       for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){

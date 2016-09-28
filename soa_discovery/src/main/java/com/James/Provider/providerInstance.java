@@ -14,8 +14,11 @@ import com.James.Model.sharedNode;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
+import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.UtilsTools.CommonConfig;
-import com.James.zkTools.zkClientTools;
+import com.James.basic.zkTools.zkClientTools;
+
+import UtilsTools.ClassScan;
 
 
 /**
@@ -108,13 +111,14 @@ public class providerInstance {
     this.serverName = serverName;
 
     //扫描所有含有descriptionAnnotation的类
-    Set<Class<?>> providerClasses = providerScanner.scanClasses();
+    Set<Class<?>> providerClasses = (Set<Class<?>>) ClassScan.scanAnnotationClasses(descriptionAnnotation.class, providerScanImpl.class);
+//    Set<Class<?>> providerClasses = providerScanner.scanClasses();
 
     providerClasses.forEach(providerClass -> {
       //读取注解信息
       LOGGER.info("开始读取" + providerClass.getName() + "类下的注册信息");
 
-      providerScanner.readClasses(providerClass).forEach(sharedProvider -> {
+      providerScanImpl.readClasses(providerClass).forEach(sharedProvider -> {
         if (sharedProvider.getIdentityID() != null) {
           //判断重名
           if (readMethodName.contains(sharedProvider.getIdentityID())) {

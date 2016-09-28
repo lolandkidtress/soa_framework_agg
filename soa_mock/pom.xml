@@ -11,8 +11,19 @@
 
   <artifactId>soa_mock</artifactId>
   <version>${global.version}</version>
-  <dependencies>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.James</groupId>
+      <artifactId>soa_tools</artifactId>
+      <version>${global.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.James</groupId>
+      <artifactId>soa_agent</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 
   

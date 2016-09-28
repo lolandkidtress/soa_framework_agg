@@ -1,4 +1,4 @@
-package com.James.Annotation;
+package com.James.basic.Annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
@@ -10,10 +10,10 @@ import java.lang.annotation.Target;
 /**
  * Created by James on 16/5/31.
  */
-@Repeatable(InputParams.class)
-@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.LOCAL_VARIABLE })
+@Repeatable(OutputParams.class)
+@Target({ ElementType.METHOD ,ElementType.TYPE, ElementType.LOCAL_VARIABLE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InputParamAnnotation {
+public @interface OutputParamAnnotation {
   public String name();
 
   public String describe();

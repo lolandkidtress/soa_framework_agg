@@ -1,9 +1,11 @@
-package com.James.zkTools;
+package com.James.basic.zkTools;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -14,8 +16,6 @@ import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by James on 16/4/7.
@@ -39,7 +39,7 @@ public class zkClientTools {
 
     }
 
-    public zkClientTools(String connectString,String namespace){
+    public zkClientTools(String connectString, String namespace){
         this.connectString = connectString;
         this.namespace = namespace;
         initCuratorClient(this.connectString,this.namespace);

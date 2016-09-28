@@ -15,7 +15,7 @@ public class kafka_test {
 
     public static void main(String[] args) throws Exception{
         Properties properties = new Properties();
-        properties.put("zookeeper", "192.168.202.16:2181/kafka");
+        properties.put("zookeeper", "192.168.202.16:2181,192.168.202.17:2181,192.168.202.18:2181/kafka");
         properties.put("kafka","192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092");
 
         Configuration configuration = null;
@@ -29,16 +29,16 @@ public class kafka_test {
         if(configuration!=null){
             Kafka_Consumer kafka_Consumer = new Kafka_Consumer();
 
-            kafka_Consumer.consume(configuration, "soa_group_test", "largest", 2, "soa_test", MsgCosum.class);
+            kafka_Consumer.consume(configuration, "12112312", "smallest", 2, "julaibao_topic_rejectuserrecord_uat", MsgCosum.class);
 
             System.out.println("start_producer");
             Kafka_Producer.getInstance().start(configuration);
             int i=0;
 
-            while(true){
-               i++;
-                Kafka_Producer.getInstance().send("soa_test","key",String.valueOf(i));
-            }
+//            while(true){
+//               i++;
+//                Kafka_Producer.getInstance().send("infogen_yunying_topic_report_create","key",String.valueOf(i));
+//            }
         }
 
         Thread.currentThread().join();

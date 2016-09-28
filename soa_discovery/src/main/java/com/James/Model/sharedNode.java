@@ -62,7 +62,8 @@ public class sharedNode {
   private List<inputParam> _inputParams = new ArrayList<>();
   //出参
   private List<outputParam> _outputParams = new ArrayList<>();
-
+  //降级策略
+  private mockPolicy mockPolicy;
   // 其他个性化配置
   protected Map<String, Object> metadata = new HashMap<>();
   // 不需要配置
@@ -194,6 +195,13 @@ public class sharedNode {
     this.http_context=Http_context;
   }
 
+  public mockPolicy getMockPolicy() {
+    return mockPolicy;
+  }
+
+  public void setMockPolicy(mockPolicy mockPolicy) {
+    this.mockPolicy = mockPolicy;
+  }
 
   public Map<String,Object> getMetadata(){
     return this.metadata;
@@ -242,4 +250,5 @@ public class sharedNode {
 
     return this.getIdentityID().equals(p.getIdentityID());
   }
+
 }

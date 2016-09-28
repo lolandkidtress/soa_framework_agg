@@ -24,7 +24,7 @@
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-        <soa_frame_ver>V0.0.2_alpha</soa_frame_ver>
+        <soa_frame_ver>V0.0.3_alpha</soa_frame_ver>
     </properties>
 
     <parent>

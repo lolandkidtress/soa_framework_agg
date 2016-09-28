@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.James.Annotation.InputParamAnnotation;
-import com.James.Annotation.OutputParamAnnotation;
-import com.James.Annotation.descriptionAnnotation;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
+import com.James.basic.Annotation.InputParamAnnotation;
+import com.James.basic.Annotation.OutputParamAnnotation;
+import com.James.basic.Annotation.descriptionAnnotation;
+import com.James.basic.Annotation.mockAnnotation;
 import com.James.basic.UtilsTools.Return;
 
 
@@ -39,6 +40,7 @@ public class RemoteMethod implements avrpRequestProto {
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
+  @mockAnnotation(name="start_policy",policy = mockAnnotation.Policy.Call_RETURN)
   public Return start(){
       System.out.println("调用到start");
       return Return.SUCCESS(200,"调用start接口返回成功");

@@ -14,10 +14,10 @@
 
     <dependencies>
         <dependency>
-        <groupId>com.James</groupId>
-        <artifactId>soa_agent</artifactId>
-        <version>1.1</version>
-    </dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_agent</artifactId>
+            <version>1.1</version>
+        </dependency>
 
         <dependency>
             <groupId>com.James</groupId>
@@ -25,11 +25,11 @@
             <version>${global.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.James</groupId>-->
-            <!--<artifactId>soa_mock</artifactId>-->
-            <!--<version>${global.version}</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_mock</artifactId>
+            <version>${global.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.James</groupId>
@@ -41,12 +41,6 @@
             <groupId>com.James</groupId>
             <artifactId>soa_avro</artifactId>
             <version>${global.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.nanohttpd</groupId>
-            <artifactId>nanohttpd</artifactId>
-            <version>2.2.0</version>
         </dependency>
 
 

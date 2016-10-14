@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Model.sharedNode;
+import com.James.basic.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.zkTools.zkClientTools;

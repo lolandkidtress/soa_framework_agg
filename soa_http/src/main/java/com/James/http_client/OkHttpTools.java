@@ -27,8 +27,8 @@ public class OkHttpTools {
 
   private static final Log LOGGER = LogFactory.getLog(OkHttpClient.class.getName());
   // 当使用长轮循时需要注意不能超过此时间
-  public static Integer socket_timeout = 30_000;// 数据传输时间
-  public static Integer connect_timeout = 3_000;// 连接时间
+  public static Integer socket_timeout = 30_000;// response超时时间
+  public static Integer connect_timeout = 3_000;// 连接超时时间
   private static final OkHttpClient client = new OkHttpClient.Builder()//
       // TODO WARN util.UrlEncoded : org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte 8b in state 0
       // .addInterceptor(new GzipRequestInterceptor())

@@ -38,4 +38,10 @@ public @interface mockAnnotation {
   //降级持续时间 ms
   int freezingTime() default 5000;
 
+  //返回的code
+  int code() default 500;
+  //返回的note
+  String note() default "流量限制";
+
+
 }

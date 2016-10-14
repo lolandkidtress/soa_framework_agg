@@ -8,9 +8,8 @@
     <version>V1.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-
   <packaging>jar</packaging>
-  <artifactId>soa_mock</artifactId>
+  <artifactId>soa_rpc</artifactId>
   <version>${global.version}</version>
 
   <dependencies>
@@ -22,10 +21,11 @@
 
     <dependency>
       <groupId>com.James</groupId>
-      <artifactId>soa_agent</artifactId>
-      <version>1.1</version>
+      <artifactId>soa_discovery</artifactId>
+      <version>${global.version}</version>
     </dependency>
+
+
   </dependencies>
 
-  
 </project>

@@ -10,11 +10,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Model.sharedNode;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.Annotation.descriptionAnnotation;
+import com.James.basic.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.zkTools.zkClientTools;
 
@@ -118,7 +118,7 @@ public class providerInstance {
       //读取注解信息
       LOGGER.info("开始读取" + providerClass.getName() + "类下的注册信息");
 
-      providerScanImpl.readClasses(providerClass).forEach(sharedProvider -> {
+      providerScanImpl.readClasses(providerClass,serverName).forEach(sharedProvider -> {
         if (sharedProvider.getIdentityID() != null) {
           //判断重名
           if (readMethodName.contains(sharedProvider.getIdentityID())) {
@@ -132,15 +132,7 @@ public class providerInstance {
       });
     });
 
-    if(_sharedNodes.size()>0){
-
-      //往zk中写入注册的服务
-      providerRegister.INSTANCE.registerServers(_sharedNodes,zkclient);
-      LOGGER.info("注册自身服务结束");
-    }else{
-      LOGGER.error("没有需要注册的服务");
-    }
-
+    //处理avro
     _sharedNodes.stream()
         .filter(sharedProvider -> sharedProvider.getProtocol().equals(CommonConfig.PROTOCOL.avro))
         .forEach(sharedProvider -> {
@@ -162,6 +154,16 @@ public class providerInstance {
             LOGGER.error("InstantiationException" + sharedProvider.getDeclaringClass_name());
           }
         });
+
+    //服务节点写入zk
+    if(_sharedNodes.size()>0){
+
+      //往zk中写入注册的服务
+      providerRegister.INSTANCE.registerServers(_sharedNodes,zkclient);
+      LOGGER.info("注册自身服务结束");
+    }else{
+      LOGGER.error("没有需要注册的服务");
+    }
 
     try{
       //启动avro服务

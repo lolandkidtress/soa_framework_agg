@@ -10,15 +10,16 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Model.inputParam;
-import com.James.Model.mockPolicy;
-import com.James.Model.outputParam;
-import com.James.Model.sharedNode;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.Annotation.mockAnnotation;
+import com.James.basic.Model.inputParam;
+import com.James.basic.Model.mockPolicy;
+import com.James.basic.Model.outputParam;
+import com.James.basic.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.UtilsTools.Return;
 import com.James.soa_agent.HotInjecter;
 import com.James.soa_agent.event_handle.ScanAnnotationClass_Handle;
 
@@ -54,7 +55,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
   //扫描指定的class
   //读取desc信息
   //读取方法上的入参和出参
-  public static List<sharedNode> readClasses(Class<?> clazz){
+  public static List<sharedNode> readClasses(Class<?> clazz,String serverName){
 
     List<sharedNode> sharedNodes =new ArrayList<>();
 
@@ -64,7 +65,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 //      Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
 //      Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
-      sharedNode sharedNode = new sharedNode();
+      sharedNode sharedNode = new sharedNode(serverName);
       //读取desc信息
       sharedNode = getDescribe(sharedNode,method);
 
@@ -74,11 +75,13 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
         descriptionAnnotation desAnnotation = method.getAnnotation(descriptionAnnotation.class);
         if(desAnnotation!=null) {
           mockPolicy MockPolicy = new mockPolicy();
-          MockPolicy.setName(mockAnno.name());
+          MockPolicy.setName(sharedNode.getDescribe().concat(mockAnno.name()));
           MockPolicy.setPolicy(mockAnno.policy());
           MockPolicy.setAllowFailPeriod(mockAnno.allowFailPeriod());
           MockPolicy.setAllowFailTimes(mockAnno.allowFailTimes());
           MockPolicy.setFreezingTime(mockAnno.freezingTime());
+          Return mockReturn = Return.FAIL(mockAnno.code(),mockAnno.note());
+          MockPolicy.setMockReturn(mockReturn);
 
           sharedNode.setMockPolicy(MockPolicy);
         }else{
@@ -88,27 +91,27 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 
       //Inparam,Outparam
       for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){
-        inputParam inputParam = new inputParam();
-        inputParam.setName(inParam.name());
-        inputParam.setType(inParam.type());
-        inputParam.setDescribe(inParam.describe());
-        inputParam.setRequired(inParam.Required());
-        inputParam.setDefault_value(inParam.default_value());
+        inputParam InputParam = new inputParam();
+        InputParam.setName(inParam.name());
+        InputParam.setType(inParam.type());
+        InputParam.setDescribe(inParam.describe());
+        InputParam.setRequired(inParam.Required());
+        InputParam.setDefault_value(inParam.default_value());
 
-        sharedNode.addInputParam(inputParam);
+        sharedNode.addInputParam(InputParam);
 
       }
 
       for(OutputParamAnnotation outParam: method.getAnnotationsByType(OutputParamAnnotation.class)){
 
-        outputParam outputParam = new outputParam();
-        outputParam.setName(outParam.name());
-        outputParam.setType(outParam.type());
-        outputParam.setDescribe(outParam.describe());
-        outputParam.setRequired(outParam.Required());
-        outputParam.setDefault_value(outParam.default_value());
+        outputParam OutputParam = new outputParam();
+        OutputParam.setName(outParam.name());
+        OutputParam.setType(outParam.type());
+        OutputParam.setDescribe(outParam.describe());
+        OutputParam.setRequired(outParam.Required());
+        OutputParam.setDefault_value(outParam.default_value());
 
-        sharedNode.addOutputParam(outputParam);
+        sharedNode.addOutputParam(OutputParam);
       }
 
       sharedNodes.add(sharedNode);
@@ -118,11 +121,10 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 
   }
 
+  //生成shareNode的描述
   public static sharedNode getDescribe(sharedNode sharedNode,Method method) {
 
     descriptionAnnotation describe = method.getAnnotation(descriptionAnnotation.class);
-    InputParamAnnotation inParam = method.getAnnotation(InputParamAnnotation.class);
-    OutputParamAnnotation outParam = method.getAnnotation(OutputParamAnnotation.class);
 
     if (describe != null) {
       LOGGER.info("开始扫描" + method.getDeclaringClass().getName() + "类下的" + method.getName() + "方法");

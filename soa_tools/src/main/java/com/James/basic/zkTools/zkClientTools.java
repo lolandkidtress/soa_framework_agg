@@ -11,6 +11,9 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.transaction.CuratorTransaction;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.apache.curator.framework.recipes.shared.SharedCount;
+import org.apache.curator.framework.recipes.shared.SharedCountListener;
+import org.apache.curator.framework.recipes.shared.VersionedValue;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.curator.retry.RetryOneTime;
 import org.apache.zookeeper.CreateMode;
@@ -124,6 +127,66 @@ public class zkClientTools {
 
     }
 
+    //ShardCount自增
+    public boolean setShardCount(String Path,int count) throws Exception{
+
+        //path不存在则用0初始化
+        SharedCount sharedCount = new SharedCount(zkTools,Path,0);
+        sharedCount.start();
+
+        VersionedValue<Integer> previousVer = sharedCount.getVersionedValue();
+        sharedCount.trySetCount(previousVer, count);
+
+        sharedCount.close();
+        return true;
+
+    }
+
+    //ShardCount自增
+    public int incrShardCount(String Path) throws Exception{
+
+
+        //path不存在则用0初始化
+        SharedCount sharedCount = new SharedCount(zkTools,Path,0);
+        sharedCount.start();
+
+        VersionedValue<Integer> previousVer = sharedCount.getVersionedValue();
+        int cnt = sharedCount.getCount();
+
+        sharedCount.trySetCount(previousVer, cnt+1);
+
+        sharedCount.close();
+        return cnt+1;
+
+    }
+
+    //对SharedCount添加监听
+    public SharedCount addLsrnOnSharedCount(String Path,SharedCountListener sharedCountListener) {
+        SharedCount sharedCount = new SharedCount(zkTools,Path,0);
+        sharedCount.addListener(sharedCountListener);
+        //sharedCount.close();
+        return sharedCount;
+
+    }
+
+    //去除SharedCount上指定的监听
+    public void removeLsrnOnSharedCount(SharedCount sharedCount,SharedCountListener sharedCountListener) throws Exception{
+
+        sharedCount.removeListener(sharedCountListener);
+        sharedCount.close();
+
+    }
+
+    //去除SharedCount上指定的监听
+    public void closeSharedCount(SharedCount sharedCount) throws Exception{
+
+        sharedCount.close();
+
+    }
+
+
+
+
     public static CuratorTransaction startTransaction(CuratorFramework client)
     {
         // start the transaction builder
@@ -147,6 +210,8 @@ public class zkClientTools {
 
     }
 
+
+
     public void guaranteeddeleteNode(String Path) throws Exception {
         zkTools.delete().guaranteed().forPath(Path);
     }
@@ -157,5 +222,14 @@ public class zkClientTools {
 
     public void setCuratorFramework(CuratorFramework client){
         this.zkTools = client;
+    }
+
+    public static void main(String[] args) throws Exception {
+        zkClientTools ZkClientTools = new zkClientTools("127.0.0.1","");
+
+        ZkClientTools.createEPHEMERALNode("/ep");
+        ZkClientTools.setContent("/ep", "v1");
+        ZkClientTools.checkExists("/ep");
+        System.out.println(ZkClientTools.getContent("/ep"));
     }
 }

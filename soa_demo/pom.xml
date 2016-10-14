@@ -24,7 +24,7 @@
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-        <soa_frame_ver>V0.0.3_alpha</soa_frame_ver>
+        <soa_frame_ver>V0.0.4_alpha</soa_frame_ver>
     </properties>
 
     <parent>
@@ -36,7 +36,39 @@
 
         <dependency>
             <groupId>com.James</groupId>
-            <artifactId>soa_discovery</artifactId>
+            <artifactId>soa_monitor</artifactId>
+            <version>${soa_frame_ver}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_rpc</artifactId>
+            <version>${soa_frame_ver}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.James</groupId>
+            <artifactId>soa_rpc</artifactId>
             <version>${soa_frame_ver}</version>
             <exclusions>
                 <exclusion>

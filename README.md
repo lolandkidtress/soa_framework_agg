@@ -14,6 +14,18 @@
 * JDK1.8+(基于1.8.0.25开发测试)
 
 
+##Modules
+* soa_kafka:kafka的生产和消费(高级API)
+* soa_db:数据库操作
+* soa_http:http调用实现(okhttp3)
+* soa_avro:AVRO客户端和服务器端
+* soa_agent:代码注入,需要单独打包和调试(agent方式)
+* soa_tools:工具类
+* soa_discovery:服务发现
+* soa_filter:拦截器(降级,流量等)
+* soa_rpc:RPC调用(http和avro的入口)
+* soa_monitor:监控(nanohttp)
+		
 
 ##HOW TO RUN
 * 1.git clone

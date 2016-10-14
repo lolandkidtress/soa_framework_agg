@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Invoker.Invoker;
+import com.James.Invoker.RemoteInvoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
 import com.James.Provider.providerInstance;
@@ -87,18 +87,32 @@ public class Launch  {
     logger.info("服务发现开始启动");
 
     //调用方
-    Invoker demoinvoke = Invoker.create("com.James.demo",zkconnect);
+    RemoteInvoker demoinvoke = RemoteInvoker.create("com.James.demo", zkconnect);
 
     //取得远端服务的可用节点
     logger.info("start的可用节点为:" + JsonConvert.toJson(demoinvoke.getAvailableProvider("start")));
     logger.info("avrosend的可用节点为"+ JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
 
     //调用2个接口
-    logger.info("start 返回:" + demoinvoke.call("start", Parameter.create()));
-    logger.info("avrosend 返回:" + demoinvoke.call("avrosend", Parameter.create()));
+    //logger.info("start 返回:" + demoinvoke.call("start", "",Parameter.create()));
+//    logger.info("start 返回:" + demoinvoke.call("start", "wrongVer",Parameter.create()));
+    logger.info("avrosend 返回:" + demoinvoke.call("avrosend","", Parameter.create()));
+
+    //调用前拦截
+    //第一次返回实际值
+    logger.info("mockCallReturn 返回:" + demoinvoke.call("mockCallReturn","", Parameter.create()));
+    //第二次返回mock值
+    logger.info("mockCallReturn 返回:" + demoinvoke.call("mockCallReturn","", Parameter.create()));
+    //调用后拦截
+    //前5次 返回300
+    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+    //打印500 流量限制
+    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
   }
-
-
 
   //kafka收消息sample
   //消息处理在MsgCosum中处理

@@ -40,10 +40,33 @@ public class RemoteMethod implements avrpRequestProto {
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
-  @mockAnnotation(name="start_policy",policy = mockAnnotation.Policy.Call_RETURN)
   public Return start(){
       System.out.println("调用到start");
       return Return.SUCCESS(200,"调用start接口返回成功");
+  }
+
+  //通过http 方式调用 ,需要自行嵌入spring等容器
+  @RequestMapping(value = "/mockCallReturn", method = RequestMethod.GET)
+  @descriptionAnnotation(author = "james",name="mockCallReturn",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
+  @InputParamAnnotation(name ="param1",describe = "参数1")
+  @InputParamAnnotation(name ="param2",describe = "参数2")
+  @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
+  @mockAnnotation(name="mockCallReturn_policy",policy = mockAnnotation.Policy.Call_RETURN,code=400,note="mockCallReturn",allowFailTimes = 1)
+  public Return mockCallReturn(){
+    System.out.println("调用到mockCallReturn");
+    return Return.FAIL(300, "调用mockCallReturn返回非200");
+  }
+
+  //通过http 方式调用 ,需要自行嵌入spring等容器
+  @RequestMapping(value = "/mocFailReturn", method = RequestMethod.GET)
+  @descriptionAnnotation(author = "james",name="mocFailReturn",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
+  @InputParamAnnotation(name ="param1",describe = "参数1")
+  @InputParamAnnotation(name ="param2",describe = "参数2")
+  @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
+  @mockAnnotation(name="mocFailReturn_policy",policy = mockAnnotation.Policy.Fail_RETURN)
+  public Return mocFailReturn(){
+    System.out.println("调用到mocFailReturn");
+    return Return.FAIL(300, "调用mocFailReturn返回非200");
   }
 
   //重复的name会有报错

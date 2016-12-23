@@ -10,9 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.James.Filter.mockFilter;
+import com.James.InvokerMonitor.InvokerStatus;
 import com.James.Listeners.nodeReloadListenerImpl;
 import com.James.RemoteCall.remoteCallHelper;
-import com.James.basic.Annotation.mockAnnotation;
+import com.James.basic.Annotation.mockFilterAnnotation;
 import com.James.basic.Enum.Code;
 import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.Invoker.Invoker;
@@ -40,8 +42,6 @@ public class RemoteInvoker implements Invoker,Serializable {
   private static final Log LOGGER = LogFactory.getLog(Invoker.class.getName());
 
   private zkClientTools zkclient;
-
-
 
   @Override
   public Class getInterface() {
@@ -113,7 +113,7 @@ public class RemoteInvoker implements Invoker,Serializable {
         zkWatchInstance.getInstance().watch(server_name,this.zkclient.getCuratorFramework(),new nodeReloadListenerImpl());
       }
 
-      InvokerHelper.getInstance().setWatchedInvokers(server_name, this);
+      InvokerStatus.setWatchedInvokers(server_name, this);
 
     }catch(Exception e){
       e.printStackTrace();
@@ -178,7 +178,7 @@ public class RemoteInvoker implements Invoker,Serializable {
         Provider.init(ver, sharedNode);
 
         methodProviderInvokers.put(method, Provider);
-        InvokerHelper.getInstance().addWatchedProvider(sharedNode);
+        InvokerStatus.addWatchedProvider(sharedNode);
 
       }
 
@@ -224,8 +224,8 @@ public class RemoteInvoker implements Invoker,Serializable {
     //事前拦截
     //配置过调用前降级,且已降级
     if(SharedNode.getMockPolicy()!=null
-      && SharedNode.getMockPolicy().getPolicy()==mockAnnotation.Policy.Call_RETURN
-      //&& this.mockIns.validateMockState(SharedNode.getMockPolicy().getName())
+      && SharedNode.getMockPolicy().getPolicy()== mockFilterAnnotation.Policy.Call_RETURN
+      && mockFilter.getInstance().isBlockedStatus(SharedNode.getMockPolicy())
         ){
 
       return SharedNode.getMockPolicy().getMockReturn();
@@ -241,10 +241,10 @@ public class RemoteInvoker implements Invoker,Serializable {
       //配置过降级策略
       if (SharedNode.getMockPolicy() != null) {
         //记录调用失败
-          //this.mockIns.failIncr(SharedNode.getMockPolicy());
+          mockFilter.getInstance().failIncr(SharedNode.getMockPolicy());
 
           //事后拦截
-          if (SharedNode.getMockPolicy().getPolicy() == mockAnnotation.Policy.Fail_RETURN) {
+          if (SharedNode.getMockPolicy().getPolicy() == mockFilterAnnotation.Policy.Fail_RETURN) {
             return SharedNode.getMockPolicy().getMockReturn();
           } else {
             return ret;

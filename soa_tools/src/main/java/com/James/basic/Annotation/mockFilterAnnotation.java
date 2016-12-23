@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.METHOD, ElementType.TYPE, ElementType.LOCAL_VARIABLE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface mockAnnotation {
+public @interface mockFilterAnnotation {
   enum Policy{
     Fail_RETURN,
     Call_RETURN

@@ -1,0 +1,200 @@
+import groovy.json.JsonSlurper
+import com.James.Annotation.FieldCheck
+import com.James.basic.UtilsTools.JsonConvert
+
+class contact_model {
+  String contact_noon;
+  String phone_num_loc;
+  int contact_3m;
+
+      String getContact_noon() {
+        return contact_noon
+      }
+
+      void setContact_noon(String contact_noon) {
+        this.contact_noon = contact_noon
+      }
+
+      String getPhone_num_loc() {
+        return phone_num_loc
+      }
+
+      void setPhone_num_loc(String phone_num_loc) {
+        this.phone_num_loc = phone_num_loc
+      }
+
+      int getContact_3m() {
+        return contact_3m
+      }
+
+      void setContact_3m(int contact_3m) {
+        this.contact_3m = contact_3m
+      }
+
+
+}
+
+class data_source_model {
+  String status;
+  String account;
+  String name;
+
+      String getStatus() {
+        return status
+      }
+
+      void setStatus(String status) {
+        this.status = status
+      }
+
+      String getAccount() {
+        return account
+      }
+
+      void setAccount(String account) {
+        this.account = account
+      }
+
+      String getName() {
+        return name
+      }
+
+      void setName(String name) {
+        this.name = name
+      }
+}
+
+//报告的原始对象
+class rptModel {
+
+  List<contact_model> contact_list;
+
+  List<data_source_model> data_source;
+
+  String createTime ;
+
+  public rptModel(){
+    createTime =  System.currentTimeMillis()
+  }
+
+    List<contact_model> getContact_list() {
+      return contact_list
+    }
+
+    void setContact_list(List<contact_model> contact_list) {
+      this.contact_list = contact_list
+    }
+
+    List<data_source_model> getData_source() {
+      return data_source
+    }
+
+    void setData_source(List<data_source_model> data_source) {
+      this.data_source = data_source
+    }
+
+    String getCreateTime() {
+      return createTime
+    }
+
+    void setCreateTime(String createTime) {
+      this.createTime = createTime
+    }
+
+  public String toString(){
+  "toString createTime: "+ createTime
+    }
+ }
+
+//返回的对象
+ class result{
+     //token
+     String token ;
+     //联系人1
+     String c1;
+     //联系人2
+     String c2;
+
+     //联系人3
+     String c3;
+
+     String createTime ;
+
+     public result(){
+       createTime =  System.currentTimeMillis()
+     }
+
+     String getToken() {
+       return token
+     }
+
+     void setToken(String token) {
+       this.token = token
+     }
+
+     //联系人1
+     String getC1() {
+       return c1
+     }
+
+     void setC1(String c1) {
+       this.c1 = c1
+     }
+
+     String getC2() {
+       return c2
+     }
+
+     void setC2(String c2) {
+       this.c2 = c2
+     }
+
+     String getC3() {
+       return c3
+     }
+
+     void setC3(String c3) {
+       this.c3 = c3
+     }
+
+     String getCreateTime() {
+       return createTime
+     }
+
+     void setCreateTime(String createTime) {
+       this.createTime = createTime
+     }
+   }
+
+
+
+def trans(jsonText) {
+    println '接受到.' + jsonText
+    try{
+      //rptModel 按照报告格式定义的bean对象,不建议直接返回
+      def rpt = JsonConvert.toObject(jsonText,rptModel.class)
+
+       //取原始报告中的token
+      def token = new JsonSlurper().parseText(jsonText).report.token
+      println "报告token: " + token
+
+      //将多层嵌套平铺,取需要的手机归属地信息
+      def re = new result();
+      re.setToken(token)
+
+      def con_arr = rpt.getContact_list()
+
+      re.setC1(con_arr[0].getPhone_num_loc())
+      re.setC2(con_arr[1].getPhone_num_loc())
+
+      return re;
+
+    }catch(Exception e){
+      e.printStackTrace();
+      return null;
+    }
+
+}
+
+// 运行groovy方法
+trans(jsonText)

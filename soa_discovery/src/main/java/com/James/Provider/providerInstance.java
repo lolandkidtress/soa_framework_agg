@@ -81,7 +81,7 @@ public class providerInstance {
     }
 
     if(properties.getProperty("HttpPort")==null){
-      LOGGER.error("没有配置http端口,使用默认地址");
+      LOGGER.warn("没有配置http端口,使用默认地址");
     }else{
       this.defaultHttpPort = properties.getProperty("HttpPort");
     }
@@ -89,7 +89,7 @@ public class providerInstance {
     LOGGER.info("http端口为:" + this.defaultHttpPort);
 
     if(properties.getProperty("AvroPort")==null){
-      LOGGER.error("没有配置rpc端口,使用默认地址");
+      LOGGER.warn("没有配置rpc端口,使用默认地址");
     }else{
       this.defaultAvroPort = properties.getProperty("AvroPort");
 

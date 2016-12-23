@@ -43,6 +43,7 @@
 		<module>soa_mock</module>
 		<module>soa_rpc</module>
 		<module>soa_monitor</module>
+		<module>soa_groovy</module>
 		<!--<module>soa_demo</module>-->
 
 

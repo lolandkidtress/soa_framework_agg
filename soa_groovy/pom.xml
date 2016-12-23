@@ -8,29 +8,20 @@
     <version>V1.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <packaging>jar</packaging>
-  <artifactId>soa_rpc</artifactId>
-  <version>${global.version}</version>
+
+  <artifactId>soa_groovy</artifactId>
 
   <dependencies>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>2.4.3</version>
+    </dependency>
     <dependency>
       <groupId>com.James</groupId>
       <artifactId>soa_tools</artifactId>
       <version>${global.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.James</groupId>
-      <artifactId>soa_discovery</artifactId>
-      <version>${global.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.James</groupId>
-      <artifactId>soa_monitor</artifactId>
-      <version>${global.version}</version>
-    </dependency>
-
   </dependencies>
-
 </project>

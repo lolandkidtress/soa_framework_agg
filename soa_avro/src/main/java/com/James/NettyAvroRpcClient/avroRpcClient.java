@@ -75,6 +75,7 @@ public class avroRpcClient {
   public static class avrpRequestProtoImpl implements avrpRequestProto {
 
     public Utf8 send(Message message) {
+
       LOGGER.info("接收到" + message.getRequestName() + "请求");
       String ret ="";
 

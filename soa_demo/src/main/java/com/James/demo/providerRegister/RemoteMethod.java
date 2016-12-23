@@ -11,7 +11,7 @@ import com.James.avroProto.avrpRequestProto;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
-import com.James.basic.Annotation.mockAnnotation;
+import com.James.basic.Annotation.mockFilterAnnotation;
 import com.James.basic.UtilsTools.Return;
 
 
@@ -51,7 +51,7 @@ public class RemoteMethod implements avrpRequestProto {
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
-  @mockAnnotation(name="mockCallReturn_policy",policy = mockAnnotation.Policy.Call_RETURN,code=400,note="mockCallReturn",allowFailTimes = 1)
+  @mockFilterAnnotation(name="mockCallReturn_policy",policy = mockFilterAnnotation.Policy.Call_RETURN,code=400,note="mockCallReturn",allowFailTimes = 1)
   public Return mockCallReturn(){
     System.out.println("调用到mockCallReturn");
     return Return.FAIL(300, "调用mockCallReturn返回非200");
@@ -63,7 +63,7 @@ public class RemoteMethod implements avrpRequestProto {
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
   @OutputParamAnnotation(name ="param2",describe = "参数2",type="String")
-  @mockAnnotation(name="mocFailReturn_policy",policy = mockAnnotation.Policy.Fail_RETURN)
+  @mockFilterAnnotation(name="mocFailReturn_policy",policy = mockFilterAnnotation.Policy.Fail_RETURN)
   public Return mocFailReturn(){
     System.out.println("调用到mocFailReturn");
     return Return.FAIL(300, "调用mocFailReturn返回非200");

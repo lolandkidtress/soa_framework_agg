@@ -3,8 +3,8 @@ package com.James.Listeners;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Invoker.InvokerHelper;
 import com.James.Invoker.RemoteInvoker;
+import com.James.InvokerMonitor.InvokerStatus;
 import com.James.basic.zkTools.iListeners;
 
 
@@ -23,7 +23,7 @@ public class nodeReloadListenerImpl implements iListeners {
 
     }
 
-    RemoteInvoker remoteInvoker = InvokerHelper.getInstance().getWatchedInvokers(path);
+    RemoteInvoker remoteInvoker = (RemoteInvoker) InvokerStatus.getWatchedInvokers(path);
 
     remoteInvoker.create(path, remoteInvoker.getZkclient());
     LOGGER.info("reload Invoker完成");

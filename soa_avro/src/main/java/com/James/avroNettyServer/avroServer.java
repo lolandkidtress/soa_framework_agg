@@ -39,6 +39,7 @@ public class avroServer {
         return new Utf8(ret.toJson());
       }
       LOGGER.info("接收到" + message.getRequestName() + "请求");
+      //TODO 流量限制
       String response ="";
 
       avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(

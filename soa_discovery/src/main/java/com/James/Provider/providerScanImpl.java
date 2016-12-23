@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
-import com.James.basic.Annotation.mockAnnotation;
+import com.James.basic.Annotation.mockFilterAnnotation;
 import com.James.basic.Model.inputParam;
 import com.James.basic.Model.mockPolicy;
 import com.James.basic.Model.outputParam;
@@ -55,6 +55,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
   //扫描指定的class
   //读取desc信息
   //读取方法上的入参和出参
+  //读取Filter信息
   public static List<sharedNode> readClasses(Class<?> clazz,String serverName){
 
     List<sharedNode> sharedNodes =new ArrayList<>();
@@ -70,7 +71,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
       sharedNode = getDescribe(sharedNode,method);
 
       //降级 policy
-      mockAnnotation mockAnno = method.getAnnotation(mockAnnotation.class);
+      mockFilterAnnotation mockAnno = method.getAnnotation(mockFilterAnnotation.class);
       if (mockAnno != null) {
         descriptionAnnotation desAnnotation = method.getAnnotation(descriptionAnnotation.class);
         if(desAnnotation!=null) {

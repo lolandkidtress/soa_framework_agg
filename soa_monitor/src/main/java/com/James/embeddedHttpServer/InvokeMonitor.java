@@ -63,7 +63,7 @@ public class InvokeMonitor extends RouterNanoHTTPD.DefaultHandler{
       //返回关注的服务提供者IP分布
       //TODO 节点分布
       //text = JsonConvert.toJson(com.James.Invoker.InvokerHelper.getInstance().getWatchedProvider());
-//      String text = JsonConvert.toJson(InvokerMonitor.getInstance().watchedInvokers.get("sddf").getVersionedProviderInvokers());
+//      String text = JsonConvert.toJson(InvokerStatus.getInstance().watchedInvokers.get("sddf").getVersionedProviderInvokers());
       return NanoHTTPD.newFixedLengthResponse(getStatus(), getMimeType(), text.toString());
     }
 
@@ -71,7 +71,7 @@ public class InvokeMonitor extends RouterNanoHTTPD.DefaultHandler{
       //返回关注的服务提供者权重分布情况
       //TODO 节点权重
       //text = JsonConvert.toJson(Invoker.getWatchedInvokers());
-//      String text = JsonConvert.toJson(InvokerMonitor.getInstance().watchedInvokers.get("sddf").getVersionedProviderInvokers());
+//      String text = JsonConvert.toJson(InvokerStatus.getInstance().watchedInvokers.get("sddf").getVersionedProviderInvokers());
       return NanoHTTPD.newFixedLengthResponse(getStatus(), getMimeType(), text.toString());
     }
 

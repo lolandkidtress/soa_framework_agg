@@ -29,7 +29,7 @@ public class kafka_test {
         if(configuration!=null){
             Kafka_Consumer kafka_Consumer = new Kafka_Consumer();
 
-            kafka_Consumer.consume(configuration, "12112312", "smallest", 2, "julaibao_topic_rejectuserrecord_uat", MsgCosum.class);
+            kafka_Consumer.consume(configuration, "12112312", "largest", 2, "infogen_topic_tracking", MsgCosum.class);
 
             System.out.println("start_producer");
             Kafka_Producer.getInstance().start(configuration);
@@ -37,7 +37,7 @@ public class kafka_test {
 
 //            while(true){
 //               i++;
-//                Kafka_Producer.getInstance().send("infogen_yunying_topic_report_create","key",String.valueOf(i));
+//                Kafka_Producer.getInstance().send("test","key",String.valueOf(i));
 //            }
         }
 

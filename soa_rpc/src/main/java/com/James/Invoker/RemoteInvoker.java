@@ -10,11 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.Filter.mockFilter;
 import com.James.InvokerMonitor.InvokerStatus;
 import com.James.Listeners.nodeReloadListenerImpl;
 import com.James.RemoteCall.remoteCallHelper;
-import com.James.basic.Annotation.mockFilterAnnotation;
 import com.James.basic.Enum.Code;
 import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.Invoker.Invoker;
@@ -220,41 +218,39 @@ public class RemoteInvoker implements Invoker,Serializable {
       LOGGER.error("系统异常",e1);
       return Return.FAIL(Code.error.code,Code.error.name());
     }
-
-    //事前拦截
-    //配置过调用前降级,且已降级
-    if(SharedNode.getMockPolicy()!=null
-      && SharedNode.getMockPolicy().getPolicy()== mockFilterAnnotation.Policy.Call_RETURN
-      && mockFilter.getInstance().isBlockedStatus(SharedNode.getMockPolicy())
-        ){
-
-      return SharedNode.getMockPolicy().getMockReturn();
-    }else {
-
-      Return ret = callImpl(SharedNode, method, parameter);
-
-      //成功直接返回
-      if (ret.is_success()){
-        return ret;
-      }
-
-      //配置过降级策略
-      if (SharedNode.getMockPolicy() != null) {
-        //记录调用失败
-          mockFilter.getInstance().failIncr(SharedNode.getMockPolicy());
-
-          //事后拦截
-          if (SharedNode.getMockPolicy().getPolicy() == mockFilterAnnotation.Policy.Fail_RETURN) {
-            return SharedNode.getMockPolicy().getMockReturn();
-          } else {
-            return ret;
-          }
-        }else{
-          return ret;
-        }
-      }
-
-
+    return callImpl(SharedNode, method, parameter);
+//    //事前拦截
+//    //配置过调用前降级,且已降级
+//    if(SharedNode.getMockPolicy()!=null
+//      && SharedNode.getMockPolicy().getPolicy()== mockFilterAnnotation.Policy.Call_RETURN
+//      && mockFilter.getInstance().isBlockedStatus(SharedNode.getMockPolicy())
+//        ){
+//
+//      return SharedNode.getMockPolicy().getMockReturn();
+//    }else {
+//
+//      Return ret = callImpl(SharedNode, method, parameter);
+//
+//      //成功直接返回
+//      if (ret.is_success()){
+//        return ret;
+//      }
+//
+//      //配置过降级策略
+//      if (SharedNode.getMockPolicy() != null) {
+//        //记录调用失败
+//          mockFilter.getInstance().failIncr(SharedNode.getMockPolicy());
+//
+//          //事后拦截
+//          if (SharedNode.getMockPolicy().getPolicy() == mockFilterAnnotation.Policy.Fail_RETURN) {
+//            return SharedNode.getMockPolicy().getMockReturn();
+//          } else {
+//            return ret;
+//          }
+//        }else{
+//          return ret;
+//        }
+//      }
   }
 
   private Return callImpl(sharedNode SharedNode,String method,Parameter parameter) {

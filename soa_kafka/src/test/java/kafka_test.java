@@ -29,16 +29,16 @@ public class kafka_test {
         if(configuration!=null){
             Kafka_Consumer kafka_Consumer = new Kafka_Consumer();
 
-            kafka_Consumer.consume(configuration, "12112312", "largest", 2, "infogen_topic_tracking", MsgCosum.class);
+            kafka_Consumer.consume(configuration, "12112312", "largest", 2, "topic_job_test", MsgCosum.class);
 
             System.out.println("start_producer");
             Kafka_Producer.getInstance().start(configuration);
             int i=0;
 
-//            while(true){
-//               i++;
-//                Kafka_Producer.getInstance().send("test","key",String.valueOf(i));
-//            }
+            while(true){
+               i++;
+                //Kafka_Producer.getInstance().send("infogen_yunying_topic_job_create","key",String.valueOf(i));
+            }
         }
 
         Thread.currentThread().join();

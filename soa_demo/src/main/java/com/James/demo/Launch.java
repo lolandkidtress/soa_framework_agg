@@ -32,8 +32,8 @@ public class Launch  {
 
 
   private static Configuration configuration = null;
-  private static String zkconnect = "127.0.0.1:2181";
-  private static String kafka = "127.0.0.1:9091";
+  private static String zkconnect = "192.168.202.16:2181,192.168.202.17:2181,192.168.202.18:2181/kafka";
+  private static String kafka = "192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092";
   private static Properties properties = new Properties();
 
   static {
@@ -98,20 +98,20 @@ public class Launch  {
 //    logger.info("start 返回:" + demoinvoke.call("start", "wrongVer",Parameter.create()));
     logger.info("avrosend 返回:" + demoinvoke.call("avrosend","", Parameter.create()));
 
-    //调用前拦截
-    //第一次返回实际值
-    logger.info("mockCallReturn 返回:" + demoinvoke.call("mockCallReturn","", Parameter.create()));
-    //第二次返回mock值
-    logger.info("mockCallReturn 返回:" + demoinvoke.call("mockCallReturn","", Parameter.create()));
-    //调用后拦截
-    //前5次 返回300
-    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
-    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
-    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
-    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
-    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
-    //打印500 流量限制
-    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+//    //调用前拦截
+//    //第一次返回实际值
+//    logger.info("mockCallReturn 返回:" + demoinvoke.call("mockCallReturn","", Parameter.create()));
+//    //第二次返回mock值
+//    logger.info("mockCallReturn 返回:" + demoinvoke.call("mockCallReturn","", Parameter.create()));
+//    //调用后拦截
+//    //前5次 返回300
+//    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+//    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+//    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+//    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+//    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
+//    //打印500 流量限制
+//    logger.info("mocFailReturn 返回:" + demoinvoke.call("mocFailReturn","", Parameter.create()));
   }
 
   //kafka收消息sample
@@ -153,8 +153,8 @@ public class Launch  {
     launch.registerServer();
     launch.discoryServer();
 //    //kafka测试
-//    launch.receiveKafka();
-//    launch.sendKafka();
+    launch.receiveKafka();
+    launch.sendKafka();
 
 
 

@@ -28,9 +28,11 @@
 		
 
 ##HOW TO RUN
+
 * 1.git clone
 * 2.cd soa_framework_agg
 
+#soa_agent需要单独打包编译
 * 3.cd ./soa_agent
 * 4.mvn clean compile package install
 

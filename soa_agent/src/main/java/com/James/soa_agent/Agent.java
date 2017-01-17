@@ -38,8 +38,8 @@ public class Agent {
                         Field field = loadedClasse.getField("class_advice_map");
                         @SuppressWarnings("unchecked")
                         Map<String, String> class_advice_map = (Map<String, String>) field.get(loadedClasse);
-                        for (String infogen_advice : class_advice_map.values()) {
-                            agent_advice_class = agentJsonConvert.toObject(infogen_advice, Agent_Advice_Class.class);
+                        for (String advice : class_advice_map.values()) {
+                            agent_advice_class = agentJsonConvert.toObject(advice, Agent_Advice_Class.class);
                             for (Class<?> clazz : allLoadedClasses) {
                                 String class_name = agent_advice_class.getClass_name();
                                 if (clazz.getName().equals(class_name)) {
@@ -72,8 +72,8 @@ public class Agent {
 
     public static void help() {
         System.out.println("eg -> ");
-        System.out.println("AOP.getInstance().add_advice_method(Authc.class, new InfoGen_AOP_Handle_Authc());");
-        System.out.println("AOP.getInstance().add_autowired_field(\"com.James.service.Signup\", \"user_dao\", \"com.James.service.Signup.dao.User_DAO_Impl();\");");
-        System.out.println("AOP.getInstance().advice();");
+        System.out.println("HotInjecter.getInstance().add_advice_method(YOUR.class, new Agent_Handle());");
+        System.out.println("HotInjecter.getInstance().add_autowired_field(\"com.James.service.Signup\", \"user_dao\", \"com.James.service.Signup.dao.User_DAO_Impl();\");");
+        System.out.println("HotInjecter.getInstance().advice();");
     }
 }

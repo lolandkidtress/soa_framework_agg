@@ -13,13 +13,10 @@ import org.apache.commons.logging.LogFactory;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
-import com.James.basic.Annotation.mockFilterAnnotation;
 import com.James.basic.Model.inputParam;
-import com.James.basic.Model.mockPolicy;
 import com.James.basic.Model.outputParam;
 import com.James.basic.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
-import com.James.basic.UtilsTools.Return;
 import com.James.soa_agent.HotInjecter;
 import com.James.soa_agent.event_handle.ScanAnnotationClass_Handle;
 
@@ -70,25 +67,25 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
       //读取desc信息
       sharedNode = getDescribe(sharedNode,method);
 
-      //降级 policy
-      mockFilterAnnotation mockAnno = method.getAnnotation(mockFilterAnnotation.class);
-      if (mockAnno != null) {
-        descriptionAnnotation desAnnotation = method.getAnnotation(descriptionAnnotation.class);
-        if(desAnnotation!=null) {
-          mockPolicy MockPolicy = new mockPolicy();
-          MockPolicy.setName(sharedNode.getDescribe().concat(mockAnno.name()));
-          MockPolicy.setPolicy(mockAnno.policy());
-          MockPolicy.setAllowFailPeriod(mockAnno.allowFailPeriod());
-          MockPolicy.setAllowFailTimes(mockAnno.allowFailTimes());
-          MockPolicy.setFreezingTime(mockAnno.freezingTime());
-          Return mockReturn = Return.FAIL(mockAnno.code(),mockAnno.note());
-          MockPolicy.setMockReturn(mockReturn);
-
-          sharedNode.setMockPolicy(MockPolicy);
-        }else{
-          LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
-        }
-      }
+//      //降级 policy
+//      mockFilterAnnotation mockAnno = method.getAnnotation(mockFilterAnnotation.class);
+//      if (mockAnno != null) {
+//        descriptionAnnotation desAnnotation = method.getAnnotation(descriptionAnnotation.class);
+//        if(desAnnotation!=null) {
+//          mockPolicy MockPolicy = new mockPolicy();
+//          MockPolicy.setName(sharedNode.getDescribe().concat(mockAnno.name()));
+//          MockPolicy.setPolicy(mockAnno.policy());
+//          MockPolicy.setAllowFailPeriod(mockAnno.allowFailPeriod());
+//          MockPolicy.setAllowFailTimes(mockAnno.allowFailTimes());
+//          MockPolicy.setFreezingTime(mockAnno.freezingTime());
+//          Return mockReturn = Return.FAIL(mockAnno.code(),mockAnno.note());
+//          MockPolicy.setMockReturn(mockReturn);
+//
+//          sharedNode.setMockPolicy(MockPolicy);
+//        }else{
+//          LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
+//        }
+//      }
 
       //Inparam,Outparam
       for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){

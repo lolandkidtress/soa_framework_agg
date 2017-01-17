@@ -12,8 +12,6 @@ import com.James.basic.Model.Status;
 public class RpcStatus extends Status {
 
   //规定时间内失败的次数
-
-
   public RpcStatus(int AllowFailPeriod,int AllowFailTimes,int FreezingTime){
     this.allowFailPeriod = AllowFailPeriod;
     this.allowFailTimes = AllowFailTimes;

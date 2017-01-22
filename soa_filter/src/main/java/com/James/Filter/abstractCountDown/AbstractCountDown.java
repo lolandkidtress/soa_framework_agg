@@ -19,12 +19,12 @@ public abstract class AbstractCountDown {
   //冻结周期 ms
   public int freezingTime = 5000;
 
-  public static AtomicLong failedCount = new AtomicLong();
+  public  AtomicLong failedCount = new AtomicLong();
 
   //上一次开始计算失败的时间
-  public static Long lastFailedTime =0L;
+  public  Long lastFailedTime =0L;
   //冻结开始时间
-  public static Long lastFreezingTime =0L;
+  public  Long lastFreezingTime =0L;
 
   public Return defaultReturn;
 
@@ -59,28 +59,28 @@ public abstract class AbstractCountDown {
     this.freezingTime = freezingTime;
   }
 
-  public static AtomicLong getFailedCount() {
+  public AtomicLong getFailedCount() {
     return failedCount;
   }
 
-  public static void setFailedCount(AtomicLong failedCount) {
-    AbstractCountDown.failedCount = failedCount;
+  public void setFailedCount(AtomicLong failedCount) {
+    this.failedCount = failedCount;
   }
 
-  public static Long getLastFailedTime() {
+  public Long getLastFailedTime() {
     return lastFailedTime;
   }
 
-  public static void setLastFailedTime(Long lastFailedTime) {
-    AbstractCountDown.lastFailedTime = lastFailedTime;
+  public void setLastFailedTime(Long lastFailedTime) {
+    this.lastFailedTime = lastFailedTime;
   }
 
-  public static Long getLastFreezingTime() {
+  public Long getLastFreezingTime() {
     return lastFreezingTime;
   }
 
-  public static void setLastFreezingTime(Long lastFreezingTime) {
-    AbstractCountDown.lastFreezingTime = lastFreezingTime;
+  public void setLastFreezingTime(Long lastFreezingTime) {
+    this.lastFreezingTime = lastFreezingTime;
   }
 
   public Return getDefaultReturn() {

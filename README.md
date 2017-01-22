@@ -59,6 +59,10 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 
 * 配置中心
 * avro的client连接池
-* 服务端流量控制
-* 自动降级 (Mock假数据返回) 
 * 服务地址IP路由
+
+
+##Versions
+* Release1.0.0R170117:初版
+
+* Release1.0.1R170122:添加了限流和服务降级

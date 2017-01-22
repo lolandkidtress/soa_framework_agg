@@ -18,24 +18,17 @@
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-		<global.version>V0.0.5_alpha</global.version>
+		<global.version>Release1.0.1R170122</global.version>
 		<sonar.exclusions>
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>
 	</properties>
 
 	<modules>
-		<!--<module>./soa_core</module>-->
-		<!--&lt;!&ndash; soa 框架 &ndash;&gt;-->
-		<!--<module>./soa_rpc</module>-->
-		<!--<module>./soa_framework</module>-->
-		<!--&lt;!&ndash; 服务治理网站 &ndash;&gt;-->
-		<!--<module>./soa_authc</module>-->
 		<module>soa_kafka</module>
 		<module>soa_db</module>
 		<module>soa_http</module>
 		<module>soa_avro</module>
-
 
 		<!--<module>soa_agent</module>-->
 		<module>soa_filter</module>

@@ -31,14 +31,15 @@ public class degradeCountDown extends AbstractCountDown implements CountDownDele
     long currentTime = System.currentTimeMillis();
 
     //有调用记录
-    if(this.lastFailedTime>0 ){
+    if(this.lastFailedTime>0L ){
       //冻结状态的记录
-      if(this.lastFreezingTime >0){
+      if(this.lastFreezingTime >0L){
         //还在冻结状态中
         if((currentTime-this.lastFreezingTime ) < this.freezingTime){
           return true;
         }else{
           //冻结已过期
+
           this.lastFreezingTime=0L;
           return false;
         }
@@ -74,6 +75,12 @@ public class degradeCountDown extends AbstractCountDown implements CountDownDele
   @Override
   public void failIncr(){
     this.failedCount.incrementAndGet();
+
+    if(this.lastFailedTime==0L){
+      long currentTime = System.currentTimeMillis();
+      this.lastFailedTime = currentTime;
+    }
+
 
   }
 

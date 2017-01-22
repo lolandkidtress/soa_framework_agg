@@ -2,6 +2,8 @@ package com.James.Filter;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 import com.James.Filter.degrade.degradeCountDown;
@@ -14,6 +16,8 @@ import com.James.Filter.rateLimit.ratelimitCountDown;
  * 保存配置的降级和流量的配置
  */
 public class Filter {
+
+  private static final Log logger = LogFactory.getLog(Filter.class.getName());
 
   private static class InnerInstance {
     public static final Filter instance = new Filter();
@@ -51,10 +55,10 @@ public class Filter {
   public boolean isPassedRateLimit(String limitName){
     ratelimitCountDown rlcd = limit_Config.get(limitName);
 
-
     if(rlcd!=null){
       boolean flg = rlcd.isFreezingStatus();
       limit_Config.put(limitName,rlcd);
+      logger.debug("limit返回" + flg);
       return !flg;
     }
     return true;
@@ -67,6 +71,7 @@ public class Filter {
     if(dcd!=null){
       boolean flg = dcd.isFreezingStatus();
       degrade_Config.put(degradeName,dcd);
+      logger.debug("degrade返回"+flg);
       return !flg;
     }
     return true;
@@ -77,7 +82,8 @@ public class Filter {
   }
 
   //降级策略需要在调用失败后手动更新次数
-  public void IncrDegradeCount(String degradeName){
+  public void IncrDegradeCount(String degradeName) {
+    logger.debug("degradeName+1");
     degradeCountDown dcd = degrade_Config.get(degradeName);
     dcd.failIncr();
     degrade_Config.put(degradeName,dcd);
@@ -85,9 +91,12 @@ public class Filter {
 
   public static void main(String[] args) throws Exception {
     degradeCountDown dcd = new degradeCountDown("degrade",5000, 1, 5000,200,"degradeFail");
-    ratelimitCountDown rcd = new ratelimitCountDown("degrade",5000, 1, 5000,200,"degradeFail");
+    ratelimitCountDown rcd = new ratelimitCountDown("rate",5000, 1, 5000,200,"rateFail");
     Filter.getInstance().addDegradeConfig(dcd);
     Filter.getInstance().addLimitConfig(rcd);
+
+    System.out.println(Filter.getInstance().isPassedRateLimit("rate"));
+    System.out.println(Filter.getInstance().isPassedRateLimit("rate"));
 
     System.out.println(Filter.getInstance().isPassedDegrade("degrade"));
     System.out.println(Filter.getInstance().isPassedDegrade("degrade"));

@@ -259,7 +259,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
     public static class NotImplementedHandler extends DefaultHandler {
 
         public String getText() {
-            return "<html><body><h2>The uri is mapped in the router, but no handler is specified. <br> Status: Not implemented!</h3></body></html>";
+            return "<html><body><h2>The uri is mapped in the router, but no handler is specified. <br> AbstractCountDown: Not implemented!</h3></body></html>";
         }
 
         @Override

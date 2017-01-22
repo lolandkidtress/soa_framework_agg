@@ -29,6 +29,16 @@
       <groupId>com.James</groupId>
       <artifactId>soa_monitor</artifactId>
       <version>${global.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>

@@ -11,16 +11,18 @@ import java.nio.file.StandardOpenOption;
 import java.time.ZoneId;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import com.James.basic.UtilsTools.NativePath;
 
 /**
  * Created by James on 16/5/20.
  */
 public class Configuration {
-    private final static Log LOGGER = LogFactory.getLog(Configuration.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class.getName());
 
     private static class InnerInstance {
         public static final Configuration instance = new Configuration();

@@ -10,6 +10,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.James.Filter.Annotation.degradeAnnotation;
+import com.James.Filter.Annotation.ratelimitAnnotation;
+import com.James.Filter.Filter;
+import com.James.Filter.degrade.degradeCountDown;
+import com.James.Filter.rateLimit.ratelimitCountDown;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
@@ -59,36 +64,54 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 
     Method[] methods = clazz.getMethods();
     for(Method method : methods){
-//      Annotation providerAnno = method.getAnnotation(descriptionAnnotation.class);
-//      Annotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
-//      Annotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
+      descriptionAnnotation descriptionAnno = method.getAnnotation(descriptionAnnotation.class);
+      InputParamAnnotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
+      OutputParamAnnotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
       sharedNode sharedNode = new sharedNode(serverName);
       //读取desc信息
       sharedNode = getDescribe(sharedNode,method);
 
-//      //降级 policy
-//      mockFilterAnnotation mockAnno = method.getAnnotation(mockFilterAnnotation.class);
-//      if (mockAnno != null) {
-//        descriptionAnnotation desAnnotation = method.getAnnotation(descriptionAnnotation.class);
-//        if(desAnnotation!=null) {
-//          mockPolicy MockPolicy = new mockPolicy();
-//          MockPolicy.setName(sharedNode.getDescribe().concat(mockAnno.name()));
-//          MockPolicy.setPolicy(mockAnno.policy());
-//          MockPolicy.setAllowFailPeriod(mockAnno.allowFailPeriod());
-//          MockPolicy.setAllowFailTimes(mockAnno.allowFailTimes());
-//          MockPolicy.setFreezingTime(mockAnno.freezingTime());
-//          Return mockReturn = Return.FAIL(mockAnno.code(),mockAnno.note());
-//          MockPolicy.setMockReturn(mockReturn);
-//
-//          sharedNode.setMockPolicy(MockPolicy);
-//        }else{
-//          LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
-//        }
-//      }
+      //降级 filter
+      degradeAnnotation DegradeAnnotation = method.getAnnotation(degradeAnnotation.class);
+      if(DegradeAnnotation!=null){
+        if(descriptionAnno!=null){
+          degradeCountDown DegradeCountDown = new degradeCountDown(DegradeAnnotation.name(),
+                                                        DegradeAnnotation.allowPeriod(),
+                                                        DegradeAnnotation.allowTimes(),
+                                                        DegradeAnnotation.freezingTime(),
+                                                        DegradeAnnotation.code(),
+                                                        DegradeAnnotation.note()
+                                                        );
+
+          Filter.getInstance().addDegradeConfig(DegradeCountDown);
+          sharedNode.addDegradeFilter(DegradeCountDown.getName());
+        }else{
+          LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
+        }
+      }
+
+      //限流 filter
+      ratelimitAnnotation RatelimitAnnotation = method.getAnnotation(ratelimitAnnotation.class);
+      if(RatelimitAnnotation!=null){
+        if(descriptionAnno!=null){
+          ratelimitCountDown RatelimitCountDown = new ratelimitCountDown(RatelimitAnnotation.name(),
+                                                              RatelimitAnnotation.allowPeriod(),
+                                                              RatelimitAnnotation.allowTimes(),
+                                                              RatelimitAnnotation.freezingTime(),
+                                                              RatelimitAnnotation.code(),
+                                                              RatelimitAnnotation.note()
+          );
+
+          Filter.getInstance().addLimitConfig(RatelimitCountDown);
+          sharedNode.addRatelimitFilter(RatelimitCountDown.getName());
+        }else{
+          LOGGER.warn("检测到"+method.getName()+"配置了限流策略,但是没有配置description");
+        }
+      }
 
       //Inparam,Outparam
-      for(InputParamAnnotation inParam: method.getAnnotationsByType(InputParamAnnotation.class)){
+      for(InputParamAnnotation inParam: inParams){
         inputParam InputParam = new inputParam();
         InputParam.setName(inParam.name());
         InputParam.setType(inParam.type());
@@ -100,8 +123,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 
       }
 
-      for(OutputParamAnnotation outParam: method.getAnnotationsByType(OutputParamAnnotation.class)){
-
+      for(OutputParamAnnotation outParam: outParams){
         outputParam OutputParam = new outputParam();
         OutputParam.setName(outParam.name());
         OutputParam.setType(outParam.type());

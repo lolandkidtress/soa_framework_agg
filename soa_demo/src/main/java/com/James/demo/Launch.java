@@ -10,7 +10,6 @@ import com.James.Invoker.RemoteInvoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
 import com.James.Provider.providerInstance;
-import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.demo.CodeInjection.hot_Injection;
 import com.James.demo.Kafka.MsgCosum;
@@ -30,9 +29,9 @@ public class Launch  {
   private final static int nanoPort = 9094;
   private final static int avroPort = 48084;
 
-
   private static Configuration configuration = null;
-  private static String zkconnect = "192.168.202.16:2181,192.168.202.17:2181,192.168.202.18:2181/kafka";
+//  private static String zkconnect = "192.168.202.16:2181,192.168.202.17:2181,192.168.202.18:2181/kafka";
+private static String zkconnect = "127.0.0.1:2181";
   private static String kafka = "192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092";
   private static Properties properties = new Properties();
 
@@ -82,7 +81,7 @@ public class Launch  {
   }
 
   //服务发现sample
-  public void discoryServer(){
+  public void discoryServer() throws Exception{
 
     logger.info("服务发现开始启动");
 
@@ -94,9 +93,22 @@ public class Launch  {
     logger.info("avrosend的可用节点为"+ JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
 
     //调用2个接口
-    //logger.info("start 返回:" + demoinvoke.call("start", "",Parameter.create()));
+    logger.info("start 返回:" + demoinvoke.call("start", "", Parameter.create().add("param1","参数1").add("param2","参数2")));
 //    logger.info("start 返回:" + demoinvoke.call("start", "wrongVer",Parameter.create()));
-    logger.info("avrosend 返回:" + demoinvoke.call("avrosend","", Parameter.create()));
+    logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
+
+    logger.info("第一次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+    logger.info("第二次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+    //第三次code不同
+    logger.info("第三次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+    //等待一会自动恢复
+    TimeUnit.SECONDS.sleep(6);
+    logger.info("第四次调用限流接口 返回:" + demoinvoke.call("ratelimitCall", "", Parameter.create()));
+
+    logger.info("第一次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
+//    TimeUnit.SECONDS.sleep(1);
+    //第二次code不同
+    logger.info("第二次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
 
 //    //调用前拦截
 //    //第一次返回实际值

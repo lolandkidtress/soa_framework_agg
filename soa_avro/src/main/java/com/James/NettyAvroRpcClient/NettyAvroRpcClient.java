@@ -42,7 +42,7 @@
 //import org.apache.flume.FlumeException;
 //import org.apache.flume.source.avro.AvroFlumeEvent;
 //import org.apache.flume.source.avro.AvroSourceProtocol;
-//import org.apache.flume.source.avro.Status;
+//import org.apache.flume.source.avro.AbstractCountDown;
 //import org.jboss.netty.channel.ChannelPipeline;
 //import org.jboss.netty.channel.socket.SocketChannel;
 //import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
@@ -216,7 +216,7 @@
 //
 //    assertReady();
 //
-//    final CallFuture<Status> callFuture = new CallFuture<Status>();
+//    final CallFuture<AbstractCountDown> callFuture = new CallFuture<AbstractCountDown>();
 //
 //    final AvroFlumeEvent avroEvent = new AvroFlumeEvent();
 //    avroEvent.setBody(ByteBuffer.wrap(event.getBody()));
@@ -296,7 +296,7 @@
 //        avroEvents.add(avroEvent);
 //      }
 //
-//      final CallFuture<Status> callFuture = new CallFuture<Status>();
+//      final CallFuture<AbstractCountDown> callFuture = new CallFuture<AbstractCountDown>();
 //
 //      Future<Void> handshake;
 //      try {
@@ -336,20 +336,20 @@
 //  }
 //
 //  /**
-//   * Helper method that waits for a Status future to come back and validates
-//   * that it returns Status == OK.
+//   * Helper method that waits for a AbstractCountDown future to come back and validates
+//   * that it returns AbstractCountDown == OK.
 //   * @param callFuture Future to wait on
 //   * @param timeout Time to wait before failing
 //   * @param tu Time Unit of {@code timeout}
-//   * @throws EventDeliveryException If there is a timeout or if Status != OK
+//   * @throws EventDeliveryException If there is a timeout or if AbstractCountDown != OK
 //   */
-//  private void waitForStatusOK(CallFuture<Status> callFuture,
+//  private void waitForStatusOK(CallFuture<AbstractCountDown> callFuture,
 //      long timeout, TimeUnit tu) throws EventDeliveryException {
 //    try {
-//      Status status = callFuture.get(timeout, tu);
-//      if (status != Status.OK) {
+//      AbstractCountDown status = callFuture.get(timeout, tu);
+//      if (status != AbstractCountDown.OK) {
 //        throw new EventDeliveryException(this + ": Avro RPC call returned " +
-//            "Status: " + status);
+//            "AbstractCountDown: " + status);
 //      }
 //    } catch (CancellationException ex) {
 //      throw new EventDeliveryException(this + ": RPC future was cancelled", ex);

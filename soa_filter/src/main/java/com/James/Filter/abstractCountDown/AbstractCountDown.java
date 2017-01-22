@@ -1,19 +1,21 @@
-package com.James.basic.Model;
+package com.James.Filter.abstractCountDown;
 
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.James.basic.UtilsTools.Return;
 
 
 /**
  * Created by James on 2016/10/21.
+ * 计数器
  */
-public abstract class Status {
+public abstract class AbstractCountDown {
 
-  public String name ;
-
+  public String name;
   //计算周期 ms
-  public int allowFailPeriod = 5000;
-  //时间窗口内允许失败的次数
-  public int allowFailTimes = 5;
+  public int allowlPeriod = 5000;
+  //时间窗口内允许的次数
+  public int allowTimes = 5000;
   //冻结周期 ms
   public int freezingTime = 5000;
 
@@ -21,13 +23,10 @@ public abstract class Status {
 
   //上一次开始计算失败的时间
   public static Long lastFailedTime =0L;
-
   //冻结开始时间
   public static Long lastFreezingTime =0L;
 
-  public int getAllowFailPeriod() {
-    return allowFailPeriod;
-  }
+  public Return defaultReturn;
 
   public String getName() {
     return name;
@@ -37,16 +36,19 @@ public abstract class Status {
     this.name = name;
   }
 
+  public int getAllowFailPeriod() {
+    return allowlPeriod;
+  }
   public void setAllowFailPeriod(int allowFailPeriod) {
-    this.allowFailPeriod = allowFailPeriod;
+    this.allowlPeriod = allowlPeriod;
   }
 
   public int getAllowFailTimes() {
-    return allowFailTimes;
+    return allowTimes;
   }
 
   public void setAllowFailTimes(int allowFailTimes) {
-    this.allowFailTimes = allowFailTimes;
+    this.allowTimes = allowTimes;
   }
 
   public int getFreezingTime() {
@@ -62,7 +64,7 @@ public abstract class Status {
   }
 
   public static void setFailedCount(AtomicLong failedCount) {
-    Status.failedCount = failedCount;
+    AbstractCountDown.failedCount = failedCount;
   }
 
   public static Long getLastFailedTime() {
@@ -70,7 +72,7 @@ public abstract class Status {
   }
 
   public static void setLastFailedTime(Long lastFailedTime) {
-    Status.lastFailedTime = lastFailedTime;
+    AbstractCountDown.lastFailedTime = lastFailedTime;
   }
 
   public static Long getLastFreezingTime() {
@@ -78,12 +80,14 @@ public abstract class Status {
   }
 
   public static void setLastFreezingTime(Long lastFreezingTime) {
-    Status.lastFreezingTime = lastFreezingTime;
+    AbstractCountDown.lastFreezingTime = lastFreezingTime;
   }
 
-  public abstract boolean isBlockedStatus() ;
+  public Return getDefaultReturn() {
+    return defaultReturn;
+  }
 
-  public abstract void failIncr() ;
-
-  public abstract void cleanState() ;
+  public void setDefaultReturn(Return defaultReturn) {
+    this.defaultReturn = defaultReturn;
+  }
 }

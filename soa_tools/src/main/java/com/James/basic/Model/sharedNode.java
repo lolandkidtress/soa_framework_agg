@@ -61,8 +61,12 @@ public class sharedNode {
   private List<inputParam> _inputParams = new ArrayList<>();
   //出参
   private List<outputParam> _outputParams = new ArrayList<>();
+
   //降级策略
-  private mockPolicy mockPolicy;
+  // ratelimit: name
+  // degrade : name
+  private HashMap<String,String> FilterMap = new HashMap();
+
   // 其他个性化配置
   protected Map<String, Object> metadata = new HashMap<>();
   // 不需要配置
@@ -196,12 +200,28 @@ public class sharedNode {
     this.http_context=Http_context;
   }
 
-  public mockPolicy getMockPolicy() {
-    return mockPolicy;
+  public HashMap getFilterMap() {
+    return this.FilterMap;
   }
 
-  public void setMockPolicy(mockPolicy mockPolicy) {
-    this.mockPolicy = mockPolicy;
+  public void setFilterMap(HashMap filterMap) {
+    this.FilterMap = filterMap;
+  }
+
+  public void addDegradeFilter(String CountDownName){
+    this.FilterMap.put("degrade",CountDownName);
+  }
+
+  public String getDegradeFilter(){
+    return this.FilterMap.get("degrade");
+  }
+
+  public void addRatelimitFilter(String CountDownName){
+    this.FilterMap.put("ratelimit",CountDownName);
+  }
+
+  public String getRatelimitFilter(){
+    return this.FilterMap.get("ratelimit");
   }
 
   public Map<String,Object> getMetadata(){

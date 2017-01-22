@@ -33,7 +33,7 @@ public enum providerRegister {
 
       StringBuilder sb = new StringBuilder();
       sb = createServerPath(SharedNode);
-      sb = creategetIdentityIDPath(sb,SharedNode);
+      sb = createIdentityIDPath(sb,SharedNode);
 
       setServerData(sb, SharedNode);
 
@@ -76,7 +76,7 @@ public enum providerRegister {
   }
 
   //创建Server / defaultVersion 的path路径
-  private StringBuilder creategetIdentityIDPath(StringBuilder sb,sharedNode SharedNode){
+  private StringBuilder createIdentityIDPath(StringBuilder sb,sharedNode SharedNode){
     try{
 
       sb.append(CommonConfig.SLASH);

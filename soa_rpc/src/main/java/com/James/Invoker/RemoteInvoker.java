@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.James.Filter.Filter;
 import com.James.InvokerMonitor.InvokerStatus;
 import com.James.Listeners.nodeReloadListenerImpl;
 import com.James.RemoteCall.remoteCallHelper;
@@ -199,6 +200,7 @@ public class RemoteInvoker implements Invoker,Serializable {
       version = CommonConfig.DEFAULTVERSION;
     }
 
+    //节点信息转换
     sharedNode SharedNode;
     try{
       if(methodProviderInvokers.get(method)!=null){
@@ -218,12 +220,45 @@ public class RemoteInvoker implements Invoker,Serializable {
       LOGGER.error("系统异常",e1);
       return Return.FAIL(Code.error.code,Code.error.name());
     }
-    return callImpl(SharedNode, method, parameter);
+
+
+    String ratelimitName = (String) SharedNode.getFilterMap().getOrDefault("ratelimit","");
+
+    String degradeName = (String) SharedNode.getFilterMap().getOrDefault("degrade","");
+    //检查限流
+    if(!ratelimitName.equals("")){
+      //限流就返回配置的return对象
+      if(!Filter.getInstance().isPassedRateLimit(ratelimitName)){
+          return Filter.getInstance().getLimitConfig(ratelimitName).getDefaultReturn();
+      }
+    }
+
+    //检查降级
+    if(!degradeName.equals("")){
+      //降级就返回配置的return对象
+      if(!Filter.getInstance().isPassedDegrade(degradeName)){
+        return Filter.getInstance().getDegradeCountDown(degradeName).getDefaultReturn();
+      }
+    }
+
+    Return InvokeRet = callImpl(SharedNode, method, parameter);
+    //调用返回值不是正确的
+    //TODO 指定一个专用的status判断是否服务异常
+    if(!InvokeRet.is_success()){
+      Filter.getInstance().IncrDegradeCount(degradeName);
+    }
+
+    return InvokeRet;
+
+    //流量控制
+
+
+
 //    //事前拦截
 //    //配置过调用前降级,且已降级
 //    if(SharedNode.getMockPolicy()!=null
-//      && SharedNode.getMockPolicy().getPolicy()== mockFilterAnnotation.Policy.Call_RETURN
-//      && mockFilter.getInstance().isBlockedStatus(SharedNode.getMockPolicy())
+//      && SharedNode.getMockPolicy().getPolicy()== FilterAnnotation.FilterPolicy.Call_RETURN
+//      && Filter.getInstance().isBlockedStatus(SharedNode.getMockPolicy())
 //        ){
 //
 //      return SharedNode.getMockPolicy().getMockReturn();
@@ -239,10 +274,10 @@ public class RemoteInvoker implements Invoker,Serializable {
 //      //配置过降级策略
 //      if (SharedNode.getMockPolicy() != null) {
 //        //记录调用失败
-//          mockFilter.getInstance().failIncr(SharedNode.getMockPolicy());
+//          Filter.getInstance().failIncr(SharedNode.getMockPolicy());
 //
 //          //事后拦截
-//          if (SharedNode.getMockPolicy().getPolicy() == mockFilterAnnotation.Policy.Fail_RETURN) {
+//          if (SharedNode.getMockPolicy().getPolicy() == FilterAnnotation.FilterPolicy.Fail_RETURN) {
 //            return SharedNode.getMockPolicy().getMockReturn();
 //          } else {
 //            return ret;

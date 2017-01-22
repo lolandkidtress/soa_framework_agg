@@ -57,6 +57,7 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 
 ##TODO:
 
+* 配置中心
 * avro的client连接池
 * 服务端流量控制
 * 自动降级 (Mock假数据返回) 

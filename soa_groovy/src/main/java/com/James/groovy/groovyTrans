@@ -35,16 +35,16 @@ class contact_model {
 }
 
 class data_source_model {
-  String status;
+  String abstractCountDown;
   String account;
   String name;
 
       String getStatus() {
-        return status
+        return abstractCountDown
       }
 
-      void setStatus(String status) {
-        this.status = status
+      void setStatus(String abstractCountDown) {
+        this.abstractCountDown = abstractCountDown
       }
 
       String getAccount() {

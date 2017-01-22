@@ -18,6 +18,7 @@ import com.James.Filter.rateLimit.ratelimitCountDown;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
+import com.James.basic.Enum.Code;
 import com.James.basic.Model.inputParam;
 import com.James.basic.Model.outputParam;
 import com.James.basic.Model.sharedNode;
@@ -76,12 +77,16 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
       degradeAnnotation DegradeAnnotation = method.getAnnotation(degradeAnnotation.class);
       if(DegradeAnnotation!=null){
         if(descriptionAnno!=null){
+
+          int code = DegradeAnnotation.code() >0 ? DegradeAnnotation.code(): Code.service_degrade.code;
+          String note = DegradeAnnotation.note().length()>0 ? DegradeAnnotation.note(): Code.service_degrade.note;
+
           degradeCountDown DegradeCountDown = new degradeCountDown(DegradeAnnotation.name(),
                                                         DegradeAnnotation.allowPeriod(),
                                                         DegradeAnnotation.allowTimes(),
                                                         DegradeAnnotation.freezingTime(),
-                                                        DegradeAnnotation.code(),
-                                                        DegradeAnnotation.note()
+                                                        code,
+                                                        note
                                                         );
 
           Filter.getInstance().addDegradeConfig(DegradeCountDown);
@@ -95,12 +100,16 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
       ratelimitAnnotation RatelimitAnnotation = method.getAnnotation(ratelimitAnnotation.class);
       if(RatelimitAnnotation!=null){
         if(descriptionAnno!=null){
+
+          int code = RatelimitAnnotation.code() >0 ? RatelimitAnnotation.code(): Code.over_limit.code;
+          String note = RatelimitAnnotation.note().length()>0 ? RatelimitAnnotation.note(): Code.over_limit.note;
+
           ratelimitCountDown RatelimitCountDown = new ratelimitCountDown(RatelimitAnnotation.name(),
                                                               RatelimitAnnotation.allowPeriod(),
                                                               RatelimitAnnotation.allowTimes(),
                                                               RatelimitAnnotation.freezingTime(),
-                                                              RatelimitAnnotation.code(),
-                                                              RatelimitAnnotation.note()
+                                                              code,
+                                                              note
           );
 
           Filter.getInstance().addLimitConfig(RatelimitCountDown);

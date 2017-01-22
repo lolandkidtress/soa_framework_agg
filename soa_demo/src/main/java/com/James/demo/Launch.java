@@ -10,6 +10,7 @@ import com.James.Invoker.RemoteInvoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
 import com.James.Provider.providerInstance;
+import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.demo.CodeInjection.hot_Injection;
 import com.James.demo.Kafka.MsgCosum;
@@ -88,22 +89,22 @@ private static String zkconnect = "127.0.0.1:2181";
     //调用方
     RemoteInvoker demoinvoke = RemoteInvoker.create("com.James.demo", zkconnect);
 
-//    //取得远端服务的可用节点
-//    logger.info("start的可用节点为:" + JsonConvert.toJson(demoinvoke.getAvailableProvider("start")));
-//    logger.info("avrosend的可用节点为"+ JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
-//
-//    //调用2个接口
-//    logger.info("start 返回:" + demoinvoke.call("start", "", Parameter.create().add("param1","参数1").add("param2","参数2")));
-////    logger.info("start 返回:" + demoinvoke.call("start", "wrongVer",Parameter.create()));
-//    logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
-//
-//    logger.info("第一次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
-//    logger.info("第二次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
-//    //第三次code不同
-//    logger.info("第三次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
-//    //等待一会自动恢复
-//    TimeUnit.SECONDS.sleep(6);
-//    logger.info("第四次调用限流接口 返回:" + demoinvoke.call("ratelimitCall", "", Parameter.create()));
+    //取得远端服务的可用节点
+    logger.info("start的可用节点为:" + JsonConvert.toJson(demoinvoke.getAvailableProvider("start")));
+    logger.info("avrosend的可用节点为"+ JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
+
+    //调用2个接口
+    logger.info("start 返回:" + demoinvoke.call("start", "", Parameter.create().add("param1","参数1").add("param2","参数2")));
+//    logger.info("start 返回:" + demoinvoke.call("start", "wrongVer",Parameter.create()));
+    logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
+
+    logger.info("第一次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+    logger.info("第二次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+    //第三次code不同
+    logger.info("第三次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+    //等待一会自动恢复
+    TimeUnit.SECONDS.sleep(6);
+    logger.info("第四次调用限流接口 返回:" + demoinvoke.call("ratelimitCall", "", Parameter.create()));
 
     logger.info("第一次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
 //    TimeUnit.SECONDS.sleep(1);
@@ -156,8 +157,8 @@ private static String zkconnect = "127.0.0.1:2181";
     launch.registerServer();
     launch.discoryServer();
 //    //kafka测试
-//    launch.receiveKafka();
-//    launch.sendKafka();
+    launch.receiveKafka();
+    launch.sendKafka();
 
 
 

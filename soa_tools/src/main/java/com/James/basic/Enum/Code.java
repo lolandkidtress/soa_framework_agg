@@ -16,14 +16,11 @@ public enum Code {
     protocol_notsupport(300200,"不支持的协议"),
     node_unavailable(300300, "没有可用的服务节点"), //
 
-    //40000 异常
-    error(400100, "执行错误"), //
-    service_notfound(400200, "没有这个服务"), //
-    service_degraded(400300, "服务降级"), //
-
-    //50000 流程控制错误
-    over_limit(500100, "接口调用次数超过限制");
-
+    //50000 异常
+    error(500100, "系统异常"), //
+    service_notfound(500200, "没有这个服务"), //
+    over_limit(500300, "接口调用次数超过限制") ,//
+    service_degrade(500400, "接口调用次数超过限制") ;//
 
 
     public String note;
@@ -32,5 +29,13 @@ public enum Code {
     private Code(Integer code, String note) {
         this.note = note;
         this.code = code;
+    }
+
+    public Integer getCode(){
+        return this.code;
+    }
+
+    public String getNote(){
+        return this.note;
     }
 }

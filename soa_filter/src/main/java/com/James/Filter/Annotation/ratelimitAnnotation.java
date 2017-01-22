@@ -31,9 +31,9 @@ public @interface ratelimitAnnotation {
   int freezingTime() default 5000;
 
   //返回的code
-  int code() default 500;
+  int code() default -1;
   //返回的note
-  String note() default "流量限制";
+  String note() default "";
 
 
 }

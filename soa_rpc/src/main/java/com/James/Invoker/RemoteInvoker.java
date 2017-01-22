@@ -243,7 +243,7 @@ public class RemoteInvoker implements Invoker,Serializable {
 
     Return InvokeRet = callImpl(SharedNode, method, parameter);
     //调用返回值不是正确的
-    if(!InvokeRet.is_success()&& (InvokeRet.get_code() == Code.error.code)){
+    if(!InvokeRet.is_success()&& (InvokeRet.get_code().equals(Code.error.code))){
       Filter.getInstance().IncrDegradeCount(degradeName);
     }
 

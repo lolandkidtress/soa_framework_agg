@@ -13,6 +13,7 @@ import com.James.avroProto.avrpRequestProto;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
+import com.James.basic.Enum.Code;
 import com.James.basic.UtilsTools.Return;
 
 
@@ -48,17 +49,17 @@ public class RemoteMethod implements avrpRequestProto {
   //5秒只能通过一次
   @RequestMapping(value = "/ratelimitCall", method = RequestMethod.GET)
   @descriptionAnnotation(author = "james",name="ratelimitCall",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
-  @ratelimitAnnotation(name="ratelimitCall",policy = "before",code=400,note="ratelimitCallFail",allowPeriod=5000 ,allowTimes = 2)
+  @ratelimitAnnotation(name="ratelimitCall",policy = "before",allowPeriod=5000 ,allowTimes = 2)
   public Return ratelimitCall(){
-    return Return.SUCCESS(200, "invoke ratelimitCall");
+    return Return.SUCCESS(Code.success.code, "invoke ratelimitCall");
   }
 
   //5秒内失败1次就降级
   @RequestMapping(value = "/degradeCall", method = RequestMethod.GET)
   @descriptionAnnotation(author = "james",name="degradeCall",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
-  @degradeAnnotation(name="degradeCall",policy = "before",code=400,note="degradeCallFail",allowPeriod=5000 ,allowTimes = 1)
+  @degradeAnnotation(name="degradeCall",policy = "before",allowPeriod=5000 ,allowTimes = 1)
   public Return degradeCall(){
-    return Return.FAIL(500, "调用degradeCall返回非200");
+    return Return.FAIL(Code.error.code, "调用degradeCall返回非200");
   }
 
   //重复的name会有报错

@@ -58,39 +58,6 @@ public class Sample {
   }
 
   public static void main(String[] args) throws IOException {
-//    if (args.length != 3) {
-//      System.out.println("Usage: <to> <from> <body>");
-//      System.exit(1);
-//    }
-
-
-//    avroRpcServer.getInstance().startServer().addRegisterServers("test",new test());
-
-//    avroRequestHandleRegister.INSTANCE.addRequestHandle("test", new sampleRequest());
-//    System.out.println("Starting server");
-//    // usually this would be another app, but for simplicity
-//    startServer();
-//    System.out.println("Server started");
-//
-//    NettyTransceiver client = new NettyTransceiver(new InetSocketAddress(avroConfig.getDEFAULT_PORT()));
-//    // client code - attach to the server and send a message
-//    avrpRequestProto proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, client);
-//    System.out.println("Client built, got proxy");
-//
-//    // fill in the Message record and send it
-//    Message message = new Message();
-//    message.setParam(new Utf8(("setTo")));
-//    message.setRequestName(new Utf8("test"));
-//
-//    System.out.println("Calling proxy.send with message:  " + message.toString());
-//    System.out.println("Result: " + proxy.send(message));
-//
-//    // cleanup
-//    client.close();
-//    server.close();
-//
-//    System.exit(0);
-
 
     Message message = new Message();
     message.setParam(new Utf8(("setTo")));

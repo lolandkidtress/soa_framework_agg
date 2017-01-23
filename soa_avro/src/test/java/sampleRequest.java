@@ -10,7 +10,7 @@ import com.James.avroProto.avrpRequestProto;
 public class sampleRequest implements avrpRequestProto {
   private String classname = this.getClass().getName();
   static{
-    System.out.println("test init" );
+    //System.out.println("test init" );
 
   }
 
@@ -20,7 +20,7 @@ public class sampleRequest implements avrpRequestProto {
 
   @Override
   public Utf8 send(Message message){
-    System.out.println("取得的参数为:" + message.getParam() );
+    //System.out.println("取得的参数为:" + message.getParam() );
     return new Utf8("call test");
   }
 }

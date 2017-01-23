@@ -14,6 +14,7 @@ import com.James.Filter.Filter;
 import com.James.InvokerMonitor.InvokerStatus;
 import com.James.Listeners.nodeReloadListenerImpl;
 import com.James.RemoteCall.remoteCallHelper;
+import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
 import com.James.basic.Enum.Code;
 import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.Invoker.Invoker;
@@ -171,13 +172,16 @@ public class RemoteInvoker implements Invoker,Serializable {
 
         String ver = ite_version.next();
         Map<String,String> s_node = version_data_pair.get(ver);
-        sharedNode sharedNode = JsonConvert.toObject(JsonConvert.toJson(s_node), sharedNode.class);
-
+        sharedNode SharedNode = JsonConvert.toObject(JsonConvert.toJson(s_node), sharedNode.class);
+        //有avro就初始化连接池
+        if(SharedNode.getProtocol().equals(CommonConfig.PROTOCOL.avro.name())){
+          avroNettyClientConnectionManager.initConnectionPool(SharedNode);
+        }
         LOGGER.info("组装"+ver+"的hash环");
-        Provider.init(ver, sharedNode);
+        Provider.init(ver, SharedNode);
 
         methodProviderInvokers.put(method, Provider);
-        InvokerStatus.addWatchedProvider(sharedNode);
+        InvokerStatus.addWatchedProvider(SharedNode);
 
       }
 

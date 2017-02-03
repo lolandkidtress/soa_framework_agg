@@ -38,7 +38,7 @@ public class avroServer {
         Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
         return new Utf8(ret.toJson());
       }
-      LOGGER.debug("接收到" + message.getRequestName() + "请求");
+      //LOGGER.debug("接收到" + message.getRequestName() + "请求");
 
       String response ="";
 

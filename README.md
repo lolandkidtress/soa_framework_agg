@@ -31,14 +31,11 @@
 
 * 1.git clone
 * 2.cd soa_framework_agg
-
-#soa_agent需要单独打包编译
+#(重要) soa_agent需要单独打包编译,应当以独立jar包形式导入项目中
 * 3.cd ./soa_agent
 * 4.mvn clean compile package install
-
 * 5.cd ..
 * 6.mvn clean compile package install
-
 * 7.cd ./soa_demo 
 * 8.mvn compile package
 * 9.java -jar ./target/soa_demo.jar
@@ -60,7 +57,6 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 * 配置中心
 * avro的client连接池
 * 服务地址IP路由
-
 
 ##Versions
 * Release1.0.0R170117:初版

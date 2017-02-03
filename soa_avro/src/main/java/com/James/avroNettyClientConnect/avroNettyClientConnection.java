@@ -42,7 +42,7 @@ public class avroNettyClientConnection {
     try {
       this.client = new NettyTransceiver(new InetSocketAddress(host, port));
       this.proxy = (avrpRequestProto) SpecificRequestor.getClient(avrpRequestProto.class, this.client);
-      logger.info("avro client初始化成功");
+      logger.debug("avro client初始化成功");
 
     }catch(Exception e){
       e.printStackTrace();
@@ -70,7 +70,7 @@ public class avroNettyClientConnection {
       }
     }catch(Exception e){
       e.printStackTrace();
-      logger.info("关闭avro client异常");
+      logger.error("关闭avro client异常",e);
     }
 
   }

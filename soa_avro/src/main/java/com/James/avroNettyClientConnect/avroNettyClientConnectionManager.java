@@ -1,5 +1,6 @@
 package com.James.avroNettyClientConnect;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.James.basic.Model.sharedNode;
@@ -11,11 +12,11 @@ import com.James.basic.UtilsTools.CommonConfig;
  */
 public class avroNettyClientConnectionManager {
 
-  private int minConnections = 1; // 空闲池，最小连接数
+  private int minConnections = 10; // 空闲池，最小连接数
   private int maxConnections = 50; // 空闲池，最大连接数
-  private int initConnections = 5;// 初始化连接数
+  private int initConnections = 10;// 初始化连接数
   private int highWaterMark = 10; //可用连接少于10%则自动扩容
-  private int extendPercent = 10; //数量不够时扩容当前连接的百分比
+  private int extendPercent = 20; //数量不够时扩容当前连接的百分比
 
   //ms
   private int lazyCheck = 1000*60;// 延迟1分钟后开始检查
@@ -53,6 +54,13 @@ public class avroNettyClientConnectionManager {
   public avroNettyClientConnectionPool getConnectPool(String host,String port){
     return registerConnectionPools.get(host.concat(CommonConfig.HYPHEN).concat(port));
   }
+
+  public Map<String,String> getConnectPoolSize(String host,String port){
+    avroNettyClientConnectionPool cp = registerConnectionPools.get(host.concat(CommonConfig.HYPHEN).concat(port));
+    return cp.getConnSize();
+
+  }
+
 
   public int getMinConnections() {
     return minConnections;

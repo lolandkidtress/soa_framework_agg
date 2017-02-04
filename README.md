@@ -54,14 +54,12 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 
 ##TODO:
 
+* zk/kafka版本升级  (kafka up to 0.10.1.1,zk up to 3.4.9)
 * 配置中心
 * 服务地址IP路由
 * 记录调用链及方法的执行时间
-* zk/kafka版本升级
 
 ##Versions
 * Release1.0.0R170117:初版
-
 * Release1.0.1R170122:添加了限流和服务降级
-
 * Release1.1.0R170204:添加avro连接池

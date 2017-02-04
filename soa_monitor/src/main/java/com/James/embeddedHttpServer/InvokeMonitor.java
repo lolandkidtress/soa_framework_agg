@@ -2,6 +2,8 @@ package com.James.embeddedHttpServer;
 
 import java.util.Map;
 
+import com.James.Annotation.tracking;
+
 import fi.iki.elonen.NanoHTTPD;
 
 
@@ -45,6 +47,7 @@ public class InvokeMonitor extends RouterNanoHTTPD.DefaultHandler{
     }
   }
 
+  @tracking
   public NanoHTTPD.Response get(RouterNanoHTTPD.UriResource uriResource, Map<String, String> urlParams, NanoHTTPD.IHTTPSession session) {
 
     String targetUri = session.getUri();

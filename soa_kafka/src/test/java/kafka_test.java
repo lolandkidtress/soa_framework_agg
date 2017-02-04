@@ -16,8 +16,8 @@ public class kafka_test {
 
     public static void main(String[] args) throws Exception{
         Properties properties = new Properties();
-        properties.put("zookeeper", "172.16.10.207:2181/kafka_b");
-        properties.put("kafka","172.16.10.203:9092");
+        properties.put("zookeeper", "localhost:2181");
+        properties.put("kafka","localhost:9092");
 
         Configuration configuration = null;
         try{
@@ -30,7 +30,7 @@ public class kafka_test {
         if(configuration!=null){
             Kafka_Consumer kafka_Consumer = new Kafka_Consumer();
 
-            //kafka_Consumer.consume(configuration, "12112312", "largest", 2, "infogen_topic_tracking", MsgCosum.class);
+            kafka_Consumer.consume(configuration, "12112312", "largest", 2, "topic", MsgCosum.class);
 
             System.out.println("start_producer");
             Kafka_Producer.getInstance().start(configuration);
@@ -38,9 +38,9 @@ public class kafka_test {
 
             while(true){
                 i++;
-                Kafka_Producer.getInstance().send("infogen_topic_tracking","key",String.valueOf(i));
-                System.out.println(1);
-                TimeUnit.MINUTES.sleep(1);
+                Kafka_Producer.getInstance().send("topic","key",String.valueOf(i));
+                System.out.println("写入"+i);
+                TimeUnit.SECONDS.sleep(1);
             }
         }
 

@@ -22,6 +22,11 @@
 
     <dependency>
       <groupId>com.James</groupId>
+      <artifactId>soa_agent</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.James</groupId>
       <artifactId>soa_tools</artifactId>
       <version>${global.version}</version>
     </dependency>

@@ -70,8 +70,7 @@ public class HotInjecter {
             String port = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
             virtualmachine_instance = attach.invoke(null, new Object[]{port});
             loadAgent = clazz.getMethod("loadAgent", new Class[]{String.class, String.class});
-            // TODO 如果只加载一次应该在使用完成后close
-            // detach = clazz.getMethod("detach", new Class[] {});
+
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("初始化AOP失败-如遇到找不到VirtualMachine类,请检查是否只安装了JRE没有安装JDK" , e);

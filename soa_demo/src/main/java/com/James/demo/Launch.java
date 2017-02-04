@@ -12,7 +12,7 @@ import com.James.Kafka_Tools.Kafka_Producer;
 import com.James.Provider.providerInstance;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
-import com.James.demo.CodeInjection.hot_Injection;
+import com.James.demo.CodeInjection.sampleInjection;
 import com.James.demo.Kafka.MsgCosum;
 import com.James.demo.jettySpring.JettyServer;
 import com.James.embeddedHttpServer.AppNanolets;
@@ -31,16 +31,14 @@ public class Launch  {
   private final static int avroPort = 48084;
 
   private static Configuration configuration = null;
-//  private static String zkconnect = "192.168.202.16:2181,192.168.202.17:2181,192.168.202.18:2181/kafka";
-private static String zkconnect = "127.0.0.1:2181";
-  private static String kafka = "192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092";
+
+  private static String zkconnect = "127.0.0.1:2181";
+  private static String kafka = "127.0.0.1:9092";
   private static Properties properties = new Properties();
 
   static {
-
     properties.put("zookeeper", zkconnect);
     properties.put("kafka",kafka);
-
     try{
       configuration = Configuration.getInstance().initialization(properties);
     }catch(Exception e){
@@ -51,10 +49,11 @@ private static String zkconnect = "127.0.0.1:2181";
   }
 
   //代码注入sample
+  //通过自定义的注解和实现类实现代码注入
   public void hotInject(){
 
     logger.info("开始注入");
-    hot_Injection injection = new hot_Injection();
+    sampleInjection injection = new sampleInjection();
     injection.inject();
 
     try{

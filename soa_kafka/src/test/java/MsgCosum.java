@@ -17,13 +17,7 @@ public class MsgCosum implements Kafka_Consume_Handle {
     public void handle_event(ConsumerIterator<String, String> consumerIterator) {
         while(consumerIterator.hasNext()){
             String message= consumerIterator.next().message();
-            System.out.println(message);
-            if(message.contains("阿不里哈山")){
-                System.out.println("########################################################");
-                System.out.println("########################################################");
-                System.out.println("########################################################");
-            }
-
+            System.out.println("接受"+message);
         }
 
     }

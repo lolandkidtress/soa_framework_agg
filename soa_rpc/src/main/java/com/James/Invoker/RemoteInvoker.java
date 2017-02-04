@@ -176,7 +176,7 @@ public class RemoteInvoker implements Invoker,Serializable {
         Map<String,String> s_node = version_data_pair.get(ver);
         sharedNode SharedNode = JsonConvert.toObject(JsonConvert.toJson(s_node), sharedNode.class);
         //有avro就初始化连接池
-        if(SharedNode.getProtocol().equals(CommonConfig.PROTOCOL.avro.name())){
+        if(SharedNode.getProtocol().equals(CommonConfig.PROTOCOL.avro)){
           avroNettyClientConnectionManager.getInstance().initConnectionPool(SharedNode);
         }
         LOGGER.info("组装"+ver+"的hash环");

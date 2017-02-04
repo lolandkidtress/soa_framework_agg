@@ -157,8 +157,9 @@ public class Launch  {
     JettyServer.startJetty(httpPort);
     TimeUnit.SECONDS.sleep(5);
     new AppNanolets(nanoPort);
-    //http服务和avro服务
+    //在zk中注册http服务和avro服务
     launch.registerServer();
+    //依赖上面注册的服务
     launch.discoryServer();
 //    //kafka测试
     launch.receiveKafka();

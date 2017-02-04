@@ -77,7 +77,12 @@ private static String zkconnect = "127.0.0.1:2181";
     properties.setProperty("AvroPort", String.valueOf(avroPort));
 
     //服务提供方的服务名称
-    providerInstance.getInstance().readConfig(properties).startServer("com.James.demo");
+    try{
+      providerInstance.getInstance().readConfig(properties).startServer("com.James.demo");
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+
 
   }
 

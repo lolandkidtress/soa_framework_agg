@@ -60,7 +60,7 @@ public class remoteCallHelper {
 
     }
 
-    return Return.FAIL(Code.method_notsupport.code,Code.method_notsupport.name());
+    return Return.FAIL(Code.method_not_support.code,Code.method_not_support.name());
 
   }
 

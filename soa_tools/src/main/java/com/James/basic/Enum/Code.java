@@ -22,7 +22,9 @@ public enum Code {
     over_limit(500300, "接口调用次数超过限制") ,//
     service_degrade(500400, "接口调用次数超过限制") ,
     avro_Connection_not_available(500500,"avro连接不可用"),
-    avro_Connection_Max_limit(500600,"avro连接无法初始化,已达上限");
+    avro_Connection_Max_limit(500600,"avro连接无法初始化,已达上限"),
+    zk_Connection_Exception(500700,"zk连接异常"),
+    kafka_Connection_Exception(500800,"kafka连接异常,已达上限");
 
 
     public String note;

@@ -52,12 +52,14 @@ public class RemoteInvoker implements Invoker,Serializable {
 
     if (!zkClientTools.isConnected(zkconnect)) {
       LOGGER.error("zookeeeper连接失败");
-    }
-    this.zkclient = new zkClientTools(zkconnect, "");
-    LOGGER.info("zookeeeper连接成功");
-    //this.mockIns = new mockInstance(zkconnect);
+    }else{
+      this.zkclient = new zkClientTools(zkconnect, "");
+      LOGGER.info("zookeeeper连接成功");
+      //this.mockIns = new mockInstance(zkconnect);
 
-    initInvoker(server_name);
+      initInvoker(server_name);
+    }
+
 
   }
 
@@ -175,7 +177,7 @@ public class RemoteInvoker implements Invoker,Serializable {
         sharedNode SharedNode = JsonConvert.toObject(JsonConvert.toJson(s_node), sharedNode.class);
         //有avro就初始化连接池
         if(SharedNode.getProtocol().equals(CommonConfig.PROTOCOL.avro.name())){
-          avroNettyClientConnectionManager.initConnectionPool(SharedNode);
+          avroNettyClientConnectionManager.getInstance().initConnectionPool(SharedNode);
         }
         LOGGER.info("组装"+ver+"的hash环");
         Provider.init(ver, SharedNode);

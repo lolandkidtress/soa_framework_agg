@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.James.Exception.zkConnectionException;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
@@ -99,13 +100,13 @@ public class providerInstance {
     return this;
   }
 
-  public providerInstance startServer(String serverName) {
+  public providerInstance startServer(String serverName) throws Exception{
 
     init(this.zkConnect);
 
     if(this.zkclient==null){
       LOGGER.error("zookeeeper连接失败");
-      return null;
+      throw new zkConnectionException();
     }
 
     this.serverName = serverName;
@@ -189,20 +190,23 @@ public class providerInstance {
     if(!zkClientTools.isConnected(zkconnect)){
       LOGGER.error("zookeeeper连接失败");
 
+    }else{
+      this.zkclient = new zkClientTools(zkconnect,providerMangerPath);
+      LOGGER.info("zookeeeper连接成功");
     }
-    this.zkclient = new zkClientTools(zkconnect,providerMangerPath);
-    LOGGER.info("zookeeeper连接成功");
+
 
   }
 
-  public void init(String zkconnect){
+  public void init(String zkconnect) {
 
     if(!zkClientTools.isConnected(zkconnect)){
       LOGGER.error("zookeeeper连接失败");
-
+    }else{
+      this.zkclient = new zkClientTools(zkconnect,"");
+      LOGGER.info("zookeeeper连接成功");
     }
-    this.zkclient = new zkClientTools(zkconnect,"");
-    LOGGER.info("zookeeeper连接成功");
+
   }
 
 

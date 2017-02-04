@@ -2,7 +2,7 @@
 
 ##FEATURE
 
-* 1.agent+javasist实现的代码注入功能 
+* 1.agent+javasist实现的代码注入功能(性能监控)
 * 2.kafka的异步消息  
 * 3.AVRO RPC服务发现和调用
 * 4.HTTP服务发现和调用
@@ -55,10 +55,13 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 ##TODO:
 
 * 配置中心
-* avro的client连接池
 * 服务地址IP路由
+* 记录调用链及方法的执行时间
+* zk/kafka版本升级
 
 ##Versions
 * Release1.0.0R170117:初版
 
 * Release1.0.1R170122:添加了限流和服务降级
+
+* Release1.1.0R170204:添加avro连接池

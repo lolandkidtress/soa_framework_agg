@@ -1,4 +1,4 @@
-package com.James.basic.Exception;
+package com.James.Exception;
 
 import java.io.IOException;
 
@@ -8,14 +8,20 @@ import com.James.basic.Enum.Code;
 /**
  * Created by James on 16/6/8.
  */
-public class Method_Not_Found_Exception extends IOException {
+public class avroConnectionException extends IOException {
   private Integer code;
   private String message;
 
-  public Method_Not_Found_Exception() {
+  public avroConnectionException() {
     super();
-    this.code = Code.service_not_found.code;
-    this.message = Code.service_not_found.name();
+    this.code = Code.avro_Connection_not_available.code;
+    this.message = Code.avro_Connection_not_available.name();
+  }
+
+  public avroConnectionException(Integer code,String message) {
+    super();
+    this.code = code;
+    this.message = message;
   }
 
   public Integer getCode() {

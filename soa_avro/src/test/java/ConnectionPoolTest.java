@@ -1,9 +1,9 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.avro.util.Utf8;
@@ -24,7 +24,7 @@ import com.James.basic.UtilsTools.Return;
  */
 public class ConnectionPoolTest {
 
-  public static void main(String args[]) throws IOException {
+  public static void main(String args[]) throws Exception {
 
     //添加 test 的avroRPC接口
     avroRequestHandleRegister.INSTANCE.addRequestHandle("test", new sampleRequest());
@@ -45,7 +45,7 @@ public class ConnectionPoolTest {
     avroNettyClientConnectionPool cp =
         avroNettyClientConnectionManager.getInstance().getConnectPool("192.168.21.218", CommonConfig.defaultAvroPort);
 
-    ExecutorService mainExecutorService = Executors.newFixedThreadPool(50);
+    ExecutorService mainExecutorService = Executors.newFixedThreadPool(100);
 
     Runnable r = new Runnable() {
       @Override
@@ -54,48 +54,75 @@ public class ConnectionPoolTest {
       }
     };
 
-    Callable<String> cb = new Callable() {
+    Callable<Boolean> cb = new Callable() {
       @Override
-      public Object call()
+      public Boolean call()
           throws Exception {
-        avroNettyClientConnection conn = cp.getConnect();
 
-        Return rt =conn.call(message);
-        if(!rt.is_success()){
-          System.out.print(rt.toJson());
+        try{
+          avroNettyClientConnection conn = cp.getConnect();
+          Return rt =conn.call(message);
+          cp.releaseConnect(conn);
+          return true;
+        }catch(Exception e){
+          e.printStackTrace();
+          return false;
         }
-        cp.releaseConnect(conn);
-        return null;
       }
     };
 
-    List<Callable<String>> largeCallableList = new ArrayList<>();
-    for(int i=0;i<50;i++){
+    List<Callable<Boolean>> largeCallableList = new ArrayList<>();
+    for(int i=0;i<100;i++){
       largeCallableList.add(cb);
     }
 
-    List<Callable<String>> smallCallableList = new ArrayList<>();
+    List<Callable<Boolean>> smallCallableList = new ArrayList<>();
     for(int i=0;i<20;i++){
       smallCallableList.add(cb);
     }
     try{
       while(true){
 
-        mainExecutorService.invokeAll(smallCallableList);
+        List<Future<Boolean>> sft = mainExecutorService.invokeAll(smallCallableList);
+
+        System.out.println("small执行成功:" + sft.stream().filter(f -> {
+                    try {
+                      if (f.get() == true) {
+                        return true;
+                      } else {
+                        return false;
+                      }
+                    } catch (Exception e) {
+                      return false;
+                    }
+                  }).count());
+
+
         System.out.println("small任务结束");
         TimeUnit.SECONDS.sleep(10);
-        mainExecutorService.invokeAll(largeCallableList);
+        List<Future<Boolean>> lft = mainExecutorService.invokeAll(largeCallableList);
+
+        System.out.println("large执行成功:" + lft.stream().filter(f -> {
+          try {
+            if (f.get() == true) {
+              return true;
+            } else {
+              return false;
+            }
+          } catch (Exception e) {
+            return false;
+          }
+        }).count());
+
         System.out.println("large任务结束");
         TimeUnit.SECONDS.sleep(10);
 
-        System.out.println(cp.getConnSize().toString());
+        System.out.println(cp.getConnSize().get("currentAvail"));
       }
 
     }catch (Exception e){
       e.printStackTrace();
     }
-
   }
-
 
 }

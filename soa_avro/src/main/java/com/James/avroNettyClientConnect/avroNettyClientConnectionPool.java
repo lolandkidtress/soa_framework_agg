@@ -3,9 +3,9 @@ package com.James.avroNettyClientConnect;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,6 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.James.Exception.avroConnectionException;
+import com.James.basic.Enum.Code;
 
 
 /**
@@ -26,8 +29,8 @@ public class avroNettyClientConnectionPool {
   private int port;    //端口
   private boolean keepAlive; //保持
 
-  private int minConnections ; // 空闲池，最小连接数
-  private int maxConnections ; // 空闲池，最大连接数
+  private int minConnections ; // 最小连接数
+  private int maxConnections ; // 最大连接数
   private int initConnections ;// 初始化连接数
   private int highWaterMark ; //可用连接少于10%则自动扩容
   private int extendPercent ; //数量不够时扩容当前连接的百分比
@@ -42,7 +45,7 @@ public class avroNettyClientConnectionPool {
   //注册的连接
   private ConcurrentHashMap<String,avroNettyClientConnection> registerConnections = new ConcurrentHashMap();
   //空闲的连接
-  private ConcurrentLinkedQueue<avroNettyClientConnection> freeConnectionsLQ = new ConcurrentLinkedQueue();
+  private LinkedBlockingQueue<avroNettyClientConnection> freeConnectionsLQ = new LinkedBlockingQueue();
   //使用中的连接
   private ConcurrentHashMap<String,avroNettyClientConnection> blockedConnections = new ConcurrentHashMap();
 
@@ -73,20 +76,24 @@ public class avroNettyClientConnectionPool {
     executorService.scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
-        maintenanceConnectionPool();
+        try{
+          maintenanceConnectionPool();
+        }catch(Exception e){
+          e.printStackTrace();
+          logger.error("维护连接池异常");
+        }
+
       }
     }, lazyCheck, periodCheck, TimeUnit.MILLISECONDS);
-
+    //初始化线程池
     initAvroNettyClientConnectionPool();
     logger.info(
         "avroConnectionPool初始化结束:");
   }
 
+  private void maintenanceConnectionPool() throws Exception{
 
-
-
-  private void maintenanceConnectionPool(){
-    int size = registerConnections.size();
+    int size = freeConnectionsLQ.size();
     logger.info("avroConnectionPool维护进程:" + "注册:" + size + ",可用:" + freeConnectionsLQ.size());
     if(isBalancing.get()){
       logger.info("avroConnectionPool正在重整");
@@ -96,7 +103,13 @@ public class avroNettyClientConnectionPool {
     if (size < minConnections) {
       int sizeToBeAdded = minConnections - size;
       logger.info("可用数少于最小配置");
-      addAvroNettyClientConnection(sizeToBeAdded);
+      try{
+        addAvroNettyClientConnection(sizeToBeAdded);
+      }catch(avroConnectionException e){
+        logger.error(
+            "avroConnectionPool扩容异常,已扩容到最大配置");
+      }
+
 
     } else if (size > minConnections) {
       int sizeToBeRemoved = size - minConnections;
@@ -106,23 +119,31 @@ public class avroNettyClientConnectionPool {
     }
   }
 
-  public void initAvroNettyClientConnectionPool(){
+  public void initAvroNettyClientConnectionPool() {
     if(registerConnections.size()<this.initConnections){
-      addAvroNettyClientConnection(this.initConnections-registerConnections.size());
+      try{
+        addAvroNettyClientConnection(this.initConnections-registerConnections.size());
+      }catch(avroConnectionException e){
+        logger.error(
+            "avroConnectionPool扩容异常,已扩容到最大配置");
+      }
+
     }
     this.pools_count.set(this.initConnections);
 
   }
 
-  private void addAvroNettyClientConnection(int num){
+  private void addAvroNettyClientConnection(int num) throws avroConnectionException{
 
     if(this.isBalancing.get()){
       //维护中
       return;
     }
+    if(registerConnections.size()>maxConnections){
+      throw new avroConnectionException(Code.avro_Connection_Max_limit.code,Code.avro_Connection_Max_limit.note);
+    }
     synchronized (isBalancing){
       isBalancing.compareAndSet(false,true);
-      //TODO 判断是否超过max
       for(int i=0;i<num;i++){
         avroNettyClientConnection conn = new avroNettyClientConnection(this.host,this.port);
         registerConnections.put(conn.getName(),conn);
@@ -137,7 +158,7 @@ public class avroNettyClientConnectionPool {
   }
 
   //收缩
-  private void removeAvroNettyClientConnection(int num){
+  private void removeAvroNettyClientConnection(int num) throws Exception{
     if(this.isBalancing.get()){
       return;
     }
@@ -145,7 +166,7 @@ public class avroNettyClientConnectionPool {
       isBalancing.compareAndSet(false, true);
       for(int i=0;i<num;i++){
         this.pools_count.decrementAndGet();
-        avroNettyClientConnection conn =freeConnectionsLQ.poll();
+        avroNettyClientConnection conn =freeConnectionsLQ.poll(1000,TimeUnit.MILLISECONDS);
         registerConnections.remove(conn.getName());
         conn.destroyConn();
       }
@@ -156,46 +177,64 @@ public class avroNettyClientConnectionPool {
 
   }
 
-  public avroNettyClientConnection getConnect(){
+  public avroNettyClientConnection getConnect() throws avroConnectionException{
 
     if(freeConnectionsLQ.size()<=0) {
-      logger.info("没有可以使用的连接");
-      addAvroNettyClientConnection(1);
+      try{
+        addAvroNettyClientConnection(1);
+      }catch(avroConnectionException e){
+        logger.error(
+            "avroConnectionPool扩容异常,已扩容到最大配置");
+        throw new avroConnectionException(Code.avro_Connection_Max_limit.code,Code.avro_Connection_Max_limit.note);
+      }
       //调用初始化
       mainExecutorService.submit(new Runnable() {
         @Override
         public void run() {
-          if(isBalancing.get()){
+          if (isBalancing.get()) {
             //维护中
             return;
           }
           initAvroNettyClientConnectionPool();
         }
       });
+//      throw new avroConnectionException(Code.avro_Connection_not_available.code,Code.avro_Connection_not_available.note);
     }
+    try{
+      //等待1秒
+      avroNettyClientConnection conn = freeConnectionsLQ.poll(1000, TimeUnit.MILLISECONDS);
+      this.blockedConnections.put(conn.getName(),conn);
 
-    avroNettyClientConnection conn = freeConnectionsLQ.poll();
-    this.blockedConnections.put(conn.getName(),conn);
+      if(this.blockedConnections.size() > (this.registerConnections.size() - this.registerConnections.size()*highWaterMark/100)){
+        //异步扩容
+        logger.info("占用:" + this.blockedConnections.size()+",剩余"+ (this.registerConnections.size() - this.blockedConnections.size()) +",不足"+highWaterMark+"%");
 
-    if(this.blockedConnections.size() > (this.registerConnections.size() - this.registerConnections.size()*highWaterMark/100)){
-      //异步扩容
-      logger.info("占用:" + this.blockedConnections.size()+",剩余"+ (this.registerConnections.size() - this.blockedConnections.size()) +",不足"+highWaterMark+"%");
+        mainExecutorService.submit(new Runnable() {
+          @Override
+          public void run() {
+            if(isBalancing.get()){
+              //维护中
+              return;
+            }
+            int sizeToAdd = registerConnections.size() * extendPercent/100;
+            logger.info("自动扩容" + sizeToAdd);
+            try{
+              addAvroNettyClientConnection(sizeToAdd);
+            }catch(avroConnectionException e){
+              logger.error(
+                  "avroConnectionPool扩容异常,已扩容到最大配置");
+            }
 
-      mainExecutorService.submit(new Runnable() {
-        @Override
-        public void run() {
-          if(isBalancing.get()){
-            //维护中
-            return;
           }
-          int sizeToAdd = registerConnections.size() * extendPercent/100;
-          logger.info("自动扩容" + sizeToAdd);
+        });
+      }
 
-          addAvroNettyClientConnection(sizeToAdd);
-        }
-      });
+      return conn;
+    }catch(Exception e){
+      e.printStackTrace();
+      throw new avroConnectionException(Code.avro_Connection_not_available.code,Code.avro_Connection_not_available.note);
     }
-    return conn;
+
   }
 
   //释放调用完的连接
@@ -211,7 +250,7 @@ public class avroNettyClientConnectionPool {
 
   public Map getConnSize(){
     Map size = new HashMap<>();
-    size.put("currentAvail",this.freeConnectionsLQ);
+    size.put("currentAvail",this.freeConnectionsLQ.size());
     size.put("total",this.registerConnections.size());
     return size;
   }

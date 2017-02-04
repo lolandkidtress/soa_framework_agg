@@ -309,7 +309,7 @@ public class RemoteInvoker implements Invoker,Serializable {
 //          break;
       default:
         LOGGER.error(method + "不支持的协议");
-        ret = Return.FAIL(Code.protocol_notsupport.code,Code.protocol_notsupport.name());
+        ret = Return.FAIL(Code.protocol_not_support.code,Code.protocol_not_support.name());
     }
 
     return ret;

@@ -18,7 +18,7 @@
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-		<global.version>Release1.0.2R170122</global.version>
+		<global.version>Release1.1.0R170204</global.version>
 		<sonar.exclusions>
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>

@@ -45,7 +45,7 @@ public class avroServer {
       avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
       if(avrpRequestProto==null){
-        Return ret = Return.FAIL(Code.service_notfound.code,Code.service_notfound.name());
+        Return ret = Return.FAIL(Code.service_not_found.code,Code.service_not_found.name());
         return new Utf8(ret.toJson());
       }
       try{

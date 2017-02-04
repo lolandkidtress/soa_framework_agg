@@ -7,7 +7,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.NettyAvroRpcClient.avroRpcClient;
+import com.James.Exception.avroConnectionException;
+import com.James.avroNettyClientConnect.avroNettyClientConnection;
+import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
+import com.James.avroNettyClientConnect.avroNettyClientConnectionPool;
 import com.James.avroProto.Message;
 import com.James.basic.Enum.Code;
 import com.James.basic.Model.sharedNode;
@@ -23,7 +26,7 @@ import com.James.http_client.OkHttpTools;
  */
 public class remoteCallHelper {
 
-  private static final Log LOGGER = LogFactory.getLog(remoteCallHelper.class.getName());
+  private static final Log logger = LogFactory.getLog(remoteCallHelper.class.getName());
   private static OkHttpTools okHttpTools =  new OkHttpTools();
 
   public static Return http_call(sharedNode sharedNode,Parameter parameter){
@@ -43,7 +46,6 @@ public class remoteCallHelper {
     sb.append(CommonConfig.SLASH);
     sb.append(sharedNode.getMethod_name());
 
-
     Map<String, String> headers = new HashMap<>();
 
     if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
@@ -51,7 +53,7 @@ public class remoteCallHelper {
         return Return.create(okHttpTools.do_get(sb.toString(), parameter, headers ));
       }catch(IOException e){
         e.printStackTrace();
-        LOGGER.error("调用okhttp get异常",e);
+        logger.error("调用okhttp get异常",e);
         return Return.FAIL(Code.error.code,Code.error.name());
       }
     }
@@ -59,20 +61,29 @@ public class remoteCallHelper {
     if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
 
     }
-
     return Return.FAIL(Code.method_not_support.code,Code.method_not_support.name());
 
   }
 
-  //TODO netty client 连接池
   public static Return avro_call(sharedNode sharedNode,Parameter parameter) {
 
     Message message = new Message();
     message.setParam(JsonConvert.toJson(parameter));
     message.setRequestName(sharedNode.getMethod_name());
 
-    Return rpc_ret = avroRpcClient.call(sharedNode.getIP(), Integer.valueOf(sharedNode.getRpc_port()), message);
+    avroNettyClientConnectionPool cp =
+        avroNettyClientConnectionManager.getInstance().getConnectPool(sharedNode.getIP(), sharedNode.getRpc_port());
+    try{
+      avroNettyClientConnection conn = cp.getConnect();
+      Return rpc_ret = conn.call(message);
+      cp.releaseConnect(conn);
+      return rpc_ret;
+    }catch(avroConnectionException e){
+      e.printStackTrace();
+      logger.error(
+          "avroConnectionPool调用异常",e);
+      return Return.FAIL(Code.avro_Connection_not_available.code,Code.avro_Connection_not_available.name());
+    }
 
-    return rpc_ret;
   }
 }

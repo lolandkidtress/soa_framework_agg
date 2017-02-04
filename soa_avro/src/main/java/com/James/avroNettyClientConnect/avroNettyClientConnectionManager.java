@@ -35,19 +35,22 @@ public class avroNettyClientConnectionManager {
 
 
   public void initConnectionPool(sharedNode SharedNode){
-    //根据host和port创建连接池
-    avroNettyClientConnectionPool connPools=
-        new avroNettyClientConnectionPool(SharedNode.getIP(),
-                                          Integer.valueOf(SharedNode.getRpc_port()),
-                                          this.minConnections,
-                                          this.maxConnections,
-                                          this.initConnections,
-                                          this.highWaterMark,
-                                          this.extendPercent,
-                                          this.lazyCheck,
-                                          this.periodCheck);
+    if(!registerConnectionPools.contains(SharedNode.getIP().concat("-").concat(SharedNode.getRpc_port()))){
+      //根据host和port创建连接池
+      avroNettyClientConnectionPool connPools=
+          new avroNettyClientConnectionPool(SharedNode.getIP(),
+              Integer.valueOf(SharedNode.getRpc_port()),
+              this.minConnections,
+              this.maxConnections,
+              this.initConnections,
+              this.highWaterMark,
+              this.extendPercent,
+              this.lazyCheck,
+              this.periodCheck);
 
-    registerConnectionPools.put(SharedNode.getIP().concat("-").concat(SharedNode.getRpc_port()),connPools);
+      registerConnectionPools.put(SharedNode.getIP().concat("-").concat(SharedNode.getRpc_port()),connPools);
+    }
+
   }
 
 

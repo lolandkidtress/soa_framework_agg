@@ -33,7 +33,7 @@ public class Launch  {
   private static Configuration configuration = null;
 //  private static String zkconnect = "192.168.202.16:2181,192.168.202.17:2181,192.168.202.18:2181/kafka";
 private static String zkconnect = "127.0.0.1:2181";
-  private static String kafka = "192.168.202.34:9092,192.168.202.35:9092,192.168.202.36:9092";
+  private static String kafka = "127.0.0.1:9092";
   private static Properties properties = new Properties();
 
   static {
@@ -158,8 +158,9 @@ private static String zkconnect = "127.0.0.1:2181";
     JettyServer.startJetty(httpPort);
     TimeUnit.SECONDS.sleep(5);
     new AppNanolets(nanoPort);
-    //http服务和avro服务
+    //在zk中注册http服务和avro服务
     launch.registerServer();
+    //依赖上面注册的服务
     launch.discoryServer();
 //    //kafka测试
     launch.receiveKafka();

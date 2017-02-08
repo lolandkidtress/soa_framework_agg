@@ -36,7 +36,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
     /**
      * logger to log to.
      */
-    private static final Log LOGGER = LogFactory.getLog(RouterNanoHTTPD.class.getName());
+    private static final Log logger = LogFactory.getLog(RouterNanoHTTPD.class.getName());
 
     public interface UriResponder {
 
@@ -368,7 +368,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
                     }
                 } catch (Exception e) {
                     error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
-                    LOGGER.error( error, e);
+                    logger.error( error, e);
                 }
             }
             return NanoHTTPD.newFixedLengthResponse(Status.INTERNAL_ERROR, "text/plain", error);
@@ -394,7 +394,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
             if (initParameter.length > parameterIndex) {
                 return paramClazz.cast(initParameter[parameterIndex]);
             }
-            LOGGER.info("init parameter index not available " + parameterIndex);
+            logger.info("init parameter index not available " + parameterIndex);
             return null;
         }
 

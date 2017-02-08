@@ -2,10 +2,7 @@ package com.James.embeddedHttpServer;
 
 import java.io.IOException;
 
-import com.James.Annotation.tracking;
-import com.James.MonitorHandle.trackingHandle;
 import com.James.basic.UtilsTools.CommonConfig;
-import com.James.soa_agent.HotInjecter;
 
 
 /**
@@ -57,17 +54,5 @@ public class AppNanolets extends RouterNanoHTTPD {
 //        addRoute("/browse/(.)+", StaticPageTestHandler.class, new File("src/test/resources").getAbsoluteFile());
     }
 
-    /**
-     * Main entry point
-     *
-     * @param args
-     */
 
-    public static void main(String[] args) throws Exception {
-        HotInjecter.getInstance().add_advice_method(tracking.class, new trackingHandle());
-        HotInjecter.getInstance().advice();
-
-        new AppNanolets(9093);
-        Thread.currentThread().join();
-    }
 }

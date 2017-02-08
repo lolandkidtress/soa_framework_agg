@@ -10,7 +10,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.James.Annotation.tracking;
 import com.James.Exception.zkConnectionException;
+import com.James.JettyServer.JettyServer;
+import com.James.MonitorHandle.trackingHandle;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
@@ -18,6 +21,7 @@ import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.zkTools.zkClientTools;
+import com.James.soa_agent.HotInjecter;
 
 import UtilsTools.ClassScan;
 
@@ -27,7 +31,7 @@ import UtilsTools.ClassScan;
  * 服务提供方
  */
 public class providerInstance {
-  private static final Log LOGGER = LogFactory.getLog(providerInstance.class.getName());
+  private static final Log logger = LogFactory.getLog(providerInstance.class.getName());
 
   private static class InnerInstance {
     public static final providerInstance instance = new providerInstance();
@@ -57,7 +61,7 @@ public class providerInstance {
 
   private String defaultHttpPort = CommonConfig.defaultHttpPort;
   private String defaultAvroPort = CommonConfig.defaultAvroPort;
-  private String defaultHttpContext ="";
+  private String defaultHttpContext ="/";
 
 
   public String getDefaultAvroPort(){
@@ -77,26 +81,38 @@ public class providerInstance {
     this.zkConnect = properties.getProperty("zookeeper");
 
     if(this.zkConnect==null||this.zkConnect.length()<0){
-      LOGGER.error("没有配置zk连接");
+      logger.error("没有配置zk连接");
       return null;
     }
 
     if(properties.getProperty("HttpPort")==null){
-      LOGGER.warn("没有配置http端口,使用默认地址");
+      logger.info("没有配置http端口,使用默认地址");
     }else{
       this.defaultHttpPort = properties.getProperty("HttpPort");
     }
 
-    LOGGER.info("http端口为:" + this.defaultHttpPort);
+    if(properties.getProperty("HttpContext")==null){
+      logger.info("没有配置context,使用默认context");
+    }else{
+      this.defaultHttpContext = properties.getProperty("HttpContext");
+    }
+
+    logger.info("http端口为:" + this.defaultHttpPort);
 
     if(properties.getProperty("AvroPort")==null){
-      LOGGER.warn("没有配置rpc端口,使用默认地址");
+      logger.warn("没有配置rpc端口,使用默认地址");
     }else{
       this.defaultAvroPort = properties.getProperty("AvroPort");
 
     }
 
-    LOGGER.info("rpc端口为:" + this.defaultAvroPort);
+    logger.info("rpc端口为:" + this.defaultAvroPort);
+
+    if(properties.getProperty("monitor").equals("true")){
+      HotInjecter.getInstance().add_advice_method(tracking.class, new trackingHandle());
+      HotInjecter.getInstance().advice();
+      logger.info("启动trackingMonitor");
+    }
     return this;
   }
 
@@ -105,7 +121,7 @@ public class providerInstance {
     init(this.zkConnect);
 
     if(this.zkclient==null){
-      LOGGER.error("zookeeeper连接失败");
+      logger.error("zookeeeper连接失败");
       throw new zkConnectionException();
     }
 
@@ -117,13 +133,13 @@ public class providerInstance {
 
     providerClasses.forEach(providerClass -> {
       //读取注解信息
-      LOGGER.info("开始读取" + providerClass.getName() + "类下的注册信息");
+      logger.info("开始读取" + providerClass.getName() + "类下的注册信息");
 
       providerScanImpl.readClasses(providerClass,serverName).forEach(sharedProvider -> {
         if (sharedProvider.getIdentityID() != null) {
           //判断重名
           if (readMethodName.contains(sharedProvider.getIdentityID())) {
-            LOGGER.error(providerClass.getName() + "扫描到重复定义: " + sharedProvider.getIdentityID());
+            logger.error(providerClass.getName() + "扫描到重复定义: " + sharedProvider.getIdentityID());
           } else {
             _sharedNodes.add(sharedProvider);
             readMethodName.add(sharedProvider.getIdentityID());
@@ -146,13 +162,13 @@ public class providerInstance {
 //                (avrpRequestProto) Class.forName(sharedNode.getDeclaringClass_name()).newInstance());
           } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            LOGGER.error("ClassNotFoundException" + sharedProvider.getDeclaringClass_name());
+            logger.error("ClassNotFoundException" + sharedProvider.getDeclaringClass_name());
           } catch (IllegalAccessException iae) {
             iae.printStackTrace();
-            LOGGER.error("IllegalAccessException" + sharedProvider.getDeclaringClass_name());
+            logger.error("IllegalAccessException" + sharedProvider.getDeclaringClass_name());
           } catch (InstantiationException ise) {
             ise.printStackTrace();
-            LOGGER.error("InstantiationException" + sharedProvider.getDeclaringClass_name());
+            logger.error("InstantiationException" + sharedProvider.getDeclaringClass_name());
           }
         });
 
@@ -161,9 +177,9 @@ public class providerInstance {
 
       //往zk中写入注册的服务
       providerRegister.INSTANCE.registerServers(_sharedNodes,zkclient);
-      LOGGER.info("注册自身服务结束");
+      logger.info("注册自身服务结束");
     }else{
-      LOGGER.error("没有需要注册的服务");
+      logger.error("没有需要注册的服务");
     }
 
     try{
@@ -172,13 +188,22 @@ public class providerInstance {
 //      avroRpcServer.getInstance().startServer();
     }catch(IOException ioe){
       ioe.printStackTrace();
-      LOGGER.error("启动avro服务异常" );
+      logger.error("启动avro服务异常" );
+    }
+
+    try{
+      //启动http服务
+      JettyServer.startJetty(Integer.valueOf(this.defaultHttpPort),this.defaultHttpContext);
+//      avroRpcServer.getInstance().startServer();
+    }catch(IOException ioe){
+      ioe.printStackTrace();
+      logger.error("启动http服务异常" );
     }
 
     //TODO
     //退出时发通知给zk
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      LOGGER.info("系统退出,关闭监听服务");
+      logger.info("系统退出,关闭监听服务");
     }));
 
     return this;
@@ -188,11 +213,11 @@ public class providerInstance {
   public void init(String zkconnect,String providerMangerPath){
 
     if(!zkClientTools.isConnected(zkconnect)){
-      LOGGER.error("zookeeeper连接失败");
+      logger.error("zookeeeper连接失败");
 
     }else{
       this.zkclient = new zkClientTools(zkconnect,providerMangerPath);
-      LOGGER.info("zookeeeper连接成功");
+      logger.info("zookeeeper连接成功");
     }
 
 
@@ -201,10 +226,10 @@ public class providerInstance {
   public void init(String zkconnect) {
 
     if(!zkClientTools.isConnected(zkconnect)){
-      LOGGER.error("zookeeeper连接失败");
+      logger.error("zookeeeper连接失败");
     }else{
       this.zkclient = new zkClientTools(zkconnect,"");
-      LOGGER.info("zookeeeper连接成功");
+      logger.info("zookeeeper连接成功");
     }
 
   }

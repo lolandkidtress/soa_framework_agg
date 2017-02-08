@@ -1,6 +1,8 @@
 package com.James.soa_agent;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 
 /**
  * Created by James on 16/5/25.
@@ -76,4 +78,19 @@ public class Agent_Advice_Method implements Serializable {
         this.set_exception_types = set_exception_types;
     }
 
+    @Override
+    public boolean equals(Object o) {
+
+        if (this.getMethod_name() == ((Agent_Advice_Method) o).getMethod_name()) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(method_name, method_parameters, long_local_variable, insert_before, insert_after, add_catch,
+            set_exception_types);
+    }
 }

@@ -3,6 +3,8 @@ package com.James.soa_agent;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import javassist.ClassClassPath;
@@ -56,7 +58,11 @@ public class Agent_Transformer implements ClassFileTransformer {
             // 注入方法
             Set<Agent_Advice_Method> methods = agent_Advice_Class.getMethods();
             for (Agent_Advice_Method agent_advice_method : methods) {
-                CtMethod[] declaredMethods = ct_class.getDeclaredMethods(agent_advice_method.getMethod_name());
+                //CtMethod[] declaredMethods = ct_class.getDeclaredMethods(agent_advice_method.getMethod_name());
+                Set<CtMethod> uniDeclaredMethods = new HashSet<CtMethod>(Arrays.asList(ct_class.getDeclaredMethods(agent_advice_method.getMethod_name())));
+                CtMethod[] declaredMethods = new CtMethod[uniDeclaredMethods.size()];
+
+                uniDeclaredMethods.toArray(declaredMethods);
                 for (CtMethod ct_method : declaredMethods) {
                     CtClass[] parameterTypes = ct_method.getParameterTypes();
                     StringBuilder stringbuilder = new StringBuilder();

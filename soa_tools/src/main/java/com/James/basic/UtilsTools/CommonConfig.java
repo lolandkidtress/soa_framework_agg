@@ -26,6 +26,15 @@ public class CommonConfig {
   //监控用端口
   public final static String nanoHttpPort = "9091";
 
+  //常量
+  public final static String s_trackingData = "trackingData";
+  public final static String s_trackingID = "trackingID";
+  public final static String s_sequence = "Sequence";
+  public final static String s_clientID = "clientID";
+  //用于标记自身
+  //TODO 生成算法->服务名+ip+端口
+  public final static String clientID= Utils.generateClientID();
+
 
 
 //  public enum SUBMIT_MODE {

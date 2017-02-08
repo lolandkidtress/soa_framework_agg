@@ -50,6 +50,7 @@ public class remoteCallHelper {
 
     if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
       try {
+
         return Return.create(okHttpTools.do_get(sb.toString(), parameter, headers ));
       }catch(IOException e){
         e.printStackTrace();

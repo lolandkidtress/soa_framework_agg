@@ -15,8 +15,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * Created by James on 16/5/23.
  */
 public class Return extends HashMap<String, Object> {
-    private static final long serialVersionUID = 2203513787220720192L;
-    private static final Log LOGGER = LogFactory.getLog(Return.class.getName());
+    private static final long serialVersionUID = 1L;
+    private static final Log logger = LogFactory.getLog(Return.class.getName());
 
     public enum Return_Fields {
         success, code, note
@@ -40,7 +40,7 @@ public class Return extends HashMap<String, Object> {
                 jo.put(entry.getKey(), entry.getValue());
             }
         } catch (IOException e) {
-            LOGGER.error("Return.create 解析 JSON 失败", e);
+            logger.error("Return.create 解析 JSON 失败", e);
             return Return.FAIL(Code.generate_return_error);
         }
         return jo;
@@ -112,7 +112,7 @@ public class Return extends HashMap<String, Object> {
         try {
             return JsonConvert.toJson(this);
         } catch (Exception e) {
-            LOGGER.error("json 解析失败:", e);
+            logger.error("json 解析失败:", e);
             return JsonConvert.toJson(Return.FAIL(Code.generate_return_error));
         }
     }

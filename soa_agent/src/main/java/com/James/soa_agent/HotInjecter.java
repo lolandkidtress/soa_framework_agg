@@ -112,6 +112,9 @@ public class HotInjecter {
 
         Method[] declaredMethods = clazz.getDeclaredMethods();
         for (Method method : declaredMethods) {
+            if(method.isBridge()){
+                continue;
+            }
             for (Class<? extends Annotation> key : advice_methods.keySet()) {
                 Agent_Handle handle = advice_methods.get(key);
 

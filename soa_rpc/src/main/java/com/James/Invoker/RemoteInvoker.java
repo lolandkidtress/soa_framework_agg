@@ -20,10 +20,12 @@ import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.Invoker.Invoker;
 import com.James.basic.Model.provider;
 import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.trackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.basic.UtilsTools.Return;
+import com.James.basic.UtilsTools.ThreadLocalCache;
 import com.James.basic.zkTools.zkClientTools;
 import com.James.basic.zkTools.zkWatchInstance;
 
@@ -210,8 +212,10 @@ public class RemoteInvoker implements Invoker,Serializable {
     sharedNode SharedNode;
     try{
       if(methodProviderInvokers.get(method)!=null){
-        SharedNode = methodProviderInvokers.get(method).get(version,
-            parameter.get("trackingID"));
+
+        //同一个的trackingID能匹配同一个服务
+        String seed = parameter.get(CommonConfig.s_trackingID);
+        SharedNode = methodProviderInvokers.get(method).get(version, seed);
       }else{
         LOGGER.error("没有可用服务节点");
         return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
@@ -227,9 +231,7 @@ public class RemoteInvoker implements Invoker,Serializable {
       return Return.FAIL(Code.error.code,Code.error.name());
     }
 
-
     String ratelimitName = (String) SharedNode.getFilterMap().getOrDefault("ratelimit","");
-
     String degradeName = (String) SharedNode.getFilterMap().getOrDefault("degrade","");
     //检查限流
     if(!ratelimitName.equals("")){
@@ -247,50 +249,35 @@ public class RemoteInvoker implements Invoker,Serializable {
       }
     }
 
-    Return InvokeRet = callImpl(SharedNode, method, parameter);
-    //调用返回值不是正确的
-    if(!InvokeRet.is_success()&& (InvokeRet.get_code().equals(Code.error.code))){
-      Filter.getInstance().IncrDegradeCount(degradeName);
+    //theadlocalcache记录调用链
+    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    if(tc==null){
+      tc=new trackingChain(parameter.get(CommonConfig.s_trackingID));
     }
+    tc.setInvokerID(CommonConfig.clientID);
+    tc.setFromMethod(method);
+    tc.setSequence(tc.getSequence() + 1);
+    tc.setStart_time(System.currentTimeMillis());
+    tc.setStatus(true);
+
+    parameter.put(CommonConfig.s_sequence,String.valueOf(tc.getSequence()));
+    parameter.put("targetRequest",method);
+    Return InvokeRet = callImpl(SharedNode, method, parameter);
+
+    //调用返回值不是正确的
+    if(!InvokeRet.is_success() || (InvokeRet.get_code().equals(Code.error.code))){
+
+      tc.setStatus(false);
+      if(!degradeName.equals("")){
+        Filter.getInstance().IncrDegradeCount(degradeName);
+      }
+    }
+
+    tc.setEnd_time(System.currentTimeMillis());
+    ThreadLocalCache.setCallchain(tc);
 
     return InvokeRet;
 
-    //流量控制
-
-
-
-//    //事前拦截
-//    //配置过调用前降级,且已降级
-//    if(SharedNode.getMockPolicy()!=null
-//      && SharedNode.getMockPolicy().getPolicy()== FilterAnnotation.FilterPolicy.Call_RETURN
-//      && Filter.getInstance().isBlockedStatus(SharedNode.getMockPolicy())
-//        ){
-//
-//      return SharedNode.getMockPolicy().getMockReturn();
-//    }else {
-//
-//      Return ret = callImpl(SharedNode, method, parameter);
-//
-//      //成功直接返回
-//      if (ret.is_success()){
-//        return ret;
-//      }
-//
-//      //配置过降级策略
-//      if (SharedNode.getMockPolicy() != null) {
-//        //记录调用失败
-//          Filter.getInstance().failIncr(SharedNode.getMockPolicy());
-//
-//          //事后拦截
-//          if (SharedNode.getMockPolicy().getPolicy() == FilterAnnotation.FilterPolicy.Fail_RETURN) {
-//            return SharedNode.getMockPolicy().getMockReturn();
-//          } else {
-//            return ret;
-//          }
-//        }else{
-//          return ret;
-//        }
-//      }
   }
 
   private Return callImpl(sharedNode SharedNode,String method,Parameter parameter) {

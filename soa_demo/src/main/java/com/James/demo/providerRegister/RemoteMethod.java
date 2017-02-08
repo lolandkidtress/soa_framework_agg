@@ -1,11 +1,15 @@
 package com.James.demo.providerRegister;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.util.Utf8;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.James.Annotation.tracking;
 import com.James.Filter.Annotation.degradeAnnotation;
 import com.James.Filter.Annotation.ratelimitAnnotation;
 import com.James.avroProto.Message;
@@ -14,7 +18,10 @@ import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.Enum.Code;
+import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
+import com.James.basic.UtilsTools.ThreadLocalCache;
 
 
 /**
@@ -25,24 +32,40 @@ import com.James.basic.UtilsTools.Return;
 public class RemoteMethod implements avrpRequestProto {
 
   //avro方法
+  @tracking
   @descriptionAnnotation(author = "james",name="avrosend",submit_mode="",protocol="avro",desc="")
   @Override
   public Utf8 send(Message message)
       throws AvroRemoteException {
-    System.out.println("avro取得的参数为:" + message.getParam() );
+    String param =message.getParam().toString();
+    try{
+      Map par = JsonConvert.toObject(message.getParam().toString(), HashMap.class);
+
+      System.out.println("avro取得的trackingID参数为:" + par.get(CommonConfig.s_trackingID) );
+      System.out.println("avro取得的sequence参数为:" + par.get(CommonConfig.s_sequence) );
+
+      System.out.println("trackingChain为:"+ ThreadLocalCache.getCallchain().get().toJson());
+    }catch(Exception e){
+      e.printStackTrace();
+      Return ret = Return.FAIL(Code.error.code,Code.error.name());
+      return new Utf8(ret.toJson());
+    }
     return new Utf8("avrosend");
   }
 
   //通过http 方式调用 ,需要自行嵌入spring等容器
   //RequestMapping和descriptionAnnotation的name应该一致
+  @tracking
   @RequestMapping(value = "/start", method = RequestMethod.GET)
   @descriptionAnnotation(author = "james",name="start",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
   @InputParamAnnotation(name ="param1",describe = "参数1")
   @InputParamAnnotation(name ="param2",describe = "参数2")
-  @OutputParamAnnotation(name ="outparam",describe = "参数2",type="String")
-  public Return start(String param1,String param2){
+  @InputParamAnnotation(name ="trackingID",describe = "trackingID")
 
-      System.out.println("调用到start:参数1为"+param1+",参数2为:"+param2);
+  @OutputParamAnnotation(name ="outparam",describe = "参数2",type="String")
+  public Return start(String param1,String param2,String trackingID){
+
+      System.out.println("调用到start:参数1为"+param1+",参数2为:"+param2+",trackingID参数为"+trackingID);
       return Return.SUCCESS(200,"调用start接口返回成功");
   }
 

@@ -13,7 +13,7 @@ import com.James.Filter.rateLimit.ratelimitCountDown;
 /**
  * Created by James on 2016/10/14.
  * 单例
- * 保存配置的降级和流量的配置
+ * 保存降级和流量的配置
  */
 public class Filter {
 

@@ -1,12 +1,21 @@
 package com.James.MonitorHandle;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.James.basic.Model.trackingChain;
+import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.UtilsTools.ThreadLocalCache;
+import com.James.basic.UtilsTools.Utils;
 import com.James.soa_agent.Agent_Advice_Method;
 import com.James.soa_agent.event_handle.Agent_Handle;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -25,13 +34,13 @@ public class trackingHandle extends Agent_Handle {
     advice_method.setMethod_name(method_name);
     advice_method.setLong_local_variable("attach_start_millis");
 
-    Class<?>[] parameterTypes = method.getParameterTypes();
-    StringBuilder stringbuilder = new StringBuilder();
-    for (Class<?> type : parameterTypes) {
-      stringbuilder.append(type.getName()).append(" ");
-    }
-    String full_method_name = stringbuilder.toString();
-    map.put(full_method_name, new AtomicInteger(1));
+//    Class<?>[] parameterTypes = method.getParameterTypes();
+//    StringBuilder stringbuilder = new StringBuilder();
+//    for (Class<?> type : parameterTypes) {
+//      stringbuilder.append(type.getName()).append(" ");
+//    }
+//    String full_method_name = stringbuilder.toString();
+//    map.put(full_method_name, new AtomicInteger(1));
 
 //    advice_method.setInsert_before("attach_start_millis =System.currentTimeMillis();com.James.demo.CodeInjection.My_Agent_Handle.insert_before_call_back( System.currentTimeMillis() );");
     advice_method.setInsert_before(
@@ -57,15 +66,48 @@ public class trackingHandle extends Agent_Handle {
   private final Map<String, AtomicInteger> map = new HashMap<>();
 
   public static void insert_before_call_back(String class_name,String method_name,long start_millis) {
-    System.out.println(class_name+","+method_name+"开始时间:"+ start_millis);
+
+    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    if(tc==null){
+      tc = new trackingChain(Utils.generateTrackingID());
+    }
+    tc.setToClass(class_name);
+    tc.setToMethod(method_name);
+    tc.setInvokerID(CommonConfig.clientID);
+    tc.setStart_time(start_millis);
+    ThreadLocalCache.setCallchain(tc);
+
   }
 
   public static void insert_after_call_back(long start_millis, long end_millis) {
-    System.out.println("耗时:"+ (end_millis - start_millis ));
+
+    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    if(tc==null){
+      tc = new trackingChain(Utils.generateTrackingID());
+    }
+
+    tc.setEnd_time(end_millis);
+    tc.setStatus(true);
+    ThreadLocalCache.setCallchain(tc);
+    System.out.println("耗时:" + (end_millis - start_millis) + ",调用链:" + ThreadLocalCache.getCallchain().get().toJson());
 
   }
 
   public static void add_catch_call_back( Throwable e) {
+    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    if(tc!=null){
+      tc.setEnd_time(System.currentTimeMillis());
+      tc.setStatus(false);
+    }
+    ThreadLocalCache.setCallchain(tc);
     System.out.println("异常:" + e.getCause());
+
   }
+
+  public trackingChain doFilter(HttpServletRequest request, HttpServletResponse response)
+      throws IOException,ServletException {
+      System.out.println("webFilter call");
+      return new trackingChain();
+  }
+
 }

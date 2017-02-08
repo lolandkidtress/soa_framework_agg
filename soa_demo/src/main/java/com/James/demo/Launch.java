@@ -14,8 +14,6 @@ import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
 import com.James.demo.CodeInjection.sampleInjection;
 import com.James.demo.Kafka.MsgCosum;
-import com.James.demo.jettySpring.JettyServer;
-import com.James.embeddedHttpServer.AppNanolets;
 import com.James.kafka_Config.Configuration;
 
 
@@ -38,7 +36,9 @@ public class Launch  {
 
   static {
     properties.put("zookeeper", zkconnect);
-    properties.put("kafka",kafka);
+    properties.put("kafka", kafka);
+    properties.put("monitor","true");
+
     try{
       configuration = Configuration.getInstance().initialization(properties);
     }catch(Exception e){
@@ -66,7 +66,7 @@ public class Launch  {
 
   }
 
-  //服务发现sample
+  //注册服务
   public void registerServer(){
 
     logger.info("注册自身开始启动");
@@ -85,7 +85,7 @@ public class Launch  {
 
   }
 
-  //服务发现sample
+  //调用注册的服务
   public void discoryServer() throws Exception{
 
     logger.info("服务发现开始启动");
@@ -97,29 +97,65 @@ public class Launch  {
     logger.info("start的可用节点为:" + JsonConvert.toJson(demoinvoke.getAvailableProvider("start")));
     logger.info("avrosend的可用节点为"+ JsonConvert.toJson(demoinvoke.getAvailableProvider("avrosend")));
 
+
     //调用2个接口
-    logger.info("start 返回:" + demoinvoke.call("start", "", Parameter.create().add("param1","参数1").add("param2","参数2")));
+    logger.info("start 返回:" + demoinvoke.call("start", "", Parameter.create().add("param1","参数1").add("param2", "参数2")));
 //    logger.info("start 返回:" + demoinvoke.call("start", "wrongVer",Parameter.create()));
     logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
 
-    logger.info("第一次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
-    logger.info("第二次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
-    //第三次code不同
-    logger.info("第三次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
-    //等待一会自动恢复
-    TimeUnit.SECONDS.sleep(6);
-    logger.info("第四次调用限流接口 返回:" + demoinvoke.call("ratelimitCall", "", Parameter.create()));
 
-    logger.info("第一次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
-//    TimeUnit.SECONDS.sleep(1);
-    //第二次code不同
-    logger.info("第二次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
-    TimeUnit.SECONDS.sleep(6);
-    logger.info("第一次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
-//    TimeUnit.SECONDS.sleep(1);
-    //第二次code不同
-    logger.info("第二次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
+    //不同线程中的trackingID是不同的
+    Thread t =new Thread(new Runnable() {
+      @Override
+      public void run() {
+        logger.info(
+            "start 返回:" + demoinvoke.call("start", "", Parameter.create().add("param1", "参数1").add("param2", "参数2")));
 
+        logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
+
+
+      }
+    });
+    t.start();
+
+//
+//    logger.info("第一次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+//    logger.info("第二次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+//    //第三次code不同
+//    logger.info("第三次调用限流接口 返回:" + demoinvoke.call("ratelimitCall","",Parameter.create()));
+//    //等待一会自动恢复
+//    TimeUnit.SECONDS.sleep(6);
+//    logger.info("第四次调用限流接口 返回:" + demoinvoke.call("ratelimitCall", "", Parameter.create()));
+//
+//    logger.info("第一次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
+////    TimeUnit.SECONDS.sleep(1);
+//    //第二次code不同
+//    logger.info("第二次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
+//    TimeUnit.SECONDS.sleep(6);
+//    logger.info("第一次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
+////    TimeUnit.SECONDS.sleep(1);
+//    //第二次code不同
+//    logger.info("第二次调用降级接口 返回:" + demoinvoke.call("degradeCall","",Parameter.create()));
+
+  }
+
+  public void tracking(){
+
+    RemoteInvoker demoinvoke = RemoteInvoker.create("com.James.demo", zkconnect);
+
+    System.out.println("#################################");
+    System.out.println("#################################");
+    System.out.println("#################################");
+
+    //不同线程中的trackingID是不同的
+    logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
+    Thread t =new Thread(new Runnable() {
+      @Override
+      public void run() {
+        logger.info("avrosend 返回:" + demoinvoke.call("avrosend", "", Parameter.create()));
+      }
+    });
+    t.start();
   }
 
   //kafka收消息sample
@@ -148,26 +184,43 @@ public class Launch  {
 
 
   public static void main(String[] args) throws Exception {
-    Launch launch = new Launch();
-    //代码注入
-    launch.hotInject();
+    System.out.println(args.length);
 
-//    //指定http port
-//    SpringApplication.run(Launch.class, args);
-    JettyServer.startJetty(httpPort);
-    TimeUnit.SECONDS.sleep(5);
-    new AppNanolets(nanoPort);
-    //在zk中注册http服务和avro服务
-    launch.registerServer();
-    //依赖上面注册的服务
-    launch.discoryServer();
-//    //kafka测试
-    launch.receiveKafka();
-    launch.sendKafka();
+    if(args==null||args.length<1){
+      //演示所有功能
+      Launch launch = new Launch();
+      //代码注入
+//      launch.hotInject();
 
-
-
+//    new AppNanolets(nanoPort);
+      //在zk中注册http服务和avro服务
+      launch.registerServer();
+//      调用已注册的服务
+      launch.discoryServer();
+//      //调用链
+//      launch.tracking();
+//
+////    //kafka测试
+//      launch.receiveKafka();
+//      launch.sendKafka();
       Thread.currentThread().join();
+    }
+
+    if(args[0].equals("server")){
+      //作为服务提供者启动
+      Launch launch = new Launch();
+      launch.registerServer();
+      Thread.currentThread().join();
+    }
+
+    if(args[0].equals("client")){
+      //作为调用者启动
+      RemoteInvoker demoinvoke = RemoteInvoker.create("com.James.demo", zkconnect);
+      demoinvoke.call("avrosend", "", Parameter.create());
+      Thread.currentThread().join();
+    }
+
+
     //System.exit(0);
   }
 

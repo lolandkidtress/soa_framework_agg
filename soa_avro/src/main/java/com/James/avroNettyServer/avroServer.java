@@ -2,6 +2,8 @@ package com.James.avroNettyServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyServer;
@@ -15,8 +17,11 @@ import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.Enum.Code;
+import com.James.basic.Model.trackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
+import com.James.basic.UtilsTools.ThreadLocalCache;
 
 
 /**
@@ -27,18 +32,31 @@ import com.James.basic.UtilsTools.Return;
 
 public class avroServer {
 
-  private static final Log LOGGER = LogFactory.getLog(avroServer.class.getName());
+  private static final Log logger = LogFactory.getLog(avroServer.class.getName());
 
   public static class avrpRequestProtoImpl implements avrpRequestProto {
     // in this simple example just return details of the message
     public Utf8 send(Message message) {
 
       if(message.getRequestName()==null||message.getRequestName().length()<=0){
-        LOGGER.error("RequestName参数不正确");
+        logger.error("RequestName参数不正确");
         Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
         return new Utf8(ret.toJson());
       }
-      //LOGGER.debug("接收到" + message.getRequestName() + "请求");
+
+      try{
+        Map<String,String> par = JsonConvert.toObject(message.getParam().toString(), HashMap.class);
+        trackingChain tc = ThreadLocalCache.getCallchain().get();
+        if(tc==null){
+          tc=new trackingChain(par.get(CommonConfig.s_trackingID));
+        }
+        tc.setClientID(CommonConfig.clientID);
+
+        ThreadLocalCache.setCallchain(tc);
+      }catch(Exception e){
+        Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
+        return new Utf8(ret.toJson());
+      }
 
       String response ="";
 
@@ -52,7 +70,7 @@ public class avroServer {
         response = avrpRequestProto.send(message).toString();
       }catch(AvroRemoteException e){
         e.printStackTrace();
-        LOGGER.error("转发"+message.getRequestName() + "服务异常",e);
+        logger.error("转发"+message.getRequestName() + "服务异常",e);
         Return ret = Return.FAIL(Code.error.code,Code.error.name());
         return new Utf8(ret.toJson());
       }
@@ -70,7 +88,7 @@ public class avroServer {
 
   public static void startServer(int port) throws IOException {
     server = new NettyServer(new SpecificResponder(avrpRequestProto.class, new avrpRequestProtoImpl()), new InetSocketAddress(port));
-    LOGGER.info("avro Netty Server Started @ " + port);
+    logger.info("avro Netty Server Started @ " + port);
   }
 
 

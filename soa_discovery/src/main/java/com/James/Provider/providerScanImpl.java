@@ -63,87 +63,91 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 
     List<sharedNode> sharedNodes =new ArrayList<>();
 
-    Method[] methods = clazz.getMethods();
+    Method[] methods = clazz.getDeclaredMethods();
     for(Method method : methods){
-      descriptionAnnotation descriptionAnno = method.getAnnotation(descriptionAnnotation.class);
-      InputParamAnnotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
-      OutputParamAnnotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
+      //避免接口实现重复读取
+      if(!method.isBridge()){
+        descriptionAnnotation descriptionAnno = method.getAnnotation(descriptionAnnotation.class);
+        InputParamAnnotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
+        OutputParamAnnotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
-      sharedNode sharedNode = new sharedNode(serverName);
-      //读取desc信息
-      sharedNode = getDescribe(sharedNode,method);
+        sharedNode sharedNode = new sharedNode(serverName);
+        //读取desc信息
+        sharedNode = getDescribe(sharedNode,method);
 
-      //降级 filter
-      degradeAnnotation DegradeAnnotation = method.getAnnotation(degradeAnnotation.class);
-      if(DegradeAnnotation!=null){
-        if(descriptionAnno!=null){
+        //降级 filter
+        degradeAnnotation DegradeAnnotation = method.getAnnotation(degradeAnnotation.class);
+        if(DegradeAnnotation!=null){
+          if(descriptionAnno!=null){
 
-          int code = DegradeAnnotation.code() >0 ? DegradeAnnotation.code(): Code.service_degrade.code;
-          String note = DegradeAnnotation.note().length()>0 ? DegradeAnnotation.note(): Code.service_degrade.note;
+            int code = DegradeAnnotation.code() >0 ? DegradeAnnotation.code(): Code.service_degrade.code;
+            String note = DegradeAnnotation.note().length()>0 ? DegradeAnnotation.note(): Code.service_degrade.note;
 
-          degradeCountDown DegradeCountDown = new degradeCountDown(DegradeAnnotation.name(),
-                                                        DegradeAnnotation.allowPeriod(),
-                                                        DegradeAnnotation.allowTimes(),
-                                                        DegradeAnnotation.freezingTime(),
-                                                        code,
-                                                        note
-                                                        );
+            degradeCountDown DegradeCountDown = new degradeCountDown(DegradeAnnotation.name(),
+                DegradeAnnotation.allowPeriod(),
+                DegradeAnnotation.allowTimes(),
+                DegradeAnnotation.freezingTime(),
+                code,
+                note
+            );
 
-          Filter.getInstance().addDegradeConfig(DegradeCountDown);
-          sharedNode.addDegradeFilter(DegradeCountDown.getName());
-        }else{
-          LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
+            Filter.getInstance().addDegradeConfig(DegradeCountDown);
+            sharedNode.addDegradeFilter(DegradeCountDown.getName());
+          }else{
+            LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
+          }
         }
-      }
 
-      //限流 filter
-      ratelimitAnnotation RatelimitAnnotation = method.getAnnotation(ratelimitAnnotation.class);
-      if(RatelimitAnnotation!=null){
-        if(descriptionAnno!=null){
+        //限流 filter
+        ratelimitAnnotation RatelimitAnnotation = method.getAnnotation(ratelimitAnnotation.class);
+        if(RatelimitAnnotation!=null){
+          if(descriptionAnno!=null){
 
-          int code = RatelimitAnnotation.code() >0 ? RatelimitAnnotation.code(): Code.over_limit.code;
-          String note = RatelimitAnnotation.note().length()>0 ? RatelimitAnnotation.note(): Code.over_limit.note;
+            int code = RatelimitAnnotation.code() >0 ? RatelimitAnnotation.code(): Code.over_limit.code;
+            String note = RatelimitAnnotation.note().length()>0 ? RatelimitAnnotation.note(): Code.over_limit.note;
 
-          ratelimitCountDown RatelimitCountDown = new ratelimitCountDown(RatelimitAnnotation.name(),
-                                                              RatelimitAnnotation.allowPeriod(),
-                                                              RatelimitAnnotation.allowTimes(),
-                                                              RatelimitAnnotation.freezingTime(),
-                                                              code,
-                                                              note
-          );
+            ratelimitCountDown RatelimitCountDown = new ratelimitCountDown(RatelimitAnnotation.name(),
+                RatelimitAnnotation.allowPeriod(),
+                RatelimitAnnotation.allowTimes(),
+                RatelimitAnnotation.freezingTime(),
+                code,
+                note
+            );
 
-          Filter.getInstance().addLimitConfig(RatelimitCountDown);
-          sharedNode.addRatelimitFilter(RatelimitCountDown.getName());
-        }else{
-          LOGGER.warn("检测到"+method.getName()+"配置了限流策略,但是没有配置description");
+            Filter.getInstance().addLimitConfig(RatelimitCountDown);
+            sharedNode.addRatelimitFilter(RatelimitCountDown.getName());
+          }else{
+            LOGGER.warn("检测到"+method.getName()+"配置了限流策略,但是没有配置description");
+          }
         }
+
+        //Inparam,Outparam
+        for(InputParamAnnotation inParam: inParams){
+          inputParam InputParam = new inputParam();
+          InputParam.setName(inParam.name());
+          InputParam.setType(inParam.type());
+          InputParam.setDescribe(inParam.describe());
+          InputParam.setRequired(inParam.Required());
+          InputParam.setDefault_value(inParam.default_value());
+
+          sharedNode.addInputParam(InputParam);
+
+        }
+
+        for(OutputParamAnnotation outParam: outParams){
+          outputParam OutputParam = new outputParam();
+          OutputParam.setName(outParam.name());
+          OutputParam.setType(outParam.type());
+          OutputParam.setDescribe(outParam.describe());
+          OutputParam.setRequired(outParam.Required());
+          OutputParam.setDefault_value(outParam.default_value());
+
+          sharedNode.addOutputParam(OutputParam);
+        }
+
+        sharedNodes.add(sharedNode);
       }
 
-      //Inparam,Outparam
-      for(InputParamAnnotation inParam: inParams){
-        inputParam InputParam = new inputParam();
-        InputParam.setName(inParam.name());
-        InputParam.setType(inParam.type());
-        InputParam.setDescribe(inParam.describe());
-        InputParam.setRequired(inParam.Required());
-        InputParam.setDefault_value(inParam.default_value());
-
-        sharedNode.addInputParam(InputParam);
-
-      }
-
-      for(OutputParamAnnotation outParam: outParams){
-        outputParam OutputParam = new outputParam();
-        OutputParam.setName(outParam.name());
-        OutputParam.setType(outParam.type());
-        OutputParam.setDescribe(outParam.describe());
-        OutputParam.setRequired(outParam.Required());
-        OutputParam.setDefault_value(outParam.default_value());
-
-        sharedNode.addOutputParam(OutputParam);
-      }
-
-      sharedNodes.add(sharedNode);
     }
 
     return sharedNodes;

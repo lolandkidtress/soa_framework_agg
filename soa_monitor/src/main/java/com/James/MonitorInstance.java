@@ -1,6 +1,6 @@
 package com.James;
 
-import java.util.UUID;
+import com.James.basic.UtilsTools.CommonConfig;
 
 
 /**
@@ -9,10 +9,10 @@ import java.util.UUID;
 public enum  MonitorInstance {
   INSTANCE;
 
-  //用于标记
+  //服务标记
   //以self启动时,只记录对应clientID的记录消息
   //以server启动时,记录所有监控记录
-  private String clientID= UUID.randomUUID().toString().replaceAll("-", "");
+  private final static String clientID= CommonConfig.clientID;
 
   MonitorInstance(){
 
@@ -24,5 +24,9 @@ public enum  MonitorInstance {
 
   private void startTrackingAsServer(){
 
+  }
+
+  public String getClientID() {
+    return clientID;
   }
 }

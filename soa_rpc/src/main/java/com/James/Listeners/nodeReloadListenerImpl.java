@@ -20,7 +20,7 @@ public class nodeReloadListenerImpl implements iListeners {
     LOGGER.info(nodeReloadListenerImpl.class.getName() +"接收到"+ path +"事件:" + type);
 
     switch(type){
-
+      //TODO 日志
     }
 
     RemoteInvoker remoteInvoker = (RemoteInvoker) InvokerStatus.getWatchedInvokers(path);

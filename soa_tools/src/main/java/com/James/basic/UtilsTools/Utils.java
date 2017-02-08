@@ -5,6 +5,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -86,6 +87,19 @@ public class Utils {
             return ip;
         }
 
+
+    }
+
+    public static String generateTrackingID(){
+        if(ThreadLocalCache.getTrackingID().get()==null){
+            ThreadLocalCache.setTrackingID(UUID.randomUUID().toString().replace("-",""));
+        }
+        return ThreadLocalCache.getTrackingID().get();
+    }
+
+    public static String generateClientID(){
+        //TODO ip+port+service 规则
+        return UUID.randomUUID().toString().replace("-","");
 
     }
 

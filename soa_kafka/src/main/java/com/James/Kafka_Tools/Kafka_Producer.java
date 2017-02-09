@@ -50,6 +50,7 @@ public class Kafka_Producer {
 
     // 启动kafka生产者
     public Kafka_Producer start(Configuration configuration) {
+
         if (configuration.kafka == null || configuration.kafka.trim().isEmpty()) {
             LOGGER.error("没有配置 kafka");
             return this;

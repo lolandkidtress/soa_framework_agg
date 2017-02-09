@@ -30,6 +30,7 @@ public class CommonConfig {
   public final static String s_trackingData = "trackingData";
   public final static String s_trackingID = "trackingID";
   public final static String s_sequence = "Sequence";
+  public final static String s_invokerID = "invokerID1";
   public final static String s_clientID = "clientID";
   //用于标记自身
   //TODO 生成算法->服务名+ip+端口

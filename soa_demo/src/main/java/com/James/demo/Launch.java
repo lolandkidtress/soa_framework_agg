@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import com.James.Invoker.RemoteInvoker;
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
+import com.James.MonitorInstance;
 import com.James.Provider.providerInstance;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
@@ -210,16 +211,20 @@ public class Launch  {
       //作为服务提供者启动
       Launch launch = new Launch();
       launch.registerServer();
+      //应当能收到2条信息,一条有invokeID,一条有clientID
+      MonitorInstance.INSTANCE.runAsServer();
       Thread.currentThread().join();
     }
 
     if(args[0].equals("client")){
+      //应当能收到1条自己id的消息
+      MonitorInstance.INSTANCE.runAsClient();
+      MonitorInstance.INSTANCE.startTrackingSelf();
       //作为调用者启动
       RemoteInvoker demoinvoke = RemoteInvoker.create("com.James.demo", zkconnect);
-      demoinvoke.call("avrosend", "", Parameter.create());
+      System.out.println(demoinvoke.call("avrosend", "", Parameter.create()));
       Thread.currentThread().join();
     }
-
 
     //System.exit(0);
   }

@@ -14,6 +14,7 @@ import com.James.Annotation.tracking;
 import com.James.Exception.zkConnectionException;
 import com.James.JettyServer.JettyServer;
 import com.James.MonitorHandle.trackingHandle;
+import com.James.MonitorInstance;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
@@ -111,6 +112,7 @@ public class providerInstance {
     if(properties.getProperty("monitor").equals("true")){
       HotInjecter.getInstance().add_advice_method(tracking.class, new trackingHandle());
       HotInjecter.getInstance().advice();
+      MonitorInstance.INSTANCE.runAsClient();
       logger.info("启动trackingMonitor");
     }
     return this;

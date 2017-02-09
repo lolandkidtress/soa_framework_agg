@@ -22,7 +22,7 @@ import com.James.basic.UtilsTools.NativePath;
  * Created by James on 16/5/20.
  */
 public class Configuration {
-    private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(Configuration.class.getName());
 
     private static class InnerInstance {
         public static final Configuration instance = new Configuration();
@@ -54,19 +54,19 @@ public class Configuration {
 
     //通过属性初始化
     public Configuration initialization(Properties properties) throws IOException, URISyntaxException {
-        LOGGER.info("#读取配置:");
+        logger.info("#读取配置:");
         properties.forEach((k, v) -> {
-            LOGGER.info(k + "=" + v);
+            logger.info(k + "=" + v);
         });
 
         zookeeper = properties.getProperty("zookeeper");
         if (zookeeper == null || zookeeper.trim().isEmpty()) {
-            LOGGER.error("zookeeper配置不能为空:zookeeper");
+            logger.error("zookeeper配置不能为空:zookeeper");
             System.exit(-1);
         }
         kafka = properties.getProperty("kafka");
         if (kafka == null || kafka.trim().isEmpty()) {
-            LOGGER.warn("kafka配置为空:kafka 调用链/日志等功能将不可用");
+            logger.warn("kafka配置为空:kafka 调用链/日志等功能将不可用");
         }
 
 //

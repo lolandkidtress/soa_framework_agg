@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.James.Filter.Filter;
 import com.James.InvokerMonitor.InvokerStatus;
 import com.James.Listeners.nodeReloadListenerImpl;
+import com.James.MonitorInstance;
 import com.James.RemoteCall.remoteCallHelper;
 import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
 import com.James.basic.Enum.Code;
@@ -275,6 +276,7 @@ public class RemoteInvoker implements Invoker,Serializable {
 
     tc.setEnd_time(System.currentTimeMillis());
     ThreadLocalCache.setCallchain(tc);
+    MonitorInstance.INSTANCE.send2kafka(tc);
 
     return InvokeRet;
 

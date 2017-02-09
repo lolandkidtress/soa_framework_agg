@@ -18,7 +18,6 @@ import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.Enum.Code;
-import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
 import com.James.basic.UtilsTools.ThreadLocalCache;
@@ -41,10 +40,7 @@ public class RemoteMethod implements avrpRequestProto {
     try{
       Map par = JsonConvert.toObject(message.getParam().toString(), HashMap.class);
 
-      System.out.println("avro取得的trackingID参数为:" + par.get(CommonConfig.s_trackingID) );
-      System.out.println("avro取得的sequence参数为:" + par.get(CommonConfig.s_sequence) );
-
-      System.out.println("trackingChain为:"+ ThreadLocalCache.getCallchain().get().toJson());
+      System.out.println("执行中的trackingChain为:"+ ThreadLocalCache.getCallchain().get().toJson());
     }catch(Exception e){
       e.printStackTrace();
       Return ret = Return.FAIL(Code.error.code,Code.error.name());

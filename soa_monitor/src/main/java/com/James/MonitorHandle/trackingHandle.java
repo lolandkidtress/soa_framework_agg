@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.James.MonitorInstance;
 import com.James.basic.Model.trackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.ThreadLocalCache;
@@ -73,7 +74,7 @@ public class trackingHandle extends Agent_Handle {
     }
     tc.setToClass(class_name);
     tc.setToMethod(method_name);
-    tc.setInvokerID(CommonConfig.clientID);
+    tc.setClientID(CommonConfig.clientID);
     tc.setStart_time(start_millis);
     ThreadLocalCache.setCallchain(tc);
 
@@ -89,8 +90,7 @@ public class trackingHandle extends Agent_Handle {
     tc.setEnd_time(end_millis);
     tc.setStatus(true);
     ThreadLocalCache.setCallchain(tc);
-    System.out.println("耗时:" + (end_millis - start_millis) + ",调用链:" + ThreadLocalCache.getCallchain().get().toJson());
-
+    MonitorInstance.INSTANCE.send2kafka(tc);
   }
 
   public static void add_catch_call_back( Throwable e) {
@@ -100,7 +100,7 @@ public class trackingHandle extends Agent_Handle {
       tc.setStatus(false);
     }
     ThreadLocalCache.setCallchain(tc);
-    System.out.println("异常:" + e.getCause());
+    MonitorInstance.INSTANCE.send2kafka(tc);
 
   }
 

@@ -36,6 +36,7 @@ public class trackingChain {
   private Integer Sequence ;
 
   private boolean status=true;
+  private String error_msg;
 
   public trackingChain(){
     this.Sequence=0;
@@ -126,6 +127,14 @@ public class trackingChain {
 
   public void setStatus(boolean status) {
     this.status = status;
+  }
+
+  public String getError_msg() {
+    return error_msg;
+  }
+
+  public void setError_msg(String error_msg) {
+    this.error_msg = error_msg;
   }
 
   public String toJson() {

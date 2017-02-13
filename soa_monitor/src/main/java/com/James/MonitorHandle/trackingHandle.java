@@ -98,6 +98,7 @@ public class trackingHandle extends Agent_Handle {
     if(tc!=null){
       tc.setEnd_time(System.currentTimeMillis());
       tc.setStatus(false);
+      tc.setError_msg(e.getLocalizedMessage());
     }
     ThreadLocalCache.setCallchain(tc);
     MonitorInstance.INSTANCE.send2kafka(tc);

@@ -2,19 +2,19 @@
  "protocol": "avrpRequestProto",
 
  "types": [
-     {"name": "Message", "type": "record",
-      "fields": [
-          {"name": "trackingID", "type": "string"},
-          {"name": "param", "type": "string"},
-          {"name": "RequestName", "type": "string"}
-      ]
-     }
- ],
+      {"name": "Message", "type": "record",
+       "fields": [
+           {"name": "trackingID", "type": "string"},
+           {"name": "param", "type": "string"},
+           {"name": "RequestName", "type": "string"}
+       ]
+      }
+  ],
 
- "messages": {
-     "send": {
-         "request": [{"name": "message", "type": "Message"}],
-         "response": "string"
-     }
+  "messages": {
+      "send": {
+          "request": [{"name": "message", "type": "Message"}],
+          "response": "string"
+      }
+  }
  }
-}

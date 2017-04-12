@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
@@ -15,6 +14,8 @@ import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.UtilsTools.JsonConvert;
+import com.James.basic.UtilsTools.Parameter;
 
 
 /**
@@ -30,14 +31,17 @@ public class Sample {
       String ret ="";
 
       //从注册的处理器中找对应的
-      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
+      Class avrpRequestProto = avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
+//      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
+//          message.getRequestName().toString());
       if(avrpRequestProto==null){
         return new Utf8("没有服务");
       }
       try{
-        ret = avrpRequestProto.send(message).toString();
-      }catch(AvroRemoteException e){
+        avrpRequestProto avrpRequestProtoImpl = (avrpRequestProto) avrpRequestProto.newInstance();
+        ret =  avrpRequestProtoImpl.send(message).toString();
+      }catch(Exception e){
         e.printStackTrace();
         LOGGER.error("调用avro接口异常",e);
       }
@@ -59,15 +63,24 @@ public class Sample {
 
   public static void main(String[] args) throws IOException {
 
+    Parameter par = new Parameter().add("setTo","v_setTo");
+
     Message message = new Message();
-    message.setParam(new Utf8(("setTo")));
+    message.setParam(JsonConvert.toJson(par));
     message.setRequestName(new Utf8("test"));
 
-    avroRequestHandleRegister.INSTANCE.addRequestHandle("test", new sampleRequest());
+//    avroRequestHandleRegister.INSTANCE.addRequestHandle("test", new sampleRequest());
+    avroRequestHandleRegister.INSTANCE.addRequestHandle("test", sampleRequest.class);
     avroServer.startServer();
     avroRpcClient client = new avroRpcClient();
 
     String response = client.sendRequest("127.0.0.1",Integer.valueOf(CommonConfig.defaultAvroPort),message);
+    System.out.println("接受到请求返回" + response);
+    response = client.sendRequest("127.0.0.1",Integer.valueOf(CommonConfig.defaultAvroPort),message);
+    System.out.println("接受到请求返回" + response);
+    response = client.sendRequest("127.0.0.1",Integer.valueOf(CommonConfig.defaultAvroPort),message);
+    System.out.println("接受到请求返回" + response);
+    response = client.sendRequest("127.0.0.1",Integer.valueOf(CommonConfig.defaultAvroPort),message);
     System.out.println("接受到请求返回" + response);
     System.exit(0);
   }

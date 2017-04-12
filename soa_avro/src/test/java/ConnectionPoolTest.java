@@ -3,8 +3,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.avro.util.Utf8;
 
@@ -27,11 +25,11 @@ public class ConnectionPoolTest {
   public static void main(String args[]) throws Exception {
 
     //添加 test 的avroRPC接口
-    avroRequestHandleRegister.INSTANCE.addRequestHandle("test", new sampleRequest());
+    avroRequestHandleRegister.INSTANCE.addRequestHandle("test", sampleRequest.class);
     avroServer.startServer();
     //模拟一个节点
     sharedNode sn = new sharedNode();
-    sn.setIP("192.168.21.218");
+    sn.setIP("127.0.0.1");
     sn.setRpc_port(CommonConfig.defaultAvroPort);
     //调用参数
     Message message = new Message();
@@ -43,7 +41,7 @@ public class ConnectionPoolTest {
 
     avroNettyClientConnectionManager.getInstance().initConnectionPool(sn);
     avroNettyClientConnectionPool cp =
-        avroNettyClientConnectionManager.getInstance().getConnectPool("192.168.21.218", CommonConfig.defaultAvroPort);
+        avroNettyClientConnectionManager.getInstance().getConnectPool("127.0.0.1", CommonConfig.defaultAvroPort);
 
     ExecutorService mainExecutorService = Executors.newFixedThreadPool(100);
 
@@ -81,44 +79,48 @@ public class ConnectionPoolTest {
       smallCallableList.add(cb);
     }
     try{
-      while(true){
 
-        List<Future<Boolean>> sft = mainExecutorService.invokeAll(smallCallableList);
-
-        System.out.println("small执行成功:" + sft.stream().filter(f -> {
-                    try {
-                      if (f.get() == true) {
-                        return true;
-                      } else {
-                        return false;
-                      }
-                    } catch (Exception e) {
-                      return false;
-                    }
-                  }).count());
-
-
-        System.out.println("small任务结束");
-        TimeUnit.SECONDS.sleep(10);
-        List<Future<Boolean>> lft = mainExecutorService.invokeAll(largeCallableList);
-
-        System.out.println("large执行成功:" + lft.stream().filter(f -> {
-          try {
-            if (f.get() == true) {
-              return true;
-            } else {
-              return false;
-            }
-          } catch (Exception e) {
-            return false;
-          }
-        }).count());
-
-        System.out.println("large任务结束");
-        TimeUnit.SECONDS.sleep(10);
-
-        System.out.println(cp.getConnSize().get("currentAvail"));
-      }
+      avroNettyClientConnection conn = cp.getConnect();
+      Return rt =conn.call(message);
+      cp.releaseConnect(conn);
+//      while(true){
+//
+//        List<Future<Boolean>> sft = mainExecutorService.invokeAll(smallCallableList);
+//
+//        System.out.println("small执行成功:" + sft.stream().filter(f -> {
+//                    try {
+//                      if (f.get() == true) {
+//                        return true;
+//                      } else {
+//                        return false;
+//                      }
+//                    } catch (Exception e) {
+//                      return false;
+//                    }
+//                  }).count());
+//
+//
+//        System.out.println("small任务结束");
+//        TimeUnit.SECONDS.sleep(10);
+//        List<Future<Boolean>> lft = mainExecutorService.invokeAll(largeCallableList);
+//
+//        System.out.println("large执行成功:" + lft.stream().filter(f -> {
+//          try {
+//            if (f.get() == true) {
+//              return true;
+//            } else {
+//              return false;
+//            }
+//          } catch (Exception e) {
+//            return false;
+//          }
+//        }).count());
+//
+//        System.out.println("large任务结束");
+//        TimeUnit.SECONDS.sleep(10);
+//
+//        System.out.println(cp.getConnSize().get("currentAvail"));
+//      }
 
     }catch (Exception e){
       e.printStackTrace();

@@ -70,15 +70,17 @@ public class avroRpcClient {
 
       logger.info("接收到" + message.getRequestName() + "请求");
       String ret ="";
-
-      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
+      Class avrpRequestProto = avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
+//      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
+//          message.getRequestName().toString());
       if(avrpRequestProto==null){
         return new Utf8("没有服务");
       }
       try{
-        ret = avrpRequestProto.send(message).toString();
-      }catch(AvroRemoteException e){
+        avrpRequestProto avrpRequestProtoImpl = (avrpRequestProto) avrpRequestProto.newInstance();
+        ret = avrpRequestProtoImpl.send(message).toString();
+      }catch(Exception e){
         e.printStackTrace();
         logger.error("调用avro接口异常",e);
       }

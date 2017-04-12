@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.avro.AvroRemoteException;
 import org.apache.avro.ipc.NettyServer;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.specific.SpecificResponder;
@@ -17,11 +16,9 @@ import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.Enum.Code;
-import com.James.basic.Model.trackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
-import com.James.basic.UtilsTools.ThreadLocalCache;
 
 
 /**
@@ -46,29 +43,32 @@ public class avroServer {
 
       try{
         Map<String,String> par = JsonConvert.toObject(message.getParam().toString(), HashMap.class);
-        trackingChain tc = ThreadLocalCache.getCallchain().get();
-        if(tc==null){
-          tc=new trackingChain(par.get(CommonConfig.s_trackingID));
-        }
-        tc.setClientID(CommonConfig.clientID);
+        //trackingChain tc = ThreadLocalCache.getCallchain().get();
+//        if(tc==null){
+//          tc=new trackingChain(par.get(CommonConfig.s_trackingID));
+//        }
+//        tc.setClientID(CommonConfig.clientID);
 
-        ThreadLocalCache.setCallchain(tc);
+        //ThreadLocalCache.setCallchain(tc);
       }catch(Exception e){
+        e.printStackTrace();
         Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
         return new Utf8(ret.toJson());
       }
 
       String response ="";
-
-      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
+      Class avrpRequestProto = avroRequestHandleRegister.INSTANCE.getRequestHandle(
           message.getRequestName().toString());
+//      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
+//          message.getRequestName().toString());
       if(avrpRequestProto==null){
         Return ret = Return.FAIL(Code.service_not_found.code,Code.service_not_found.name());
         return new Utf8(ret.toJson());
       }
       try{
-        response = avrpRequestProto.send(message).toString();
-      }catch(AvroRemoteException e){
+        avrpRequestProto avrpRequestProtoImpl = (avrpRequestProto) avrpRequestProto.newInstance();
+        response = avrpRequestProtoImpl.send(message).toString();
+      }catch(Exception e){
         e.printStackTrace();
         logger.error("转发"+message.getRequestName() + "服务异常",e);
         Return ret = Return.FAIL(Code.error.code,Code.error.name());

@@ -1,6 +1,10 @@
 package com.James.Kafka_Tools;
 
+import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,9 +17,12 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndTimestamp;
 import org.apache.kafka.common.TopicPartition;
 
 import com.James.kafka_Config.Configuration;
+
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 
 
@@ -128,6 +135,63 @@ public class Kafka_Consumer {
                         assignments.forEach(topicPartition ->
                             consumer.seekToBeginning(
                                 Collections.singletonList(topicPartition)));
+
+                        for (ConsumerRecord<String, String> record : records) {
+                            //System.out.println("record:" + record.value());
+                            try {
+                                newInstance = clazz.newInstance();
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                e.printStackTrace();
+                                LOGGER.error("#实例化Consume_Handle失败:", e);
+                            }
+                            newInstance.handle_event(record);
+                        }
+                    }
+
+                });
+                thread.setDaemon(true);
+                thread.start();
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    //从过去某个时间段开始
+    public void consumeFromTimes(String topic,int minute,Class<? extends Kafka_Consume_Handle> clazz) {
+        try{
+            KafkaConsumer<String, String> consumer = topicMap.get(topic);
+            if(consumer == null){
+                LOGGER.error("消费端没有初始化");
+            }else{
+                consumer.subscribe(Collections.singletonList(topic));
+
+                Thread thread = new Thread(() -> {
+                    Kafka_Consume_Handle newInstance = null;
+                    while (true) {
+                        ConsumerRecords<String, String> records = consumer.poll(1000);
+                        Set<TopicPartition> assignments = consumer.assignment();
+                        Map<TopicPartition, Long> query = new HashMap<>();
+                        for (TopicPartition topicPartition : assignments) {
+                            //在每一分区上寻找对应的offset
+                            query.put(
+                                topicPartition,
+                                Instant.now().minus(minute, MINUTES).toEpochMilli());
+                        }
+                        Map<TopicPartition, OffsetAndTimestamp> result = consumer.offsetsForTimes(query);
+                        //根据找到的offset修改,没有则从最新的offset开始
+                        result.entrySet()
+                            .stream()
+                            .forEach(entry ->
+                                consumer.seek(
+                                    entry.getKey(),
+                                    Optional.ofNullable(entry.getValue())
+                                        .map(OffsetAndTimestamp::offset)
+                                        .orElse(new Long(Long.MAX_VALUE)))
+                            );
+
 
                         for (ConsumerRecord<String, String> record : records) {
                             //System.out.println("record:" + record.value());

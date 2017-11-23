@@ -10,12 +10,12 @@
 
 ##Required
 * zookeeper (3.4.6)
-* kafka 0.8.* (0.9+ 不支持)
+* kafka 0.10.* 
 * JDK1.8+(基于1.8.0.25开发测试)
 
 
 ##Modules
-* soa_kafka:kafka的生产和消费(高级API)
+* soa_kafka:kafka的生产和消费
 * soa_db:数据库操作
 * soa_http:http调用实现(okhttp3)
 * soa_avro:AVRO客户端和服务器端
@@ -53,10 +53,8 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 
 
 ##TODO:
-
-* zk/kafka版本升级  (kafka up to 0.10.1.1,zk up to 3.4.9)
 * 配置中心
-* 服务地址IP路由g9 
+* 服务地址IP路由 
 * 记录调用链及方法的执行时间
 
 ##Versions

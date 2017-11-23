@@ -68,7 +68,7 @@ public class OkHttpTools {
   }
 
   // get 获取 rest 资源
-  public String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
+  public static String do_get(String url, Map<String, String> params, Map<String, String> headers) throws IOException {
     Request.Builder builder = new Request.Builder().url(concat_url_params(url, params));
     add_headers(builder, headers);
     Request request = builder.build();

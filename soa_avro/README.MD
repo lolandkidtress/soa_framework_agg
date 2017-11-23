@@ -1,0 +1,1 @@
+java -jar avro-1.8.1/avro-tools-1.8.1.jar compile protocol avrpRequestProto.avpr .

@@ -1,4 +1,4 @@
-package com.James.JettyServer;
+package com.James.basic.jettySpring;
 
 import java.io.IOException;
 

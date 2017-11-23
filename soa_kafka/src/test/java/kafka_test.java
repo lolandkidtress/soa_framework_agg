@@ -16,8 +16,9 @@ public class kafka_test {
 
     public static void main(String[] args) throws Exception{
         Properties properties = new Properties();
-        properties.put("zookeeper", "localhost:2181");
-        properties.put("kafka","localhost:9092");
+        properties.put("zookeeper", "10.81.23.103:2181,10.81.23.104:2181,10.81.23.105:2181");
+        properties.put("kafka","10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
+        properties.put("clientId","testclient");
 
         Configuration configuration = null;
         try{
@@ -28,18 +29,18 @@ public class kafka_test {
         }
 
         if(configuration!=null){
-            Kafka_Consumer kafka_Consumer = new Kafka_Consumer();
-
-            kafka_Consumer.consume(configuration, "12112312", "largest", 2, "topic", MsgCosum.class);
+            Kafka_Consumer.getInstance().init(configuration, "grouptopic_v1_test", "topic_v1_t2");
+            //Kafka_Consumer.getInstance().consume("topic_v1_t2", MsgCosum.class);
+            Kafka_Consumer.getInstance().consumeFromBegining("topic_v1_t2", MsgCosum.class);
 
             System.out.println("start_producer");
-            Kafka_Producer.getInstance().start(configuration);
+            Kafka_Producer.getInstance().init(configuration);
             int i=0;
-
+//
             while(true){
                 i++;
-                Kafka_Producer.getInstance().send("topic","key",String.valueOf(i));
-                System.out.println("写入"+i);
+                Kafka_Producer.getInstance().send("topic_v1_t2", "key", "c".concat(String.valueOf(i)));
+                //System.out.println("写入" + i);
                 TimeUnit.SECONDS.sleep(1);
             }
         }

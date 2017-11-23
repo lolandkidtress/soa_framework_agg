@@ -17,6 +17,8 @@ import java.util.Properties;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import com.James.basic.UtilsTools.NativePath;
+import com.James.basic.UtilsTools.Utils;
+
 
 /**
  * Created by James on 16/5/20.
@@ -40,6 +42,7 @@ public class Configuration {
 
     public String zookeeper;
     public String kafka;
+    public String clientId;
 
     // ///////////////////////////////////// initialization //////////////////////////////////////////
     //通过配置文件初始化
@@ -67,6 +70,12 @@ public class Configuration {
         kafka = properties.getProperty("kafka");
         if (kafka == null || kafka.trim().isEmpty()) {
             logger.warn("kafka配置为空:kafka 调用链/日志等功能将不可用");
+        }
+
+        clientId = properties.getProperty("clientId");
+        if (clientId == null || clientId.trim().isEmpty()) {
+            clientId = Utils.getLocalIP();
+            logger.warn("clientId配置为空,使用默认clientId");
         }
 
 //

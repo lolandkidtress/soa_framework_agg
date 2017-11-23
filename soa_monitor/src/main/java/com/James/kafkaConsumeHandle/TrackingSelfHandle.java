@@ -1,10 +1,9 @@
 package com.James.kafkaConsumeHandle;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+
 import com.James.Kafka_Tools.Kafka_Consume_Handle;
 import com.James.MonitorInstance;
-
-import kafka.consumer.ConsumerIterator;
-import kafka.message.MessageAndMetadata;
 
 
 /**
@@ -17,16 +16,10 @@ public class TrackingSelfHandle implements Kafka_Consume_Handle {
     }
 
     @Override
-    public void handle_event(ConsumerIterator<String, String> consumerIterator) {
-
-        while(consumerIterator.hasNext()){
-            MessageAndMetadata<String, String> metadata= consumerIterator.next();
-            //只接收相同clientID的消息
-            if(metadata.key().equals(MonitorInstance.INSTANCE.getClientID())){
-                String message= metadata.message();
-                System.out.println("写入kafka的trackingChain:" + message);
-            }
-
+    public void handle_event(ConsumerRecord<String, String> consumerIterator) {
+        if(consumerIterator.key().equals(MonitorInstance.INSTANCE.getClientID())){
+            String message= consumerIterator.value();
+            System.out.println("写入kafka的trackingChain:" + message);
         }
 
     }

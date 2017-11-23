@@ -1,8 +1,8 @@
 package com.James.kafkaConsumeHandle;
 
-import com.James.Kafka_Tools.Kafka_Consume_Handle;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import kafka.consumer.ConsumerIterator;
+import com.James.Kafka_Tools.Kafka_Consume_Handle;
 
 
 /**
@@ -15,11 +15,9 @@ public class TrackingAsServerHandle implements Kafka_Consume_Handle {
     }
 
     @Override
-    public void handle_event(ConsumerIterator<String, String> consumerIterator) {
-        while(consumerIterator.hasNext()){
-            String message= consumerIterator.next().message();
-            System.out.println("TrackingAsServerHandle写入kafka的trackingChain:" + message);
-        }
+    public void handle_event(ConsumerRecord<String, String> consumerIterator) {
 
+        String message= consumerIterator.value();
+        System.out.println("TrackingAsServerHandle写入kafka的trackingChain:" + message);
     }
 }

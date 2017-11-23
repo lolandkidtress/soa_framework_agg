@@ -8,7 +8,7 @@ package com.James.avroProto;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public interface avrpRequestProto {
-  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"avrpRequestProto\",\"namespace\":\"com.James.avroProto\",\"types\":[{\"type\":\"record\",\"name\":\"Message\",\"fields\":[{\"name\":\"param\",\"type\":\"string\"},{\"name\":\"RequestName\",\"type\":\"string\"}]}],\"messages\":{\"send\":{\"request\":[{\"name\":\"message\",\"type\":\"Message\"}],\"response\":\"string\"}}}");
+  public static final org.apache.avro.Protocol PROTOCOL = org.apache.avro.Protocol.parse("{\"protocol\":\"avrpRequestProto\",\"namespace\":\"com.James.avroProto\",\"types\":[{\"type\":\"record\",\"name\":\"Message\",\"fields\":[{\"name\":\"trackingID\",\"type\":\"string\"},{\"name\":\"param\",\"type\":\"string\"},{\"name\":\"RequestName\",\"type\":\"string\"}]}],\"messages\":{\"send\":{\"request\":[{\"name\":\"message\",\"type\":\"Message\"}],\"response\":\"string\"}}}");
   /**
    */
   java.lang.CharSequence send(com.James.avroProto.Message message) throws org.apache.avro.AvroRemoteException;

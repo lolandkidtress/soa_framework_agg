@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.James.Annotation.tracking;
 import com.James.Exception.zkConnectionException;
-import com.James.JettyServer.JettyServer;
 import com.James.MonitorHandle.trackingHandle;
 import com.James.MonitorInstance;
 import com.James.avroNettyServer.avroServer;
@@ -21,6 +20,7 @@ import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.Model.sharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
+import com.James.basic.jettySpring.JettyServer;
 import com.James.basic.zkTools.zkClientTools;
 import com.James.soa_agent.HotInjecter;
 
@@ -158,8 +158,10 @@ public class providerInstance {
           try {
 
             //注册对应的avrpRequestProto类到avro处理器
-            avroRequestHandleRegister.INSTANCE.addRequestHandle(sharedProvider.getMethod_name(),
-                (avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance());
+            avroRequestHandleRegister.INSTANCE.addRequestHandle(
+                sharedProvider.getMethod_name(),
+                ((avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance()).getClass()
+            );
 //            avroRpcServer.getInstance().addRegisterServers("test",
 //                (avrpRequestProto) Class.forName(sharedNode.getDeclaringClass_name()).newInstance());
           } catch (ClassNotFoundException e) {
@@ -195,7 +197,7 @@ public class providerInstance {
 
     try{
       //启动http服务
-      JettyServer.startJetty(Integer.valueOf(this.defaultHttpPort),this.defaultHttpContext);
+      JettyServer.startJetty(Integer.valueOf(this.defaultHttpPort), this.defaultHttpContext);
 //      avroRpcServer.getInstance().startServer();
     }catch(IOException ioe){
       ioe.printStackTrace();

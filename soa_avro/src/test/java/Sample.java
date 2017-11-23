@@ -8,7 +8,7 @@ import org.apache.avro.util.Utf8;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.NettyAvroRpcClient.avroRpcClient;
+import com.James.avroNettyClientConnect.avroRpcClient;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
@@ -82,6 +82,7 @@ public class Sample {
     System.out.println("接受到请求返回" + response);
     response = client.sendRequest("127.0.0.1",Integer.valueOf(CommonConfig.defaultAvroPort),message);
     System.out.println("接受到请求返回" + response);
+    //Thread.currentThread().join();
     System.exit(0);
   }
 }

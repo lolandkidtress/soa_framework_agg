@@ -1,4 +1,4 @@
-package com.James.demo.jettySpring;
+package com.James.basic.jettySpring;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

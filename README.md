@@ -64,3 +64,4 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 * Release1.0.1R170122:添加了限流和服务降级
 * Release1.1.0R170204:添加avro连接池
 * Release1.1.1R170206:avro调用链完成
+* Release1.1.2R171120:升级kafka的api到0.10版本,添加kafka steaming的支持

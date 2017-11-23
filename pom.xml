@@ -18,21 +18,22 @@
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-		<global.version>Release1.1.1R170206</global.version>
+		<global.version>Release1.1.2R171120</global.version>
 		<sonar.exclusions>
 		</sonar.exclusions>
 		<sonar.language>java</sonar.language>
 	</properties>
 
 	<modules>
-		<module>soa_kafka</module>
+
+		<module>soa_tools</module>
 		<module>soa_db</module>
 		<module>soa_http</module>
 		<module>soa_avro</module>
 
 		<!--<module>soa_agent</module>-->
 		<module>soa_filter</module>
-		<module>soa_tools</module>
+		<module>soa_kafka</module>
 		<module>soa_discovery</module>
 		<module>soa_rpc</module>
 		<module>soa_monitor</module>
@@ -47,21 +48,7 @@
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.0.jboss</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>2.6.4</version>
-		</dependency>
+
 
 		<!-- test -->
 		<dependency>

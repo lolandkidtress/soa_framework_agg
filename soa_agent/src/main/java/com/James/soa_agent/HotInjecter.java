@@ -197,7 +197,7 @@ public class HotInjecter {
                 class_name = class_name.replace(".class", "").replace("/", ".");
                 try {
                     classes.add(Thread.currentThread().getContextClassLoader().loadClass(class_name));
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException | NoClassDefFoundError e) {
                     e.printStackTrace();
                     LOGGER.error("加载class失败:", e);
                 }

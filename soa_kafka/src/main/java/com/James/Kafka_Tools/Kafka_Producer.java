@@ -4,11 +4,12 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 
-import com.James.basic.UtilsTools.Logger_Once;
 import com.James.kafka_Config.Configuration;
 
 /**
@@ -30,6 +31,18 @@ public class Kafka_Producer {
 
     private Kafka_Producer() {
 
+    }
+
+    private Producer<String, String> producer;
+
+    // 启动kafka生产者
+    public Kafka_Producer init(Configuration configuration) {
+
+        if (configuration.kafka == null || configuration.kafka.trim().isEmpty()) {
+            LOGGER.error("没有配置 kafka");
+            return this;
+        }
+
         //http://kafka.apache.org/documentation.html#producerconfigs
         this.props = new Properties();
         // 触发acknowledgement机制,数据完整性相关
@@ -39,31 +52,19 @@ public class Kafka_Producer {
         this.props.put("batch.size", 16384);
         this.props.put("linger.ms", 1);
         this.props.put("compression.type","gzip");
-
         this.props.put("buffer.memory", 33554432);
         this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-    }
 
-    private Producer<String, String> producer;
+        this.props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+        this.props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
+        //props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
+        this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-    // 启动kafka生产者
-    public Kafka_Producer start(Configuration configuration) {
+        producer = new KafkaProducer<>(props);
 
-        if (configuration.kafka == null || configuration.kafka.trim().isEmpty()) {
-            LOGGER.error("没有配置 kafka");
-            return this;
-        }
-        if (this.producer == null) {
-            this.props.put("bootstrap.servers", configuration.kafka);
-            // key.serializer.class默认为serializer.class
-            // 如果topic不存在，则会自动创建，默认replication-factor为1，partitions为0
-            // 创建producer
-            this.producer = new KafkaProducer<>(props);
-
-
-        }
         return this;
     }
 
@@ -74,16 +75,26 @@ public class Kafka_Producer {
         }
     }
 
-    // 发送消息 如果生产者没有初始化只写一次日志
     public void send(String topic, String key, String message) {
         if (this.producer != null) {
             try {
-                this.producer.send(new ProducerRecord<String, String>(topic, key, message));
+                RecordMetadata ret = this.producer.send(new ProducerRecord<String, String>(topic, key, message)).get();
+
             } catch (Exception e) {
-                LOGGER.warn("kafka 发送失败", e);
+                e.printStackTrace();
+                LOGGER.info("kafka 写入失败", e);
             }
         } else {
-            Logger_Once.warn("kafka未初始化");
+            LOGGER.info("kafka未初始化");
         }
     }
+
+//    public void sendAsync(String topic,String key, String message) {
+//        while (true) {
+//            String messageStr = "Message_" + message;
+//            long startTime = System.currentTimeMillis();
+//            producer.send(new ProducerRecord<>(topic,
+//                key, message), new DemoCallBack(startTime, messageNo, messageStr));
+//        }
+//    }
 }

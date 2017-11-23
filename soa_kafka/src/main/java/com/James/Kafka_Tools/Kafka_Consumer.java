@@ -1,22 +1,23 @@
 package com.James.Kafka_Tools;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 
 import com.James.kafka_Config.Configuration;
 
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.KafkaStream;
-import kafka.javaapi.consumer.ConsumerConnector;
-import kafka.serializer.StringDecoder;
-import kafka.utils.VerifiableProperties;
+
 
 
 
@@ -27,7 +28,16 @@ import kafka.utils.VerifiableProperties;
 public class Kafka_Consumer {
     private static final Log LOGGER = LogFactory.getLog(Kafka_Consumer.class.getName());
 
-    private static Properties props = new Properties();
+    private static class InnerInstance {
+        public static final Kafka_Consumer instance = new Kafka_Consumer();
+    }
+
+    public static Kafka_Consumer getInstance() {
+        return InnerInstance.instance;
+    }
+
+    //topic和消费实例对应关系
+    private ConcurrentHashMap<String,KafkaConsumer<String, String>> topicMap = new ConcurrentHashMap<>();
 
     public static ExecutorService executors = Executors.newCachedThreadPool((r) -> {
         Thread thread = Executors.defaultThreadFactory().newThread(r);
@@ -36,67 +46,109 @@ public class Kafka_Consumer {
     });
 
     public Kafka_Consumer(){
-        this.props = new Properties();
+    }
 
-        this.props.put("enable.auto.commit", "true");
-        this.props.put("auto.commit.interval.ms", "1000");
-        this.props.put("session.timeout.ms", "30000");
-        this.props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        this.props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+    //初始化实例
+    public void init(Configuration configuration,String group,String topic){
+        if(topicMap.containsKey(topic)){
+            //已存在,不更新
+        }else{
+            try{
+                Properties props = new Properties();
+                props.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+                props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
+                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+                props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+                //1.0.0
+                //props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,"read_committed");
+                props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+                props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+                props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+                props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+
+                KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+                System.out.println("消费端初始化");
+                topicMap.put(topic,consumer);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
-     * 创建kafka消费者线程
-     *
-     * @param configuration
-     *            zookeeper配置
-     * @param concurrent
-     *            并行读取数
-     * @param group
-     *            group
      * @param topic
      *            topic
      * @param clazz
      *            处理逻辑
      */
-    public void consume(Configuration configuration, String group,String offset,int concurrent, String topic, Class<? extends Kafka_Consume_Handle> clazz) {
-        Thread thread = new Thread(() -> {
-            Properties props = new Properties();
-            // zookeeper 配置
-            props.put("zookeeper.connect", configuration.zookeeper);
-            // group 代表一个消费组
-            props.put("group.id", group);
-            // zk连接超时
-            props.put("zookeeper.session.timeout.ms", "10000");
-            props.put("zookeeper.sync.time.ms", "2000"); // 从200修改成2000 太短有rebalance错误
-            props.put("auto.commit.interval.ms", "1000");
-            props.put("auto.offset.reset", offset);// 2个合法的值"largest"/"smallest",默认为"largest",此配置参数表示当此groupId下的消费者,在ZK中没有offset值时(比如新的groupId,或者是zk数据被清空),consumer应该从哪个offset开始消费.largest表示接受接收最大的offset(即最新消息),smallest表示最小offset,即从topic的开始位置消费所有消息.
-            // 序列化类
-            props.put("serializer.class", "kafka.serializer.StringEncoder");
-            ConsumerConfig config = new ConsumerConfig(props);
-            ConsumerConnector consumer = kafka.consumer.Consumer.createJavaConsumerConnector(config);
-
-            StringDecoder keyDecoder = new StringDecoder(new VerifiableProperties());
-            StringDecoder valueDecoder = new StringDecoder(new VerifiableProperties());
-
-            Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-            topicCountMap.put(topic, new Integer(concurrent));
-
-            Map<String, List<KafkaStream<String, String>>> consumerMap = consumer.createMessageStreams(topicCountMap, keyDecoder, valueDecoder);
-            for (KafkaStream<String, String> kafkaStream : consumerMap.get(topic)) {
-                executors.submit(() -> {
-                    Kafka_Consume_Handle newInstance = null;
-                    try {
-                        newInstance = clazz.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        LOGGER.error("#实例化Consume_Handle失败:", e);
+    public void consume(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
+        KafkaConsumer<String, String> consumer = topicMap.get(topic);
+        if(consumer == null){
+            LOGGER.error("消费端没有初始化");
+        }else{
+            consumer.subscribe(Collections.singletonList(topic));
+            LOGGER.info("消费端开始消费"+topic);
+            Thread thread = new Thread(() -> {
+                Kafka_Consume_Handle newInstance = null;
+                while (true) {
+                    ConsumerRecords<String, String> records = consumer.poll(1000);
+                    for (ConsumerRecord<String, String> record : records) {
+                        //System.out.println("record:" + record.value());
+                        try {
+                            newInstance = clazz.newInstance();
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                            LOGGER.error("#实例化Consume_Handle失败:", e);
+                        }
+                        newInstance.handle_event(record);
                     }
-                    newInstance.handle_event(kafkaStream.iterator());
-                });
+                }
+
+            });
+            thread.setDaemon(true);
+            thread.start();
             }
-        });
-        thread.setDaemon(true);
-        thread.start();
+        }
+
+    //从现存的最小的offset开始取得数据
+    public void consumeFromBegining(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
+        try{
+            KafkaConsumer<String, String> consumer = topicMap.get(topic);
+            if(consumer == null){
+                LOGGER.error("消费端没有初始化");
+            }else{
+                consumer.subscribe(Collections.singletonList(topic));
+
+                Thread thread = new Thread(() -> {
+                    Kafka_Consume_Handle newInstance = null;
+                    while (true) {
+                        ConsumerRecords<String, String> records = consumer.poll(1000);
+                        //在每一分区上重置offset
+                        Set<TopicPartition> assignments = consumer.assignment();
+                        assignments.forEach(topicPartition ->
+                            consumer.seekToBeginning(
+                                Collections.singletonList(topicPartition)));
+
+                        for (ConsumerRecord<String, String> record : records) {
+                            //System.out.println("record:" + record.value());
+                            try {
+                                newInstance = clazz.newInstance();
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                e.printStackTrace();
+                                LOGGER.error("#实例化Consume_Handle失败:", e);
+                            }
+                            newInstance.handle_event(record);
+                        }
+                    }
+
+                });
+                thread.setDaemon(true);
+                thread.start();
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

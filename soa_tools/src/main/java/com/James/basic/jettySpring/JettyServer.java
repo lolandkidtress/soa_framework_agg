@@ -1,4 +1,4 @@
-package com.James.JettyServer;
+package com.James.basic.jettySpring;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import com.James.basic.UtilsTools.NativePath;
  * Created by James on 16/8/10.
  **/
 public class JettyServer {
-  private static final Log logger = LogFactory.getLog(JettyServer.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(JettyServer.class.getName());
 
   private static class InnerInstance {
     public static final JettyServer instance = new JettyServer();
@@ -63,7 +63,7 @@ public class JettyServer {
         server.start();
         server.join();
       } catch (Exception e) {
-        logger.error("启动jetty失败", e);
+        LOGGER.error("启动jetty失败", e);
         System.exit(-1);
       }
     });
@@ -108,7 +108,7 @@ public class JettyServer {
     }
     // file:///home/juxinli/workspace/infogen_soa/target/classes/
     for (Resource resource : set) {
-      logger.info("add jetty annotation config dir => " + resource.getName());
+      LOGGER.info("add jetty annotation config dir => " + resource.getName());
       webContext.getMetaData().addContainerResource(resource);
     }
     // JettyWebConfiguration. Looks for Xmlconfiguration files in WEB-INF.
@@ -131,15 +131,19 @@ public class JettyServer {
     return server;
   }
 
+  public static void startJetty(int port) throws Exception{
+    soaWebApplicationInitializer.config_mvc("classpath:dispatcher-servlet.xml", "/*");
+    JettyServer.getInstance().start(port, "/");
+  }
+
   public static void startJetty(int port,String context) throws Exception{
     soaWebApplicationInitializer.config_mvc("classpath:dispatcher-servlet.xml", "/*");
     JettyServer.getInstance().start(port, context);
-    logger.info("Jetty Server Started @ " + port);
   }
 
   public static void main(String[] args) throws Exception {
 
-    startJetty(9090,"/");
+    startJetty(9090);
   }
 
 }

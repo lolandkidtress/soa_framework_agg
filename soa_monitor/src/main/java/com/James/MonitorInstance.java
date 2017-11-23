@@ -7,7 +7,6 @@ import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
 import com.James.basic.Model.trackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
-import com.James.kafkaConsumeHandle.TrackingAsServerHandle;
 import com.James.kafkaConsumeHandle.TrackingSelfHandle;
 import com.James.kafka_Config.Configuration;
 
@@ -34,12 +33,13 @@ public enum  MonitorInstance {
   //接收相同clientID的消息做统计
   public void startTrackingSelf(){
     Consumer = new Kafka_Consumer();
-    Consumer.consume(configuration, "TrackingSelfHandle", "largest", 2, trackingTopic, TrackingSelfHandle.class);
+    Consumer.init(configuration,"TrackingSelfHandle",trackingTopic);
+    Consumer.consume(trackingTopic, TrackingSelfHandle.class);
   }
 
   //客户端模式,只发送消息
   public void runAsClient(){
-    Producer = Kafka_Producer.getInstance().start(configuration);
+    Producer = Kafka_Producer.getInstance().init(configuration);
     logger.info("trackingMonitor Producer启动");
 //    Consumer = new Kafka_Consumer();
 //    Consumer.consume(configuration, "group", "largest", 2, trackingTopic, TrackingAsServerHandle.class);
@@ -48,7 +48,8 @@ public enum  MonitorInstance {
   //server端模式,接收所有消息做统计
   public void runAsServer(){
     Consumer = new Kafka_Consumer();
-    Consumer.consume(configuration, "TrackingAsServerHandle", "largest", 2, trackingTopic, TrackingAsServerHandle.class);
+    Consumer.init(configuration,"TrackingAsServerHandle",trackingTopic);
+    Consumer.consume(trackingTopic, TrackingSelfHandle.class);
   }
 
   public void send2kafka(trackingChain trackingChain){

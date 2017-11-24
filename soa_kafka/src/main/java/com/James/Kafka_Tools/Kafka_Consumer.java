@@ -117,6 +117,18 @@ public class Kafka_Consumer {
             }
         }
 
+    @Deprecated
+    //老版本兼容
+    public void consume(Configuration configuration, String group,String offset,int concurrent, String topic, Class<? extends Kafka_Consume_Handle> clazz) {
+        KafkaConsumer<String, String> consumer = topicMap.get(topic);
+        if(consumer == null){
+            init(configuration,group,topic);
+        }else{
+            consume(topic,clazz);
+        }
+    }
+
+
     //从现存的最小的offset开始取得数据
     public void consumeFromBegining(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
         try{

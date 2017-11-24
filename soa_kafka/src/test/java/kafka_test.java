@@ -32,7 +32,8 @@ public class kafka_test {
             Kafka_Consumer.getInstance().init(configuration, "grouptopic_v1_test", "topic_v1_t2");
             //Kafka_Consumer.getInstance().consume("topic_v1_t2", MsgCosum.class);
             //Kafka_Consumer.getInstance().consumeFromBegining("topic_v1_t2", MsgCosum.class);
-            Kafka_Consumer.getInstance().consumeFromTimes("topic_v1_t2",1200, MsgCosum.class);
+            //Kafka_Consumer.getInstance().consumeFromTimes("topic_v1_t2",1200, MsgCosum.class);
+            Kafka_Consumer.getInstance().consume(configuration,"grouptopic_v1_test","0",2, "topic_v1_t2", MsgCosum.class);
 
             System.out.println("start_producer");
             Kafka_Producer.getInstance().init(configuration);

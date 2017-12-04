@@ -1,9 +1,10 @@
 package com.James.Kafka_Tools;
 
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -17,9 +18,12 @@ import com.James.kafka_Config.Configuration;
  * kafka 生产者
  */
 public class Kafka_Producer {
-    private static final Log LOGGER = LogFactory.getLog(Kafka_Producer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Kafka_Producer.class.getName());
 
-    private static Properties props = new Properties();
+    //private static Properties props = new Properties();
+
+    //topic和生产对应关系
+    private ConcurrentHashMap<String,Producer<String, String>> topicMap = new ConcurrentHashMap<>();
 
     private static class InnerInstance {
         public static final Kafka_Producer instance = new Kafka_Producer();
@@ -33,60 +37,70 @@ public class Kafka_Producer {
 
     }
 
-    private Producer<String, String> producer;
-
     // 启动kafka生产者
-    public Kafka_Producer init(Configuration configuration) {
+    public Kafka_Producer init(Configuration configuration,String topic) {
 
         if (configuration.kafka == null || configuration.kafka.trim().isEmpty()) {
             LOGGER.error("没有配置 kafka");
             return this;
         }
 
+        if(topicMap.containsKey(topic)){
+            return this;
+        }
+
         //http://kafka.apache.org/documentation.html#producerconfigs
-        this.props = new Properties();
+        Properties props = new Properties();
         // 触发acknowledgement机制,数据完整性相关
         // 值为0,1,all,可以参考
-        this.props.put("acks", "all");
-        this.props.put("retries", 3);
-        this.props.put("batch.size", 16384);
-        this.props.put("linger.ms", 1);
-        this.props.put("compression.type","gzip");
-        this.props.put("buffer.memory", 33554432);
-        this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("acks", "all");
+        props.put("retries", 3);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("compression.type","gzip");
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
 
-        this.props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
-        this.props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
         //props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
-        this.props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        this.props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-        producer = new KafkaProducer<>(props);
-
+        Producer<String, String> producer = new KafkaProducer<>(props);
+        topicMap.put(topic,producer);
         return this;
     }
 
     // 关闭一个kafka生产者
-    public void close() {
-        if (producer != null) {
+    public void close(String topic) {
+        if(topicMap.containsKey(topic)){
+            Producer<String, String> producer = topicMap.get(topic);
             producer.close();
+            topicMap.remove(topic);
         }
     }
 
     public void send(String topic, String key, String message) {
-        if (this.producer != null) {
-            try {
-                RecordMetadata ret = this.producer.send(new ProducerRecord<String, String>(topic, key, message)).get();
+        if(!topicMap.containsKey(topic)){
+            Producer<String, String> producer = topicMap.get(topic);
+            if (producer != null) {
+                try {
+                    RecordMetadata ret = producer.send(new ProducerRecord<String, String>(topic, key, message)).get();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.info("kafka 写入失败", e);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LOGGER.info("kafka 写入失败", e);
+                }
+            } else {
+                LOGGER.info("kafka未初始化");
             }
-        } else {
+        }else{
             LOGGER.info("kafka未初始化");
         }
+
     }
 
 //    public void sendAsync(String topic,String key, String message) {

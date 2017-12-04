@@ -11,11 +11,9 @@ import java.nio.file.StandardOpenOption;
 import java.time.ZoneId;
 import java.util.Properties;
 
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import com.James.basic.UtilsTools.NativePath;
 import com.James.basic.UtilsTools.Utils;
 
@@ -24,7 +22,8 @@ import com.James.basic.UtilsTools.Utils;
  * Created by James on 16/5/20.
  */
 public class Configuration {
-    private final static Logger logger = LoggerFactory.getLogger(Configuration.class.getName());
+
+    private final static Logger logger = LogManager.getLogger(Configuration.class.getName());
 
     private static class InnerInstance {
         public static final Configuration instance = new Configuration();
@@ -43,10 +42,13 @@ public class Configuration {
     public String zookeeper;
     public String kafka;
     public String clientId;
+    public String group;
 
     // ///////////////////////////////////// initialization //////////////////////////////////////////
     //通过配置文件初始化
     public Configuration initialization(String config_path) throws IOException, URISyntaxException {
+
+
         Properties properties = new Properties();
         try (InputStream resourceAsStream = Files.newInputStream(NativePath.get(config_path), StandardOpenOption.READ); //
              InputStreamReader inputstreamreader = new InputStreamReader(resourceAsStream, Configuration.charset);) {
@@ -61,12 +63,12 @@ public class Configuration {
         properties.forEach((k, v) -> {
             logger.info(k + "=" + v);
         });
-
-        zookeeper = properties.getProperty("zookeeper");
-        if (zookeeper == null || zookeeper.trim().isEmpty()) {
-            logger.error("zookeeper配置不能为空:zookeeper");
-            System.exit(-1);
-        }
+        //新版本kafka不需要zk的配置
+//        zookeeper = properties.getProperty("zookeeper");
+//        if (zookeeper == null || zookeeper.trim().isEmpty()) {
+//            logger.error("zookeeper配置不能为空:zookeeper");
+//            System.exit(-1);
+//        }
         kafka = properties.getProperty("kafka");
         if (kafka == null || kafka.trim().isEmpty()) {
             logger.warn("kafka配置为空:kafka 调用链/日志等功能将不可用");
@@ -76,6 +78,12 @@ public class Configuration {
         if (clientId == null || clientId.trim().isEmpty()) {
             clientId = Utils.getLocalIP();
             logger.warn("clientId配置为空,使用默认clientId");
+        }
+
+        group = properties.getProperty("group");
+        if (group == null || group.trim().isEmpty()) {
+            group = Utils.getLocalIP();
+            logger.warn("group配置为空,使用默认group");
         }
 
 //

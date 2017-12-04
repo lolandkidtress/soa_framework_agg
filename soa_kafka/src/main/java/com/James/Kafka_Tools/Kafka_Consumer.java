@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -33,7 +33,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
  * kafka消费者
  */
 public class Kafka_Consumer {
-    private static final Log LOGGER = LogFactory.getLog(Kafka_Consumer.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Kafka_Consumer.class.getName());
 
     private static class InnerInstance {
         public static final Kafka_Consumer instance = new Kafka_Consumer();
@@ -56,13 +56,13 @@ public class Kafka_Consumer {
     }
 
     //初始化实例
-    public void init(Configuration configuration,String group,String topic){
+    public void init(Configuration configuration,String topic){
         if(topicMap.containsKey(topic)){
             //已存在,不更新
         }else{
             try{
                 Properties props = new Properties();
-                props.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+                props.put(ConsumerConfig.GROUP_ID_CONFIG, configuration.group);
                 props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
                 props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
                 props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
@@ -71,7 +71,8 @@ public class Kafka_Consumer {
                 props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
                 props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
                 props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-                props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+                props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                    "org.apache.kafka.common.serialization.StringDeserializer");
 
                 KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
                 System.out.println("消费端初始化");
@@ -122,7 +123,8 @@ public class Kafka_Consumer {
     public void consume(Configuration configuration, String group,String offset,int concurrent, String topic, Class<? extends Kafka_Consume_Handle> clazz) {
         KafkaConsumer<String, String> consumer = topicMap.get(topic);
         if(consumer == null){
-            init(configuration,group,topic);
+            init(configuration,topic);
+            consume(topic, clazz);
         }else{
             consume(topic,clazz);
         }

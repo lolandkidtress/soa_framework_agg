@@ -78,15 +78,6 @@
             <!--</exclusions>-->
         </dependency>
 
-        <dependency>
-            <groupId>apache-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.0.jboss</version>
-        </dependency>
-
-
-
-
     </dependencies>
     <build>
         <finalName>soa_demo</finalName>

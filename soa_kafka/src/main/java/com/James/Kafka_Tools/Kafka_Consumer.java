@@ -56,15 +56,16 @@ public class Kafka_Consumer {
     }
 
     //初始化实例
-    public void init(Configuration configuration,String topic){
+    public void init(String group,String clientId,String kafka,String topic){
         if(topicMap.containsKey(topic)){
             //已存在,不更新
+            LOGGER.info("消费端已存在,不更新");
         }else{
             try{
                 Properties props = new Properties();
-                props.put(ConsumerConfig.GROUP_ID_CONFIG, configuration.group);
-                props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
-                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+                props.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+                props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
+                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka);
                 props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
                 //1.0.0
                 //props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,"read_committed");
@@ -75,10 +76,42 @@ public class Kafka_Consumer {
                     "org.apache.kafka.common.serialization.StringDeserializer");
 
                 KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-                System.out.println("消费端初始化");
+                LOGGER.info("消费端初始化");
                 topicMap.put(topic,consumer);
             }catch(Exception e){
                 e.printStackTrace();
+                LOGGER.error("消费端初始化异常");
+            }
+        }
+    }
+
+    //初始化实例
+    public void init(Configuration configuration,String topic){
+        if(topicMap.containsKey(topic)){
+            //已存在,不更新
+            LOGGER.info("消费端已存在,不更新");
+        }else{
+            try{
+                Properties props = new Properties();
+                props.put(ConsumerConfig.GROUP_ID_CONFIG, configuration.group);
+                props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
+                props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+                props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+
+                //1.0.0
+                //props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,"read_committed");
+                props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+                props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+                props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
+                props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                    "org.apache.kafka.common.serialization.StringDeserializer");
+
+                KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+                LOGGER.info("消费端初始化");
+                topicMap.put(topic,consumer);
+            }catch(Exception e){
+                e.printStackTrace();
+                LOGGER.error("消费端初始化异常");
             }
         }
     }
@@ -126,7 +159,7 @@ public class Kafka_Consumer {
             init(configuration,topic);
             consume(topic, clazz);
         }else{
-            consume(topic,clazz);
+            consume(topic, clazz);
         }
     }
 
@@ -148,6 +181,49 @@ public class Kafka_Consumer {
                         Set<TopicPartition> assignments = consumer.assignment();
                         assignments.forEach(topicPartition ->
                             consumer.seekToBeginning(
+                                Collections.singletonList(topicPartition)));
+
+                        for (ConsumerRecord<String, String> record : records) {
+                            //System.out.println("record:" + record.value());
+                            try {
+                                newInstance = clazz.newInstance();
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                e.printStackTrace();
+                                LOGGER.error("#实例化Consume_Handle失败:", e);
+                            }
+                            newInstance.handle_event(record);
+                        }
+                    }
+
+                });
+                thread.setDaemon(true);
+                thread.start();
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    //从现存的最小的offset开始取得数据
+    public void consumeFromLastest(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
+        try{
+            KafkaConsumer<String, String> consumer = topicMap.get(topic);
+            if(consumer == null){
+                LOGGER.error("消费端没有初始化");
+            }else{
+                consumer.subscribe(Collections.singletonList(topic));
+
+                Thread thread = new Thread(() -> {
+                    Kafka_Consume_Handle newInstance = null;
+                    while (true) {
+                        ConsumerRecords<String, String> records = consumer.poll(1000);
+                        //在每一分区上重置offset
+                        Set<TopicPartition> assignments = consumer.assignment();
+                        assignments.forEach(topicPartition ->
+                            consumer.seekToEnd(
                                 Collections.singletonList(topicPartition)));
 
                         for (ConsumerRecord<String, String> record : records) {

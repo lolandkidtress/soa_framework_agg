@@ -56,6 +56,7 @@ http://localhost:9094/monitor/providerTreeMap 中查看服务提供节点Hash环
 * 配置中心
 * 服务地址IP路由 
 * 记录调用链及方法的执行时间
+* 替换代码中所有使用log4j的场景
 
 ##Versions
 * Release1.0.0R170117:初版

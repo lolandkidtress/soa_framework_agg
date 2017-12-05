@@ -19,8 +19,7 @@
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
 		<global.version>Release1.1.2R171120</global.version>
-		<sonar.exclusions>
-		</sonar.exclusions>
+		<log4j.version>2.8.1</log4j.version>
 		<sonar.language>java</sonar.language>
 	</properties>
 
@@ -44,9 +43,14 @@
 	</modules>
 	<dependencies>
 		<dependency>
-			<groupId>apache-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.0.jboss</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
 
 
@@ -62,13 +66,13 @@
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
-			<name>Nexus Release Repository</name>
-			<url>http://192.168.0.126:8081/nexus/content/repositories/releases</url>
+			<name>releases repository</name>
+			<url>http://10.81.21.244:8081/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
-			<name>Nexus Snapshot Repository</name>
-			<url>http://192.168.0.126:8081/nexus/content/repositories/snapshots</url>
+			<name>snapshots repository</name>
+			<url>http://10.81.21.244:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 

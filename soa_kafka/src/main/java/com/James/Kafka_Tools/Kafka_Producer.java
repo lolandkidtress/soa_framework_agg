@@ -38,6 +38,40 @@ public class Kafka_Producer {
     }
 
     // 启动kafka生产者
+
+    public Kafka_Producer init(String kafka,String clientId,String topic) {
+
+        if(topicMap.containsKey(topic)){
+            return this;
+        }
+
+        //http://kafka.apache.org/documentation.html#producerconfigs
+        Properties props = new Properties();
+        // 触发acknowledgement机制,数据完整性相关
+        // 值为0,1,all,可以参考
+        props.put("acks", "all");
+        props.put("retries", 3);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("compression.type","gzip");
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka);
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
+        //props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<>(props);
+        topicMap.put(topic,producer);
+        LOGGER.info("生产端初始化成功");
+        return this;
+    }
+
+
     public Kafka_Producer init(Configuration configuration,String topic) {
 
         if (configuration.kafka == null || configuration.kafka.trim().isEmpty()) {
@@ -71,6 +105,7 @@ public class Kafka_Producer {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
         topicMap.put(topic,producer);
+        LOGGER.info("生产端初始化成功");
         return this;
     }
 
@@ -84,7 +119,7 @@ public class Kafka_Producer {
     }
 
     public void send(String topic, String key, String message) {
-        if(!topicMap.containsKey(topic)){
+        if(topicMap.containsKey(topic)){
             Producer<String, String> producer = topicMap.get(topic);
             if (producer != null) {
                 try {

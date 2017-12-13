@@ -10,8 +10,8 @@ public class MsgCosum implements Kafka_Consume_Handle {
     }
 
     @Override
-    public void handle_event(ConsumerRecord<String, String> consumerIterator) {
-        String message= consumerIterator.value();
+    public void handle_event(ConsumerRecord<String, Object> consumerIterator) {
+        String message= (String.valueOf (consumerIterator.value()));
         String key = consumerIterator.key();
         System.out.println("接收到:"+key + ",message:" + message);
     }

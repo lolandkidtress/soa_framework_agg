@@ -133,6 +133,7 @@ public class Kafka_Producer {
                 LOGGER.info("kafka未初始化");
             }
         }else{
+
             LOGGER.info("kafka未初始化");
         }
 

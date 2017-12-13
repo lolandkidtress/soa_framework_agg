@@ -44,7 +44,7 @@ public class Kafka_Consumer {
     }
 
     //topic和消费实例对应关系
-    private ConcurrentHashMap<String,KafkaConsumer<String, String>> topicMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,KafkaConsumer<String, Object>> topicMap = new ConcurrentHashMap<>();
 
     public static ExecutorService executors = Executors.newCachedThreadPool((r) -> {
         Thread thread = Executors.defaultThreadFactory().newThread(r);
@@ -69,13 +69,14 @@ public class Kafka_Consumer {
                 props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
                 //1.0.0
                 //props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,"read_committed");
+                //props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
                 props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
                 props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
                 props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
                 props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                     "org.apache.kafka.common.serialization.StringDeserializer");
 
-                KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+                KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(props);
                 LOGGER.info("消费端初始化");
                 topicMap.put(topic,consumer);
             }catch(Exception e){
@@ -106,7 +107,7 @@ public class Kafka_Consumer {
                 props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                     "org.apache.kafka.common.serialization.StringDeserializer");
 
-                KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+                KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(props);
                 LOGGER.info("消费端初始化");
                 topicMap.put(topic,consumer);
             }catch(Exception e){
@@ -122,8 +123,9 @@ public class Kafka_Consumer {
      * @param clazz
      *            处理逻辑
      */
+    //从上次提交的offset开始消费
     public void consume(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
-        KafkaConsumer<String, String> consumer = topicMap.get(topic);
+        KafkaConsumer<String, Object> consumer = topicMap.get(topic);
         if(consumer == null){
             LOGGER.error("消费端没有初始化");
         }else{
@@ -132,8 +134,8 @@ public class Kafka_Consumer {
             Thread thread = new Thread(() -> {
                 Kafka_Consume_Handle newInstance = null;
                 while (true) {
-                    ConsumerRecords<String, String> records = consumer.poll(1000);
-                    for (ConsumerRecord<String, String> record : records) {
+                    ConsumerRecords<String, Object> records = consumer.poll(1000);
+                    for (ConsumerRecord<String, Object> record : records) {
                         //System.out.println("record:" + record.value());
                         try {
                             newInstance = clazz.newInstance();
@@ -154,7 +156,7 @@ public class Kafka_Consumer {
     @Deprecated
     //老版本兼容
     public void consume(Configuration configuration, String group,String offset,int concurrent, String topic, Class<? extends Kafka_Consume_Handle> clazz) {
-        KafkaConsumer<String, String> consumer = topicMap.get(topic);
+        KafkaConsumer<String, Object> consumer = topicMap.get(topic);
         if(consumer == null){
             init(configuration,topic);
             consume(topic, clazz);
@@ -163,11 +165,10 @@ public class Kafka_Consumer {
         }
     }
 
-
     //从现存的最小的offset开始取得数据
     public void consumeFromBegining(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
         try{
-            KafkaConsumer<String, String> consumer = topicMap.get(topic);
+            KafkaConsumer<String, Object> consumer = topicMap.get(topic);
             if(consumer == null){
                 LOGGER.error("消费端没有初始化");
             }else{
@@ -176,14 +177,14 @@ public class Kafka_Consumer {
                 Thread thread = new Thread(() -> {
                     Kafka_Consume_Handle newInstance = null;
                     while (true) {
-                        ConsumerRecords<String, String> records = consumer.poll(1000);
+                        ConsumerRecords<String, Object> records = consumer.poll(1000);
                         //在每一分区上重置offset
                         Set<TopicPartition> assignments = consumer.assignment();
                         assignments.forEach(topicPartition ->
                             consumer.seekToBeginning(
                                 Collections.singletonList(topicPartition)));
 
-                        for (ConsumerRecord<String, String> record : records) {
+                        for (ConsumerRecord<String, Object> record : records) {
                             //System.out.println("record:" + record.value());
                             try {
                                 newInstance = clazz.newInstance();
@@ -210,7 +211,7 @@ public class Kafka_Consumer {
     //从现存的最小的offset开始取得数据
     public void consumeFromLastest(String topic,Class<? extends Kafka_Consume_Handle> clazz) {
         try{
-            KafkaConsumer<String, String> consumer = topicMap.get(topic);
+            KafkaConsumer<String, Object> consumer = topicMap.get(topic);
             if(consumer == null){
                 LOGGER.error("消费端没有初始化");
             }else{
@@ -219,14 +220,13 @@ public class Kafka_Consumer {
                 Thread thread = new Thread(() -> {
                     Kafka_Consume_Handle newInstance = null;
                     while (true) {
-                        ConsumerRecords<String, String> records = consumer.poll(1000);
+                        ConsumerRecords<String, Object> records = consumer.poll(1000);
                         //在每一分区上重置offset
                         Set<TopicPartition> assignments = consumer.assignment();
                         assignments.forEach(topicPartition ->
-                            consumer.seekToEnd(
-                                Collections.singletonList(topicPartition)));
+                            consumer.seekToEnd(Collections.singletonList(topicPartition)));
 
-                        for (ConsumerRecord<String, String> record : records) {
+                        for (ConsumerRecord<String, Object> record : records) {
                             //System.out.println("record:" + record.value());
                             try {
                                 newInstance = clazz.newInstance();
@@ -252,7 +252,7 @@ public class Kafka_Consumer {
     //从过去某个时间段开始
     public void consumeFromTimes(String topic,int minute,Class<? extends Kafka_Consume_Handle> clazz) {
         try{
-            KafkaConsumer<String, String> consumer = topicMap.get(topic);
+            KafkaConsumer<String, Object> consumer = topicMap.get(topic);
             if(consumer == null){
                 LOGGER.error("消费端没有初始化");
             }else{
@@ -261,7 +261,7 @@ public class Kafka_Consumer {
                 Thread thread = new Thread(() -> {
                     Kafka_Consume_Handle newInstance = null;
                     while (true) {
-                        ConsumerRecords<String, String> records = consumer.poll(1000);
+                        ConsumerRecords<String, Object> records = consumer.poll(1000);
                         Set<TopicPartition> assignments = consumer.assignment();
                         Map<TopicPartition, Long> query = new HashMap<>();
                         for (TopicPartition topicPartition : assignments) {
@@ -283,7 +283,7 @@ public class Kafka_Consumer {
                             );
 
 
-                        for (ConsumerRecord<String, String> record : records) {
+                        for (ConsumerRecord<String, Object> record : records) {
                             //System.out.println("record:" + record.value());
                             try {
                                 newInstance = clazz.newInstance();

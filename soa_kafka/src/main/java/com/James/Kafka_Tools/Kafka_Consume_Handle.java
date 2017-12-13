@@ -8,5 +8,5 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
  * 消费事件入口
  */
 public interface Kafka_Consume_Handle {
-    public abstract void handle_event(ConsumerRecord<String, String> it);
+    public abstract void handle_event(ConsumerRecord<String,Object>  it);
 }

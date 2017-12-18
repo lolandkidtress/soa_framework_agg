@@ -13,6 +13,7 @@ public class MsgCosum implements Kafka_Consume_Handle {
     public void handle_event(ConsumerRecord<String, Object> consumerIterator) {
         String message= (String.valueOf (consumerIterator.value()));
         String key = consumerIterator.key();
+        System.out.println("接收partition:"+consumerIterator.partition());
         System.out.println("接收到:"+key + ",message:" + message);
     }
 }

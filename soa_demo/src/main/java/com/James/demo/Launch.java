@@ -191,13 +191,13 @@ public class Launch  {
       //演示所有功能
       Launch launch = new Launch();
       //代码注入
-//      launch.hotInject();
+      launch.hotInject();
 
 //    new AppNanolets(nanoPort);
       //在zk中注册http服务和avro服务
-      launch.registerServer();
-//      调用已注册的服务
-      launch.discoryServer();
+//      launch.registerServer();
+////      调用已注册的服务
+//      launch.discoryServer();
 //      //调用链
 //      launch.tracking();
 //

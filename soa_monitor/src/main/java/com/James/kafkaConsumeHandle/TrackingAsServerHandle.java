@@ -15,9 +15,9 @@ public class TrackingAsServerHandle implements Kafka_Consume_Handle {
     }
 
     @Override
-    public void handle_event(ConsumerRecord<String, String> consumerIterator) {
+    public void handle_event(ConsumerRecord<String, Object> consumerIterator) {
 
-        String message= consumerIterator.value();
+        String message= String.valueOf( consumerIterator.value());
         System.out.println("TrackingAsServerHandle写入kafka的trackingChain:" + message);
     }
 }

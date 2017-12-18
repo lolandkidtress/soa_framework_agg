@@ -1,17 +1,22 @@
 package com.James.Kafka_Tools;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.James.basic.UtilsTools.JsonConvert;
 import com.James.kafka_Config.Configuration;
+
 
 /**
  * Created by James on 16/5/20.
@@ -147,4 +152,63 @@ public class Kafka_Producer {
 //                key, message), new DemoCallBack(startTime, messageNo, messageStr));
 //        }
 //    }
+
+    public static void main(String[] args) {
+        org.apache.log4j.BasicConfigurator.configure();
+        Properties properties = new Properties();
+        //properties.put("zookeeper", "10.81.23.103:2181,10.81.23.104:2181,10.81.23.105:2181");
+        properties.put("kafka","localhost:9092");
+        //properties.put("kafka","10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
+        properties.put("clientId","testclient");
+        properties.put("group","testclient");
+
+        Configuration configuration = null;
+        try{
+            configuration = Configuration.getInstance().initialization(properties);
+            Properties props = new Properties();
+            // 触发acknowledgement机制,数据完整性相关
+            // 值为0,1,all,可以参考
+            props.put("acks", "all");
+            props.put("retries", 3);
+            props.put("batch.size", 16384);
+            props.put("linger.ms", 1);
+            props.put("compression.type","gzip");
+            props.put("buffer.memory", 33554432);
+            props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+            props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+
+            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+            props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
+            //props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
+            props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+            props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+            Producer<String, String> producer = new KafkaProducer<>(props);
+            Map d = new HashMap<>();
+            d.put("code","");
+            d.put("ip",null);
+            try {
+                int i=0;
+                while(i<100){
+                    RecordMetadata ret = producer.send(
+                        new ProducerRecord<String, String>("test_topic4", "key", JsonConvert.toJson(d))).get();
+                    System.out.println("写入成功");
+                    TimeUnit.SECONDS.sleep(1);
+                    i++;
+                    //break;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.info("kafka 写入失败", e);
+            }
+            LOGGER.info("生产端初始化成功");
+        }catch(Exception e){
+            e.printStackTrace();
+            LOGGER.error("初始化Config异常");
+        }
+
+
+    }
 }

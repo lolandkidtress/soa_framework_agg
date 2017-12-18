@@ -16,9 +16,10 @@ public class TrackingSelfHandle implements Kafka_Consume_Handle {
     }
 
     @Override
-    public void handle_event(ConsumerRecord<String, String> consumerIterator) {
+    public void handle_event(ConsumerRecord<String, Object> consumerIterator) {
         if(consumerIterator.key().equals(MonitorInstance.INSTANCE.getClientID())){
-            String message= consumerIterator.value();
+            String message= String.valueOf(consumerIterator.value());
+            //TODO 实际业务场景
             System.out.println("写入kafka的trackingChain:" + message);
         }
 

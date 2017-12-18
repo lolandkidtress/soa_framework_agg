@@ -33,13 +33,13 @@ public enum  MonitorInstance {
   //接收相同clientID的消息做统计
   public void startTrackingSelf(){
     Consumer = new Kafka_Consumer();
-    Consumer.init(configuration,"TrackingSelfHandle",trackingTopic);
+    Consumer.init("TrackingSelfHandle",clientID,configuration.kafka,trackingTopic);
     Consumer.consume(trackingTopic, TrackingSelfHandle.class);
   }
 
   //客户端模式,只发送消息
   public void runAsClient(){
-    Producer = Kafka_Producer.getInstance().init(configuration);
+    Producer = Kafka_Producer.getInstance().init(configuration,trackingTopic);
     logger.info("trackingMonitor Producer启动");
 //    Consumer = new Kafka_Consumer();
 //    Consumer.consume(configuration, "group", "largest", 2, trackingTopic, TrackingAsServerHandle.class);
@@ -48,7 +48,7 @@ public enum  MonitorInstance {
   //server端模式,接收所有消息做统计
   public void runAsServer(){
     Consumer = new Kafka_Consumer();
-    Consumer.init(configuration,"TrackingAsServerHandle",trackingTopic);
+    Consumer.init("TrackingAsServerHandle",clientID,configuration.kafka,trackingTopic);
     Consumer.consume(trackingTopic, TrackingSelfHandle.class);
   }
 

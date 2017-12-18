@@ -305,4 +305,62 @@ public class Kafka_Consumer {
         }
 
     }
+
+    public static void main(String[] args) {
+        org.apache.log4j.BasicConfigurator.configure();
+        Properties properties = new Properties();
+        //properties.put("zookeeper", "10.81.23.103:2181,10.81.23.104:2181,10.81.23.105:2181");
+        properties.put("kafka","localhost:9092");
+        //properties.put("kafka","10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
+        properties.put("clientId","testclient1");
+        properties.put("group","testclient");
+
+        Configuration configuration = null;
+        try{
+            configuration = Configuration.getInstance().initialization(properties);
+        }catch(Exception e){
+            e.printStackTrace();
+            LOGGER.error("初始化Config异常");
+        }
+        try{
+            Properties props = new Properties();
+            props.put(ConsumerConfig.GROUP_ID_CONFIG, configuration.group);
+            props.put(ConsumerConfig.CLIENT_ID_CONFIG, configuration.clientId);
+            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, configuration.kafka);
+            props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+
+            //1.0.0
+            //props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,"read_committed");
+            props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
+            props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                "org.apache.kafka.common.serialization.StringDeserializer");
+            props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                "org.apache.kafka.common.serialization.StringDeserializer");
+
+            KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(props);
+            LOGGER.info("消费端初始化");
+            consumer.subscribe(Collections.singletonList("test_topic4"));
+            LOGGER.info("消费端开始消费" + "test_topic4");
+            Thread thread = new Thread(() -> {
+                while (true) {
+                    ConsumerRecords<String, Object> records = consumer.poll(1000);
+
+                    for (ConsumerRecord<String, Object> record : records) {
+                        System.out.println("time:"+System.currentTimeMillis()+",partition:"+record.partition()+",record:" + record.value());
+
+                    }
+                }
+            });
+            thread.setDaemon(true);
+            thread.start();
+            Thread.currentThread().join();
+        }catch(Exception e){
+            e.printStackTrace();
+            LOGGER.error("消费端初始化异常");
+        }
+
+
+
+    }
 }

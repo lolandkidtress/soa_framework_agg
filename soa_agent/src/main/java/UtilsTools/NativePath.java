@@ -3,8 +3,8 @@ package UtilsTools;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
  * 获取linux和windows平台下各种环境下基于classpath的路径 测试过jetty和tomcat
  */
 public class NativePath {
-        private static final Log LOGGER = LogFactory.getLog(NativePath.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(NativePath.class.getName());
 
         /**
          * 获取配置文件路径

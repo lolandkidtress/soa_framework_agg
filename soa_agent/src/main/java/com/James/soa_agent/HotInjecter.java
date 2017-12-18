@@ -17,10 +17,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.regex.Pattern;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.James.soa_agent.event_handle.Agent_Handle;
 
@@ -33,7 +32,8 @@ import UtilsTools.agentJsonConvert;
  */
 public class HotInjecter {
 
-    private static final Log LOGGER = LogFactory.getLog(HotInjecter.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(HotInjecter.class.getName());
+
     private static class InnerInstance {
 
         public static final HotInjecter instance = new HotInjecter();

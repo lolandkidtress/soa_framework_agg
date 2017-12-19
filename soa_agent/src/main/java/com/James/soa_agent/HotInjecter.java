@@ -194,6 +194,10 @@ public class HotInjecter {
                 if (!class_name.toString().endsWith(".class") && !anonymous_inner_class_compile.matcher(class_name).find()) {
                     continue;
                 }
+                if(class_name.contains("BOOT-INF")){
+                    //spring boot jar包会把class文件放在boot-inf下面 loadclass应该去除前面的非包文件夹名
+                    class_name = class_name.replace("BOOT-INF/classes/","");
+                }
                 class_name = class_name.replace(".class", "").replace("/", ".");
                 try {
                     classes.add(Thread.currentThread().getContextClassLoader().loadClass(class_name));

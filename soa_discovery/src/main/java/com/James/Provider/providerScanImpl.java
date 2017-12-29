@@ -19,9 +19,9 @@ import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
 import com.James.basic.Enum.Code;
-import com.James.basic.Model.inputParam;
-import com.James.basic.Model.outputParam;
-import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.InputParam;
+import com.James.basic.Model.OutputParam;
+import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.soa_agent.HotInjecter;
 import com.James.soa_agent.event_handle.ScanAnnotationClass_Handle;
@@ -59,9 +59,9 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
   //读取desc信息
   //读取方法上的入参和出参
   //读取Filter信息
-  public static List<sharedNode> readClasses(Class<?> clazz,String serverName){
+  public static List<SharedNode> readClasses(Class<?> clazz,String serverName){
 
-    List<sharedNode> sharedNodes =new ArrayList<>();
+    List<SharedNode> SharedNodes =new ArrayList<>();
 
     Method[] methods = clazz.getDeclaredMethods();
     for(Method method : methods){
@@ -71,9 +71,9 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
         InputParamAnnotation[] inParams = method.getAnnotationsByType(InputParamAnnotation.class);
         OutputParamAnnotation[] outParams = method.getAnnotationsByType(OutputParamAnnotation.class);
 
-        sharedNode sharedNode = new sharedNode(serverName);
+        SharedNode SharedNode = new SharedNode(serverName);
         //读取desc信息
-        sharedNode = getDescribe(sharedNode,method);
+        SharedNode = getDescribe(SharedNode,method);
 
         //降级 filter
         degradeAnnotation DegradeAnnotation = method.getAnnotation(degradeAnnotation.class);
@@ -92,7 +92,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
             );
 
             Filter.getInstance().addDegradeConfig(DegradeCountDown);
-            sharedNode.addDegradeFilter(DegradeCountDown.getName());
+            SharedNode.addDegradeFilter(DegradeCountDown.getName());
           }else{
             LOGGER.warn("检测到"+method.getName()+"配置了降级策略,但是没有配置description");
           }
@@ -115,7 +115,7 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
             );
 
             Filter.getInstance().addLimitConfig(RatelimitCountDown);
-            sharedNode.addRatelimitFilter(RatelimitCountDown.getName());
+            SharedNode.addRatelimitFilter(RatelimitCountDown.getName());
           }else{
             LOGGER.warn("检测到"+method.getName()+"配置了限流策略,但是没有配置description");
           }
@@ -123,71 +123,71 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
 
         //Inparam,Outparam
         for(InputParamAnnotation inParam: inParams){
-          inputParam InputParam = new inputParam();
+          InputParam InputParam = new InputParam();
           InputParam.setName(inParam.name());
           InputParam.setType(inParam.type());
           InputParam.setDescribe(inParam.describe());
           InputParam.setRequired(inParam.Required());
           InputParam.setDefault_value(inParam.default_value());
 
-          sharedNode.addInputParam(InputParam);
+          SharedNode.addInputParam(InputParam);
 
         }
 
         for(OutputParamAnnotation outParam: outParams){
-          outputParam OutputParam = new outputParam();
+          OutputParam OutputParam = new OutputParam();
           OutputParam.setName(outParam.name());
           OutputParam.setType(outParam.type());
           OutputParam.setDescribe(outParam.describe());
           OutputParam.setRequired(outParam.Required());
           OutputParam.setDefault_value(outParam.default_value());
 
-          sharedNode.addOutputParam(OutputParam);
+          SharedNode.addOutputParam(OutputParam);
         }
 
-        sharedNodes.add(sharedNode);
+        SharedNodes.add(SharedNode);
       }
 
     }
 
-    return sharedNodes;
+    return SharedNodes;
 
   }
 
   //生成shareNode的描述
-  public static sharedNode getDescribe(sharedNode sharedNode,Method method) {
+  public static SharedNode getDescribe(SharedNode SharedNode,Method method) {
 
     descriptionAnnotation describe = method.getAnnotation(descriptionAnnotation.class);
 
     if (describe != null) {
       LOGGER.info("开始扫描" + method.getDeclaringClass().getName() + "类下的" + method.getName() + "方法");
-      sharedNode.setAuthor(describe.author());
+      SharedNode.setAuthor(describe.author());
 
-      sharedNode.setDescribe(describe.desc());
-      sharedNode.setVersion(describe.version());
+      SharedNode.setDescribe(describe.desc());
+      SharedNode.setVersion(describe.version());
 
-      sharedNode.setProtocol(CommonConfig.PROTOCOL.valueOf(describe.protocol()));
+      SharedNode.setProtocol(CommonConfig.PROTOCOL.valueOf(describe.protocol()));
 
-      sharedNode.setSubmit_mode(describe.submit_mode());
+      SharedNode.setSubmit_mode(describe.submit_mode());
 
       if(describe.protocol().equals(CommonConfig.PROTOCOL.avro.name())){
-        sharedNode.setMethod_name(describe.name());
+        SharedNode.setMethod_name(describe.name());
         //avro需要全限定名
-        sharedNode.setDeclaringClass_name(method.getDeclaringClass().getName());
-        sharedNode.setRpc_port(providerInstance.getInstance().getDefaultAvroPort());
+        SharedNode.setDeclaringClass_name(method.getDeclaringClass().getName());
+        SharedNode.setRpc_port(providerInstance.getInstance().getDefaultAvroPort());
       }
 
       if(describe.protocol().equals(CommonConfig.PROTOCOL.http.name())){
-        sharedNode.setMethod_name(describe.name());
-        sharedNode.setHttp_port(providerInstance.getInstance().getDefaultHttpPort());
-        sharedNode.setHttp_context(providerInstance.getInstance().getDefaultHttpContext());
+        SharedNode.setMethod_name(describe.name());
+        SharedNode.setHttp_port(providerInstance.getInstance().getDefaultHttpPort());
+        SharedNode.setHttp_context(providerInstance.getInstance().getDefaultHttpContext());
       }
 
-      if(!sharedNode.isAvailable()) {
-        LOGGER.error(sharedNode.getMethod_name()+"不可用");
+      if(!SharedNode.isAvailable()) {
+        LOGGER.error(SharedNode.getMethod_name()+"不可用");
       }
     }
 
-    return sharedNode;
+    return SharedNode;
   }
 }

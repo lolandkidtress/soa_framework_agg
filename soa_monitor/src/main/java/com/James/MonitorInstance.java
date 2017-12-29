@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.James.Kafka_Tools.Kafka_Consumer;
 import com.James.Kafka_Tools.Kafka_Producer;
-import com.James.basic.Model.trackingChain;
+import com.James.basic.Model.TrackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.kafkaConsumeHandle.TrackingSelfHandle;
 import com.James.kafka_Config.Configuration;
@@ -52,7 +52,7 @@ public enum  MonitorInstance {
     Consumer.consume(trackingTopic, TrackingSelfHandle.class);
   }
 
-  public void send2kafka(trackingChain trackingChain){
+  public void send2kafka(TrackingChain trackingChain){
     if(Producer!=null){
       Producer.send(trackingTopic,clientID,trackingChain.toJson());
     }

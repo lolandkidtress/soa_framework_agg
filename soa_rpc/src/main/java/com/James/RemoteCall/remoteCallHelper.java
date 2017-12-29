@@ -13,7 +13,7 @@ import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
 import com.James.avroNettyClientConnect.avroNettyClientConnectionPool;
 import com.James.avroProto.Message;
 import com.James.basic.Enum.Code;
-import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
@@ -29,26 +29,26 @@ public class remoteCallHelper {
   private static final Log logger = LogFactory.getLog(remoteCallHelper.class.getName());
   private static OkHttpTools okHttpTools =  new OkHttpTools();
 
-  public static Return http_call(sharedNode sharedNode,Parameter parameter){
+  public static Return http_call(SharedNode SharedNode,Parameter parameter){
 
 
     StringBuffer sb = new StringBuffer();
     sb.append(CommonConfig.HTTP_PROTOCOL_PREFIX);
-    sb.append(sharedNode.getIP());
+    sb.append(SharedNode.getIP());
 
     sb.append(CommonConfig.COLON);
-    sb.append(sharedNode.getHttp_port());
-    if(sharedNode.getHttp_context()!=null&& sharedNode.getHttp_context().length()>0){
+    sb.append(SharedNode.getHttp_port());
+    if(SharedNode.getHttp_context()!=null&& SharedNode.getHttp_context().length()>0){
       sb.append(CommonConfig.SLASH);
-      sb.append(sharedNode.getHttp_context());
+      sb.append(SharedNode.getHttp_context());
     }
 
     sb.append(CommonConfig.SLASH);
-    sb.append(sharedNode.getMethod_name());
+    sb.append(SharedNode.getMethod_name());
 
     Map<String, String> headers = new HashMap<>();
 
-    if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
+    if(SharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.GET.name())){
       try {
 
         return Return.create(okHttpTools.do_get(sb.toString(), parameter, headers ));
@@ -59,21 +59,21 @@ public class remoteCallHelper {
       }
     }
     //TODO post实现
-    if(sharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
+    if(SharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
 
     }
     return Return.FAIL(Code.method_not_support.code,Code.method_not_support.name());
 
   }
 
-  public static Return avro_call(sharedNode sharedNode,Parameter parameter) {
+  public static Return avro_call(SharedNode SharedNode,Parameter parameter) {
 
     Message message = new Message();
     message.setParam(JsonConvert.toJson(parameter));
-    message.setRequestName(sharedNode.getMethod_name());
+    message.setRequestName(SharedNode.getMethod_name());
 
     avroNettyClientConnectionPool cp =
-        avroNettyClientConnectionManager.getInstance().getConnectPool(sharedNode.getIP(), sharedNode.getRpc_port());
+        avroNettyClientConnectionManager.getInstance().getConnectPool(SharedNode.getIP(), SharedNode.getRpc_port());
     try{
       avroNettyClientConnection conn = cp.getConnect();
       Return rpc_ret = conn.call(message);

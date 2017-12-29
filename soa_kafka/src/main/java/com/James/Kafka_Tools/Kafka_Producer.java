@@ -157,7 +157,7 @@ public class Kafka_Producer {
         org.apache.log4j.BasicConfigurator.configure();
         Properties properties = new Properties();
         //properties.put("zookeeper", "10.81.23.103:2181,10.81.23.104:2181,10.81.23.105:2181");
-        properties.put("kafka","localhost:9092");
+        properties.put("kafka","47.97.7.138:9092,47.97.5.96:9092,47.97.9.120:9092");
         //properties.put("kafka","10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
         properties.put("clientId","testclient");
         properties.put("group","testclient");
@@ -192,7 +192,7 @@ public class Kafka_Producer {
                 int i=0;
                 while(i<100){
                     RecordMetadata ret = producer.send(
-                        new ProducerRecord<String, String>("test_topic4", "key", JsonConvert.toJson(d))).get();
+                        new ProducerRecord<String, String>("topic_metric_tracking", "key", JsonConvert.toJson(d))).get();
                     System.out.println("写入成功");
                     TimeUnit.SECONDS.sleep(1);
                     i++;

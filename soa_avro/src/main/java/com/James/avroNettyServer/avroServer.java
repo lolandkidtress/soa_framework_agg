@@ -43,9 +43,9 @@ public class avroServer {
 
       try{
         Map<String,String> par = JsonConvert.toObject(message.getParam().toString(), HashMap.class);
-        //trackingChain tc = ThreadLocalCache.getCallchain().get();
+        //TrackingChain tc = ThreadLocalCache.getCallchain().get();
 //        if(tc==null){
-//          tc=new trackingChain(par.get(CommonConfig.s_trackingID));
+//          tc=new TrackingChain(par.get(CommonConfig.s_trackingID));
 //        }
 //        tc.setClientID(CommonConfig.clientID);
 

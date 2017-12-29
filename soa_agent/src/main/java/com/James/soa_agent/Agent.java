@@ -5,7 +5,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import UtilsTools.agentJsonConvert;
+import com.James.basic.UtilsTools.JsonConvert;
 
 
 /**
@@ -39,7 +39,7 @@ public class Agent {
                         @SuppressWarnings("unchecked")
                         Map<String, String> class_advice_map = (Map<String, String>) field.get(loadedClasse);
                         for (String advice : class_advice_map.values()) {
-                            agent_advice_class = agentJsonConvert.toObject(advice, Agent_Advice_Class.class);
+                            agent_advice_class = JsonConvert.toObject(advice, Agent_Advice_Class.class);
                             for (Class<?> clazz : allLoadedClasses) {
                                 String class_name = agent_advice_class.getClass_name();
                                 if (clazz.getName().equals(class_name)) {

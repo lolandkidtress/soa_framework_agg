@@ -19,9 +19,9 @@ import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
 import com.James.basic.Enum.Code;
 import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.Invoker.Invoker;
-import com.James.basic.Model.provider;
-import com.James.basic.Model.sharedNode;
-import com.James.basic.Model.trackingChain;
+import com.James.basic.Model.Provider;
+import com.James.basic.Model.SharedNode;
+import com.James.basic.Model.TrackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Parameter;
@@ -130,11 +130,11 @@ public class RemoteInvoker implements Invoker,Serializable {
   //************************************//
 
   //保存带版本号的服务节点组
-  //key:method,value:provider
-  private ConcurrentHashMap<String,provider> methodProviderInvokers= new ConcurrentHashMap();
+  //key:method,value:Provider
+  private ConcurrentHashMap<String,Provider> methodProviderInvokers= new ConcurrentHashMap();
 
   //扫描不同的版本下面方法和注册的节点,生成hash环
-  private ConcurrentHashMap<String,provider> buildNodeGroup(String path){
+  private ConcurrentHashMap<String,Provider> buildNodeGroup(String path){
     try{
       List<String> identityIDs =  zkclient.getChildren(path);
 
@@ -171,13 +171,13 @@ public class RemoteInvoker implements Invoker,Serializable {
 
       Iterator<String> ite_version = version_data_pair.keySet().iterator();
 
-      provider Provider = methodProviderInvokers.getOrDefault(method,new provider());
+      Provider Provider = methodProviderInvokers.getOrDefault(method,new Provider());
 
       while(ite_version.hasNext()) {
 
         String ver = ite_version.next();
         Map<String,String> s_node = version_data_pair.get(ver);
-        sharedNode SharedNode = JsonConvert.toObject(JsonConvert.toJson(s_node), sharedNode.class);
+        SharedNode SharedNode = JsonConvert.toObject(JsonConvert.toJson(s_node), com.James.basic.Model.SharedNode.class);
         //有avro就初始化连接池
         if(SharedNode.getProtocol().equals(CommonConfig.PROTOCOL.avro)){
           avroNettyClientConnectionManager.getInstance().initConnectionPool(SharedNode);
@@ -210,7 +210,7 @@ public class RemoteInvoker implements Invoker,Serializable {
     }
 
     //节点信息转换
-    sharedNode SharedNode;
+    SharedNode SharedNode;
     try{
       if(methodProviderInvokers.get(method)!=null){
 
@@ -251,9 +251,9 @@ public class RemoteInvoker implements Invoker,Serializable {
     }
 
     //theadlocalcache记录调用链
-    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    TrackingChain tc = ThreadLocalCache.getCallchain().get();
     if(tc==null){
-      tc=new trackingChain(parameter.get(CommonConfig.s_trackingID));
+      tc=new TrackingChain(parameter.get(CommonConfig.s_trackingID));
     }
     tc.setInvokerID(CommonConfig.clientID);
     tc.setFromMethod(method);
@@ -282,7 +282,7 @@ public class RemoteInvoker implements Invoker,Serializable {
 
   }
 
-  private Return callImpl(sharedNode SharedNode,String method,Parameter parameter) {
+  private Return callImpl(SharedNode SharedNode,String method,Parameter parameter) {
     Return ret ;
 
     switch (SharedNode.getProtocol()) {
@@ -307,7 +307,7 @@ public class RemoteInvoker implements Invoker,Serializable {
   }
 
   //随机取得可用节点
-  public sharedNode getAvailableProvider(String method){
+  public SharedNode getAvailableProvider(String method){
     try{
 
       return methodProviderInvokers.get(method).get(CommonConfig.DEFAULTVERSION,String.valueOf(System.currentTimeMillis()));
@@ -320,7 +320,7 @@ public class RemoteInvoker implements Invoker,Serializable {
   }
 
   //取得固定的某个节点
-  public sharedNode getAvailableProvider(String method,String seed){
+  public SharedNode getAvailableProvider(String method,String seed){
     try{
       return methodProviderInvokers.get(method).get(CommonConfig.DEFAULTVERSION,seed);
     }catch(Method_Not_Found_Exception e){
@@ -342,11 +342,11 @@ public class RemoteInvoker implements Invoker,Serializable {
     this.zkclient = zkclient;
   }
 
-  public ConcurrentHashMap<String, provider> getMethodProviderInvokers() {
+  public ConcurrentHashMap<String, Provider> getMethodProviderInvokers() {
     return methodProviderInvokers;
   }
 
-  public void setMethodProviderInvokers(ConcurrentHashMap<String, provider> methodProviderInvokers) {
+  public void setMethodProviderInvokers(ConcurrentHashMap<String, Provider> methodProviderInvokers) {
     this.methodProviderInvokers = methodProviderInvokers;
   }
 

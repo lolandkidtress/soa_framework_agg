@@ -3,7 +3,7 @@ package com.James.avroNettyClientConnect;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 
 
@@ -34,7 +34,7 @@ public class avroNettyClientConnectionManager {
   }
 
 
-  public void initConnectionPool(sharedNode SharedNode){
+  public void initConnectionPool(SharedNode SharedNode){
     if(!registerConnectionPools.contains(SharedNode.getIP().concat("-").concat(SharedNode.getRpc_port()))){
       //根据host和port创建连接池
       avroNettyClientConnectionPool connPools=

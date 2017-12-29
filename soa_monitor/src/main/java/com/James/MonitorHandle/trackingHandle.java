@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.James.MonitorInstance;
-import com.James.basic.Model.trackingChain;
+import com.James.basic.Model.TrackingChain;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.ThreadLocalCache;
 import com.James.basic.UtilsTools.Utils;
@@ -68,9 +68,9 @@ public class trackingHandle extends Agent_Handle {
 
   public static void insert_before_call_back(String class_name,String method_name,long start_millis) {
 
-    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    TrackingChain tc = ThreadLocalCache.getCallchain().get();
     if(tc==null){
-      tc = new trackingChain(Utils.generateTrackingID());
+      tc = new TrackingChain(Utils.generateTrackingID());
     }
     tc.setToClass(class_name);
     tc.setToMethod(method_name);
@@ -82,9 +82,9 @@ public class trackingHandle extends Agent_Handle {
 
   public static void insert_after_call_back(long start_millis, long end_millis) {
 
-    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    TrackingChain tc = ThreadLocalCache.getCallchain().get();
     if(tc==null){
-      tc = new trackingChain(Utils.generateTrackingID());
+      tc = new TrackingChain(Utils.generateTrackingID());
     }
 
     tc.setEnd_time(end_millis);
@@ -94,7 +94,7 @@ public class trackingHandle extends Agent_Handle {
   }
 
   public static void add_catch_call_back( Throwable e) {
-    trackingChain tc = ThreadLocalCache.getCallchain().get();
+    TrackingChain tc = ThreadLocalCache.getCallchain().get();
     if(tc!=null){
       tc.setEnd_time(System.currentTimeMillis());
       tc.setStatus(false);
@@ -105,10 +105,10 @@ public class trackingHandle extends Agent_Handle {
 
   }
 
-  public trackingChain doFilter(HttpServletRequest request, HttpServletResponse response)
+  public TrackingChain doFilter(HttpServletRequest request, HttpServletResponse response)
       throws IOException,ServletException {
       System.out.println("webFilter call");
-      return new trackingChain();
+      return new TrackingChain();
   }
 
 }

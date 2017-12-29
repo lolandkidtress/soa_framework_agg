@@ -360,7 +360,7 @@ public class RouterNanoHTTPD extends NanoHTTPD {
                         }
                     } else {
                         return NanoHTTPD.newFixedLengthResponse(Status.OK, "text/plain", //
-                                new StringBuilder("Return: ")//
+                                new StringBuilder("TReturn: ")//
                                         .append(handler.getCanonicalName())//
                                         .append(".toString() -> ")//
                                         .append(object)//

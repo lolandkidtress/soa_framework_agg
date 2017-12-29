@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>soa_groovy</artifactId>
-
+  <version>${global.version}</version>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>

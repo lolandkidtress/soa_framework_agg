@@ -17,14 +17,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.James.basic.UtilsTools.JsonConvert;
+import com.James.basic.UtilsTools.NativePath;
 import com.James.soa_agent.event_handle.Agent_Handle;
 
-import UtilsTools.NativePath;
-import UtilsTools.agentJsonConvert;
 
 
 /**
@@ -83,6 +84,7 @@ public class HotInjecter {
     // 依赖注入
     private Map<String, Set<Agent_Advice_Field>> map_autowireds = new HashMap<>();
 
+    //指定class
     public void add_advice_method(Class<? extends Annotation> clazz, Agent_Handle instance) {
         Objects.requireNonNull(clazz);
         Objects.requireNonNull(instance);
@@ -93,6 +95,24 @@ public class HotInjecter {
             LOGGER.error("clazz 不是注解类型", e);
         }
     }
+
+    //指定class的类名
+    public void add_advice_method(String className, Agent_Handle instance) {
+        Objects.requireNonNull(instance);
+        try{
+            Class clazz = Class.forName(className);
+            if(clazz.isAnnotation()){
+                advice_methods.put(clazz, instance);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            LOGGER.error(className +" 不是注解类型", e);
+        }
+
+    }
+
+
+
 
     public void add_autowired_field(String class_name, String field_name, String value) {
         Agent_Advice_Field agent_Advice_Field = new Agent_Advice_Field();
@@ -148,7 +168,7 @@ public class HotInjecter {
         advice_class.setMethods(methods);
         advice_class.setFields(fields);
 
-        Agent_Cache.class_advice_map.put(class_name, agentJsonConvert.toJson(advice_class));
+        Agent_Cache.class_advice_map.put(class_name, JsonConvert.toJson(advice_class));
     }
 
     public Boolean isadvice = false;

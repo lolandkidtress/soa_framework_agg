@@ -310,10 +310,10 @@ public class Kafka_Consumer {
         org.apache.log4j.BasicConfigurator.configure();
         Properties properties = new Properties();
         //properties.put("zookeeper", "10.81.23.103:2181,10.81.23.104:2181,10.81.23.105:2181");
-        properties.put("kafka","localhost:9092");
-        //properties.put("kafka","10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
-        properties.put("clientId","testclient1");
-        properties.put("group","testclient");
+        //properties.put("kafka","localhost:9092");
+        properties.put("kafka","47.97.7.138:9092,47.97.5.96:9092,47.97.9.120:9092");
+        properties.put("clientId","testclient2");
+        properties.put("group","testclient2");
 
         Configuration configuration = null;
         try{
@@ -340,15 +340,14 @@ public class Kafka_Consumer {
 
             KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(props);
             LOGGER.info("消费端初始化");
-            consumer.subscribe(Collections.singletonList("test_topic4"));
-            LOGGER.info("消费端开始消费" + "test_topic4");
+            consumer.subscribe(Collections.singletonList("topic_metric_tracking"));
+            LOGGER.info("消费端开始消费" + "topic_metric_tracking");
             Thread thread = new Thread(() -> {
                 while (true) {
                     ConsumerRecords<String, Object> records = consumer.poll(1000);
 
                     for (ConsumerRecord<String, Object> record : records) {
                         System.out.println("time:"+System.currentTimeMillis()+",partition:"+record.partition()+",record:" + record.value());
-
                     }
                 }
             });

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.zkTools.zkClientTools;
@@ -24,12 +24,12 @@ public enum providerRegister {
 
   private zkClientTools zkclient;
   //注册服务
-  public providerRegister registerServers(List<sharedNode> sharedNodes,zkClientTools zkclient){
+  public providerRegister registerServers(List<SharedNode> SharedNodes,zkClientTools zkclient){
     this.zkclient = zkclient;
 
     //节点信息写入zk
     // 目录格式: /{服务名}/{identityID}
-    sharedNodes.forEach(SharedNode -> {
+    SharedNodes.forEach(SharedNode -> {
 
       StringBuilder sb = new StringBuilder();
       sb = createServerPath(SharedNode);
@@ -56,13 +56,13 @@ public enum providerRegister {
   }
 
   //创建Server的path路径
-  private StringBuilder createServerPath(sharedNode sharedNode){
+  private StringBuilder createServerPath(SharedNode SharedNode){
     try{
       StringBuilder sb = new StringBuilder();
       //namespace方式制定根目录
 //      sb.append(zkInstance.INSTANCE.providerMangerPath);
       sb.append(CommonConfig.SLASH);
-      sb.append(sharedNode.getServer_name());
+      sb.append(SharedNode.getServer_name());
 
       if(!this.zkclient.checkExists(sb.toString() )){
         this.zkclient.createPERSISTENTNode(sb.toString());
@@ -76,7 +76,7 @@ public enum providerRegister {
   }
 
   //创建Server / defaultVersion 的path路径
-  private StringBuilder createIdentityIDPath(StringBuilder sb,sharedNode SharedNode){
+  private StringBuilder createIdentityIDPath(StringBuilder sb,SharedNode SharedNode){
     try{
 
       sb.append(CommonConfig.SLASH);
@@ -97,10 +97,10 @@ public enum providerRegister {
   //写入数据
   //default版本和指定的版本
   //各写一份
-  private void setServerData(StringBuilder pathsb,sharedNode SharedNode){
+  private void setServerData(StringBuilder pathsb,SharedNode SharedNode){
     try{
 
-      Map<String,sharedNode> data = new HashMap<>();
+      Map<String, com.James.basic.Model.SharedNode> data = new HashMap<>();
       if (!SharedNode.isDefaultVersion()) {
         data.put(CommonConfig.DEFAULTVERSION, SharedNode);
 

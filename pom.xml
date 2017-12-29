@@ -18,7 +18,7 @@
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-		<global.version>Release1.1.2R171120</global.version>
+		<global.version>Release1.1.3R171229</global.version>
 		<log4j.version>2.8.1</log4j.version>
 		<sonar.language>java</sonar.language>
 	</properties>
@@ -26,11 +26,12 @@
 	<modules>
 
 		<module>soa_tools</module>
+
+
+		<module>soa_agent</module>
 		<module>soa_db</module>
 		<module>soa_http</module>
 		<module>soa_avro</module>
-
-		<!--<module>soa_agent</module>-->
 		<module>soa_filter</module>
 		<module>soa_kafka</module>
 		<module>soa_discovery</module>

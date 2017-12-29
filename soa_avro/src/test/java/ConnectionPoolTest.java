@@ -12,7 +12,7 @@ import com.James.avroNettyClientConnect.avroNettyClientConnectionPool;
 import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.Message;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
-import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.Return;
 
@@ -28,7 +28,7 @@ public class ConnectionPoolTest {
     avroRequestHandleRegister.INSTANCE.addRequestHandle("test", sampleRequest.class);
     avroServer.startServer();
     //模拟一个节点
-    sharedNode sn = new sharedNode();
+    SharedNode sn = new SharedNode();
     sn.setIP("127.0.0.1");
     sn.setRpc_port(CommonConfig.defaultAvroPort);
     //调用参数

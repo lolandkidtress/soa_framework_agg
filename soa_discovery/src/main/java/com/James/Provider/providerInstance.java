@@ -18,7 +18,7 @@ import com.James.avroNettyServer.avroServer;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
 import com.James.basic.Annotation.descriptionAnnotation;
-import com.James.basic.Model.sharedNode;
+import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.jettySpring.JettyServer;
 import com.James.basic.zkTools.zkClientTools;
@@ -43,7 +43,7 @@ public class providerInstance {
   }
 
   //需要注册到zk的服务
-  private List<sharedNode> _sharedNodes = new ArrayList<>();
+  private List<SharedNode> _SharedNodes = new ArrayList<>();
 
   //已扫描到的服务,用于重命检验
   private static Set readMethodName = new HashSet<String>();
@@ -143,7 +143,7 @@ public class providerInstance {
           if (readMethodName.contains(sharedProvider.getIdentityID())) {
             logger.error(providerClass.getName() + "扫描到重复定义: " + sharedProvider.getIdentityID());
           } else {
-            _sharedNodes.add(sharedProvider);
+            _SharedNodes.add(sharedProvider);
             readMethodName.add(sharedProvider.getIdentityID());
           }
 
@@ -152,7 +152,7 @@ public class providerInstance {
     });
 
     //处理avro
-    _sharedNodes.stream()
+    _SharedNodes.stream()
         .filter(sharedProvider -> sharedProvider.getProtocol().equals(CommonConfig.PROTOCOL.avro))
         .forEach(sharedProvider -> {
           try {
@@ -163,7 +163,7 @@ public class providerInstance {
                 ((avrpRequestProto) Class.forName(sharedProvider.getDeclaringClass_name()).newInstance()).getClass()
             );
 //            avroRpcServer.getInstance().addRegisterServers("test",
-//                (avrpRequestProto) Class.forName(sharedNode.getDeclaringClass_name()).newInstance());
+//                (avrpRequestProto) Class.forName(SharedNode.getDeclaringClass_name()).newInstance());
           } catch (ClassNotFoundException e) {
             e.printStackTrace();
             logger.error("ClassNotFoundException" + sharedProvider.getDeclaringClass_name());
@@ -177,10 +177,10 @@ public class providerInstance {
         });
 
     //服务节点写入zk
-    if(_sharedNodes.size()>0){
+    if(_SharedNodes.size()>0){
 
       //往zk中写入注册的服务
-      providerRegister.INSTANCE.registerServers(_sharedNodes,zkclient);
+      providerRegister.INSTANCE.registerServers(_SharedNodes,zkclient);
       logger.info("注册自身服务结束");
     }else{
       logger.error("没有需要注册的服务");

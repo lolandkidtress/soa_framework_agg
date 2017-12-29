@@ -10,8 +10,8 @@ import com.James.basic.UtilsTools.JsonConvert;
  * Created by James on 2017/2/4.
  * 用于记录调用链的实体对象
  */
-public class trackingChain {
-  private static final Log logger = LogFactory.getLog(trackingChain.class.getName());
+public class TrackingChain {
+  private static final Log logger = LogFactory.getLog(TrackingChain.class.getName());
 
   //RPC调用时,参数中带有rackingID
   //以下是服务发起的字段
@@ -38,11 +38,11 @@ public class trackingChain {
   private boolean status=true;
   private String error_msg;
 
-  public trackingChain(){
+  public TrackingChain(){
     this.Sequence=0;
   }
 
-  public trackingChain(String trackingID){
+  public TrackingChain(String trackingID){
 
     this.trackingID= trackingID;
     this.Sequence=0;

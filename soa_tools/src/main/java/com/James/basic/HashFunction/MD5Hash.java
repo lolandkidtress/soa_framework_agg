@@ -13,10 +13,12 @@ import java.security.NoSuchAlgorithmException;
 public class MD5Hash implements iHashFunction {
   public ThreadLocal<MessageDigest> md5Holder = new ThreadLocal<MessageDigest>();
 
+  @Override
   public long hash(String key, Charset charset) throws UnsupportedEncodingException {
     return hash(key.getBytes(charset));
   }
 
+  @Override
   public long hash(byte[] key) {
     try {
       if (md5Holder.get() == null) {

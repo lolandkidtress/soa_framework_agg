@@ -1,6 +1,6 @@
 package com.James.basic.UtilsTools;
 
-import com.James.basic.Model.trackingChain;
+import com.James.basic.Model.TrackingChain;
 
 
 /**
@@ -8,13 +8,13 @@ import com.James.basic.Model.trackingChain;
  * 在ThreadLocal中保存调用链信息
  */
 public class ThreadLocalCache {
-  private static final ThreadLocal<trackingChain> callChain = new ThreadLocal<>();
+  private static final ThreadLocal<TrackingChain> callChain = new ThreadLocal<>();
 
-  public static ThreadLocal<trackingChain> getCallchain() {
+  public static ThreadLocal<TrackingChain> getCallchain() {
     return callChain;
   }
 
-  public static void setCallchain(trackingChain callchain0) {
+  public static void setCallchain(TrackingChain callchain0) {
     callChain.set(callchain0);
   }
 

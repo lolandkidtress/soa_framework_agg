@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  *
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class sharedNode {
+public class SharedNode {
 
   protected String author;
   //服务名称
@@ -58,9 +58,9 @@ public class sharedNode {
   protected String http_context="";
 
   //入参
-  private List<inputParam> _inputParams = new ArrayList<>();
+  private List<InputParam> _InputParams = new ArrayList<>();
   //出参
-  private List<outputParam> _outputParams = new ArrayList<>();
+  private List<OutputParam> _OutputParams = new ArrayList<>();
 
   //降级策略
   // ratelimit: name
@@ -73,12 +73,12 @@ public class sharedNode {
   protected Timestamp time = new Timestamp(Clock.system(CommonConfig.ZONDID) .millis());
 
 
-  public sharedNode(String serverName){
+  public SharedNode(String serverName){
     this.server_name = serverName;
     this.ip=Utils.getLocalIP();
   }
 
-  public sharedNode(){
+  public SharedNode(){
   }
 
   public String getAuthor() {
@@ -172,24 +172,24 @@ public class sharedNode {
   }
 
   public List getInputParams(){
-    return this._inputParams;
+    return this._InputParams;
   }
   public void setInputParams(List InputParams){
-    this._inputParams = InputParams;
+    this._InputParams = InputParams;
   }
-  public void addInputParam(inputParam inputParam){
-    this._inputParams.add(inputParam);
+  public void addInputParam(InputParam InputParam){
+    this._InputParams.add(InputParam);
   }
 
 
   public List getOutputParams(){
-    return this._outputParams;
+    return this._OutputParams;
   }
   public void setOutputParams(List OutputParams){
-    this._outputParams = OutputParams;
+    this._OutputParams = OutputParams;
   }
-  public void addOutputParam(outputParam outputParam){
-    this._outputParams.add(outputParam);
+  public void addOutputParam(OutputParam OutputParam){
+    this._OutputParams.add(OutputParam);
   }
 
 
@@ -267,7 +267,7 @@ public class sharedNode {
   @Override
   public boolean equals(Object obj) {
 
-    sharedNode p= (sharedNode)obj;
+    SharedNode p= (SharedNode)obj;
 
     return this.getIdentityID().equals(p.getIdentityID());
   }

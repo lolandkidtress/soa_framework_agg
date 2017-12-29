@@ -40,7 +40,7 @@ public class Return extends HashMap<String, Object> {
                 jo.put(entry.getKey(), entry.getValue());
             }
         } catch (IOException e) {
-            logger.error("Return.create 解析 JSON 失败", e);
+            logger.error("TReturn.create 解析 JSON 失败", e);
             return Return.FAIL(Code.generate_return_error);
         }
         return jo;

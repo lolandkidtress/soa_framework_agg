@@ -20,9 +20,9 @@ import com.James.basic.UtilsTools.CommonConfig;
  * 有多个sharedProvider组成的一组服务提供组
  * 通过一致性hash实现负载均衡
  */
-public class provider {
+public class Provider {
 
-  private static final Log LOGGER = LogFactory.getLog(provider.class.getName());
+  private static final Log LOGGER = LogFactory.getLog(Provider.class.getName());
 
   public iHashFunction algo =  new MurmurHash();
 
@@ -31,22 +31,22 @@ public class provider {
   private ConcurrentHashMap<String,TreeMap> methodTreeMapNodes= new ConcurrentHashMap();
 
 //  //一致性hash环
-//  public TreeMap<Long, sharedNode> TreeMapNodes = new TreeMap<>();
+//  public TreeMap<Long, SharedNode> TreeMapNodes = new TreeMap<>();
 //
-//  public TreeMap<Long, sharedNode> getTreeMap(){
+//  public TreeMap<Long, SharedNode> getTreeMap(){
 //    return this.TreeMapNodes;
 //  }
 
   //数字越大,虚拟节点越多,分布越平均
   public static final int basic_virtual_node_number = 20;
 
-  public provider(){
+  public Provider(){
 
   }
 
   //每个version一个hash环
-  public provider init(String version,sharedNode SharedNode){
-    TreeMap<Long, sharedNode> TreeMapNodes = methodTreeMapNodes.getOrDefault(version,new TreeMap<>());
+  public Provider init(String version,SharedNode SharedNode){
+    TreeMap<Long, com.James.basic.Model.SharedNode> TreeMapNodes = methodTreeMapNodes.getOrDefault(version,new TreeMap<>());
     TreeMapNodes = add(TreeMapNodes, SharedNode);
     methodTreeMapNodes.put(version,TreeMapNodes);
 
@@ -55,14 +55,14 @@ public class provider {
 
 
   //在环上获取节点
-  public sharedNode get(String version,String seed) throws Method_Not_Found_Exception {
+  public SharedNode get(String version,String seed) throws Method_Not_Found_Exception {
     TreeMap TreeMapNodes = methodTreeMapNodes.get(version);
     if(TreeMapNodes==null){
       throw new Method_Not_Found_Exception();
     }
-    SortedMap<Long, sharedNode> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
+    SortedMap<Long, SharedNode> tail = TreeMapNodes.tailMap(algo.hash(seed.getBytes(CommonConfig.CHARSET)));
     if (tail.isEmpty()) {
-      Map.Entry<Long, sharedNode> firstEntry = TreeMapNodes.firstEntry();
+      Map.Entry<Long, SharedNode> firstEntry = TreeMapNodes.firstEntry();
       if (firstEntry != null) {
         return firstEntry.getValue();
       }
@@ -72,16 +72,16 @@ public class provider {
   }
 
   //计算一致性hash的key后加入环中
-  private TreeMap add(TreeMap TreeMapNodes ,sharedNode sharedNode) {
+  private TreeMap add(TreeMap TreeMapNodes ,SharedNode SharedNode) {
     for (int n = 0; n < basic_virtual_node_number ; n++) {
       try {
         Long key = this.algo.hash(
-            new StringBuilder(sharedNode.getIdentityID())
+            new StringBuilder(SharedNode.getIdentityID())
                 .append("*")
                 .append(n).toString()
             , CommonConfig.CHARSET);
 
-        TreeMapNodes.put(key, sharedNode);
+        TreeMapNodes.put(key, SharedNode);
 
       } catch (UnsupportedEncodingException e) {
         LOGGER.error("添加节点失败", e);
@@ -92,12 +92,12 @@ public class provider {
   }
 
   //从环中删除
-  public TreeMap remove(String version,sharedNode sharedNode) {
+  public TreeMap remove(String version,SharedNode SharedNode) {
     TreeMap TreeMapNodes = methodTreeMapNodes.get(version);
     for (int n = 0; n < basic_virtual_node_number ; n++) {
       try {
         Long key = this.algo.hash(
-            new StringBuilder(sharedNode.getIdentityID())
+            new StringBuilder(SharedNode.getIdentityID())
                 .append("*")
                 .append(n).toString()
             , CommonConfig.CHARSET);

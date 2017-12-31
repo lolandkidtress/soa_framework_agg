@@ -17,7 +17,7 @@ import com.James.avroProto.avrpRequestProto;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
 import com.James.basic.UtilsTools.ThreadLocalCache;
@@ -43,7 +43,7 @@ public class RemoteMethod implements avrpRequestProto {
       System.out.println("执行中的trackingChain为:"+ ThreadLocalCache.getCallchain().get().toJson());
     }catch(Exception e){
       e.printStackTrace();
-      Return ret = Return.FAIL(Code.error.code,Code.error.name());
+      Return ret = Return.FAIL(BasicCode.error.code, BasicCode.error.name());
       return new Utf8(ret.toJson());
     }
     return new Utf8("avrosend");
@@ -70,7 +70,7 @@ public class RemoteMethod implements avrpRequestProto {
   @descriptionAnnotation(author = "james",name="ratelimitCall",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
   @ratelimitAnnotation(name="ratelimitCall",policy = "before",allowPeriod=5000 ,allowTimes = 2)
   public Return ratelimitCall(){
-    return Return.SUCCESS(Code.success.code, "invoke ratelimitCall");
+    return Return.SUCCESS(BasicCode.success.code, "invoke ratelimitCall");
   }
 
   //5秒内失败1次就降级
@@ -78,7 +78,7 @@ public class RemoteMethod implements avrpRequestProto {
   @descriptionAnnotation(author = "james",name="degradeCall",submit_mode= "GET",protocol="http" ,desc="",version = "1.0")
   @degradeAnnotation(name="degradeCall",policy = "before",allowPeriod=5000 ,allowTimes = 1)
   public Return degradeCall(){
-    return Return.FAIL(Code.error.code, "调用degradeCall返回非200");
+    return Return.FAIL(BasicCode.error.code, "调用degradeCall返回非200");
   }
 
   //重复的name会有报错

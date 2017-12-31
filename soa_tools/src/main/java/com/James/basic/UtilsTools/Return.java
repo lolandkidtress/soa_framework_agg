@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -41,7 +41,7 @@ public class Return extends HashMap<String, Object> {
             }
         } catch (IOException e) {
             logger.error("TReturn.create 解析 JSON 失败", e);
-            return Return.FAIL(Code.generate_return_error);
+            return Return.FAIL(BasicCode.generate_return_error);
         }
         return jo;
     }
@@ -62,8 +62,8 @@ public class Return extends HashMap<String, Object> {
         return jo;
     }
 
-    public static Return SUCCESS(Code code) {
-        return SUCCESS(code.code, code.note);
+    public static Return SUCCESS(BasicCode basicCode) {
+        return SUCCESS(basicCode.code, basicCode.note);
     }
 
     ///////////////////////////////////////////////// FAIL////////////////////////////
@@ -75,12 +75,12 @@ public class Return extends HashMap<String, Object> {
         return jo;
     }
 
-    public static Return FAIL(Code code) {
-        return FAIL(code.code, code.note);
+    public static Return FAIL(BasicCode basicCode) {
+        return FAIL(basicCode.code, basicCode.note);
     }
 
-    public static Return FAIL(Code code, Exception e) {
-        return FAIL(code.code, Utils.stacktrace(e));
+    public static Return FAIL(BasicCode basicCode, Exception e) {
+        return FAIL(basicCode.code, Utils.stacktrace(e));
     }
 
     //////////////////////////////////// GETTER SETTER///////////////////////////
@@ -89,7 +89,7 @@ public class Return extends HashMap<String, Object> {
     }
 
     public Integer get_code() {
-        return (Integer) this.getOrDefault(Return_Fields.code.name(), Code.error.code);
+        return (Integer) this.getOrDefault(Return_Fields.code.name(), BasicCode.error.code);
     }
 
     public String get_note() {
@@ -113,7 +113,7 @@ public class Return extends HashMap<String, Object> {
             return JsonConvert.toJson(this);
         } catch (Exception e) {
             logger.error("json 解析失败:", e);
-            return JsonConvert.toJson(Return.FAIL(Code.generate_return_error));
+            return JsonConvert.toJson(Return.FAIL(BasicCode.generate_return_error));
         }
     }
 }

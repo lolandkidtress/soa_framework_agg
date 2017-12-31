@@ -2,7 +2,7 @@ package com.James.Exception;
 
 import java.io.IOException;
 
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 
 
 /**
@@ -14,8 +14,8 @@ public class zkConnectionException extends IOException {
 
   public zkConnectionException() {
     super();
-    this.code = Code.zk_Connection_Exception.code;
-    this.message = Code.zk_Connection_Exception.name();
+    this.code = BasicCode.zk_Connection_Exception.code;
+    this.message = BasicCode.zk_Connection_Exception.name();
   }
 
   public Integer getCode() {

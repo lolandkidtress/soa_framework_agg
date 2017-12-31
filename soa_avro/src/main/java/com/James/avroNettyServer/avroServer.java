@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
@@ -37,7 +37,7 @@ public class avroServer {
 
       if(message.getRequestName()==null||message.getRequestName().length()<=0){
         logger.error("RequestName参数不正确");
-        Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
+        Return ret = Return.FAIL(BasicCode.parameters_incorrect.code, BasicCode.parameters_incorrect.name());
         return new Utf8(ret.toJson());
       }
 
@@ -52,7 +52,7 @@ public class avroServer {
         //ThreadLocalCache.setCallchain(tc);
       }catch(Exception e){
         e.printStackTrace();
-        Return ret = Return.FAIL(Code.parameters_incorrect.code,Code.parameters_incorrect.name());
+        Return ret = Return.FAIL(BasicCode.parameters_incorrect.code, BasicCode.parameters_incorrect.name());
         return new Utf8(ret.toJson());
       }
 
@@ -62,7 +62,7 @@ public class avroServer {
 //      avrpRequestProto avrpRequestProto =  avroRequestHandleRegister.INSTANCE.getRequestHandle(
 //          message.getRequestName().toString());
       if(avrpRequestProto==null){
-        Return ret = Return.FAIL(Code.service_not_found.code,Code.service_not_found.name());
+        Return ret = Return.FAIL(BasicCode.service_not_found.code, BasicCode.service_not_found.name());
         return new Utf8(ret.toJson());
       }
       try{
@@ -71,10 +71,10 @@ public class avroServer {
       }catch(Exception e){
         e.printStackTrace();
         logger.error("转发"+message.getRequestName() + "服务异常",e);
-        Return ret = Return.FAIL(Code.error.code,Code.error.name());
+        Return ret = Return.FAIL(BasicCode.error.code, BasicCode.error.name());
         return new Utf8(ret.toJson());
       }
-      Return ret = Return.SUCCESS(Code.success.code,Code.success.name()).put("data",response);
+      Return ret = Return.SUCCESS(BasicCode.success.code, BasicCode.success.name()).put("data",response);
       return new Utf8(ret.toJson());
     }
   }

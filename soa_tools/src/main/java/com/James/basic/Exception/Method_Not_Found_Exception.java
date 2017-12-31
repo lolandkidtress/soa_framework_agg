@@ -2,7 +2,7 @@ package com.James.basic.Exception;
 
 import java.io.IOException;
 
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 
 
 /**
@@ -14,8 +14,8 @@ public class Method_Not_Found_Exception extends IOException {
 
   public Method_Not_Found_Exception() {
     super();
-    this.code = Code.service_not_found.code;
-    this.message = Code.service_not_found.name();
+    this.code = BasicCode.service_not_found.code;
+    this.message = BasicCode.service_not_found.name();
   }
 
   public Integer getCode() {

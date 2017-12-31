@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
 
@@ -59,7 +59,7 @@ public class avroNettyClientConnection {
     }catch(Exception e){
       e.printStackTrace();
       logger.error("调用avro client异常",e);
-      return Return.FAIL(Code.error.code,Code.error.name());
+      return Return.FAIL(BasicCode.error.code, BasicCode.error.name());
     }
   }
 

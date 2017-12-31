@@ -16,7 +16,7 @@ import com.James.Listeners.nodeReloadListenerImpl;
 import com.James.MonitorInstance;
 import com.James.RemoteCall.remoteCallHelper;
 import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.Invoker.Invoker;
 import com.James.basic.Model.Provider;
@@ -219,17 +219,17 @@ public class RemoteInvoker implements Invoker,Serializable {
         SharedNode = methodProviderInvokers.get(method).get(version, seed);
       }else{
         LOGGER.error("没有可用服务节点");
-        return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
+        return Return.FAIL(BasicCode.node_unavailable.code, BasicCode.node_unavailable.name());
       }
 
     }catch(Method_Not_Found_Exception e){
       e.printStackTrace();
       LOGGER.error("没有可用服务节点",e);
-      return Return.FAIL(Code.node_unavailable.code,Code.node_unavailable.name());
+      return Return.FAIL(BasicCode.node_unavailable.code, BasicCode.node_unavailable.name());
     }catch(Exception e1){
       e1.printStackTrace();
       LOGGER.error("系统异常",e1);
-      return Return.FAIL(Code.error.code,Code.error.name());
+      return Return.FAIL(BasicCode.error.code, BasicCode.error.name());
     }
 
     String ratelimitName = (String) SharedNode.getFilterMap().getOrDefault("ratelimit","");
@@ -266,7 +266,7 @@ public class RemoteInvoker implements Invoker,Serializable {
     Return InvokeRet = callImpl(SharedNode, method, parameter);
 
     //调用返回值不是正确的
-    if(!InvokeRet.is_success() || (InvokeRet.get_code().equals(Code.error.code))){
+    if(!InvokeRet.is_success() || (InvokeRet.get_code().equals(BasicCode.error.code))){
 
       tc.setStatus(false);
       if(!degradeName.equals("")){
@@ -300,7 +300,7 @@ public class RemoteInvoker implements Invoker,Serializable {
 //          break;
       default:
         LOGGER.error(method + "不支持的协议");
-        ret = Return.FAIL(Code.protocol_not_support.code,Code.protocol_not_support.name());
+        ret = Return.FAIL(BasicCode.protocol_not_support.code, BasicCode.protocol_not_support.name());
     }
 
     return ret;

@@ -3,7 +3,7 @@ package com.James.basic.Enum;
 /**
  * Created by James on 16/5/23.
  */
-public enum Code {
+public enum BasicCode {
     //10000 成功
     success(10200, "成功"), //
 
@@ -30,7 +30,7 @@ public enum Code {
     public String note;
     public Integer code;
 
-    private Code(Integer code, String note) {
+    private BasicCode(Integer code, String note) {
         this.note = note;
         this.code = code;
     }

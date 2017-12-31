@@ -12,7 +12,7 @@ import com.James.avroNettyClientConnect.avroNettyClientConnection;
 import com.James.avroNettyClientConnect.avroNettyClientConnectionManager;
 import com.James.avroNettyClientConnect.avroNettyClientConnectionPool;
 import com.James.avroProto.Message;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.Model.SharedNode;
 import com.James.basic.UtilsTools.CommonConfig;
 import com.James.basic.UtilsTools.JsonConvert;
@@ -55,14 +55,14 @@ public class remoteCallHelper {
       }catch(IOException e){
         e.printStackTrace();
         logger.error("调用okhttp get异常",e);
-        return Return.FAIL(Code.error.code,Code.error.name());
+        return Return.FAIL(BasicCode.error.code, BasicCode.error.name());
       }
     }
     //TODO post实现
     if(SharedNode.getSubmit_mode().equals(CommonConfig.RequestMethod.POST.name())){
 
     }
-    return Return.FAIL(Code.method_not_support.code,Code.method_not_support.name());
+    return Return.FAIL(BasicCode.method_not_support.code, BasicCode.method_not_support.name());
 
   }
 
@@ -83,7 +83,7 @@ public class remoteCallHelper {
       e.printStackTrace();
       logger.error(
           "avroConnectionPool调用异常",e);
-      return Return.FAIL(Code.avro_Connection_not_available.code,Code.avro_Connection_not_available.name());
+      return Return.FAIL(BasicCode.avro_Connection_not_available.code, BasicCode.avro_Connection_not_available.name());
     }
 
   }

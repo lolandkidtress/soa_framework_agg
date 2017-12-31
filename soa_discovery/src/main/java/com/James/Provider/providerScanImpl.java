@@ -18,7 +18,7 @@ import com.James.Filter.rateLimit.ratelimitCountDown;
 import com.James.basic.Annotation.InputParamAnnotation;
 import com.James.basic.Annotation.OutputParamAnnotation;
 import com.James.basic.Annotation.descriptionAnnotation;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.Model.InputParam;
 import com.James.basic.Model.OutputParam;
 import com.James.basic.Model.SharedNode;
@@ -80,8 +80,8 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
         if(DegradeAnnotation!=null){
           if(descriptionAnno!=null){
 
-            int code = DegradeAnnotation.code() >0 ? DegradeAnnotation.code(): Code.service_degrade.code;
-            String note = DegradeAnnotation.note().length()>0 ? DegradeAnnotation.note(): Code.service_degrade.note;
+            int code = DegradeAnnotation.code() >0 ? DegradeAnnotation.code(): BasicCode.service_degrade.code;
+            String note = DegradeAnnotation.note().length()>0 ? DegradeAnnotation.note(): BasicCode.service_degrade.note;
 
             degradeCountDown DegradeCountDown = new degradeCountDown(DegradeAnnotation.name(),
                 DegradeAnnotation.allowPeriod(),
@@ -103,8 +103,8 @@ public class providerScanImpl implements ScanAnnotationClass_Handle {
         if(RatelimitAnnotation!=null){
           if(descriptionAnno!=null){
 
-            int code = RatelimitAnnotation.code() >0 ? RatelimitAnnotation.code(): Code.over_limit.code;
-            String note = RatelimitAnnotation.note().length()>0 ? RatelimitAnnotation.note(): Code.over_limit.note;
+            int code = RatelimitAnnotation.code() >0 ? RatelimitAnnotation.code(): BasicCode.over_limit.code;
+            String note = RatelimitAnnotation.note().length()>0 ? RatelimitAnnotation.note(): BasicCode.over_limit.note;
 
             ratelimitCountDown RatelimitCountDown = new ratelimitCountDown(RatelimitAnnotation.name(),
                 RatelimitAnnotation.allowPeriod(),

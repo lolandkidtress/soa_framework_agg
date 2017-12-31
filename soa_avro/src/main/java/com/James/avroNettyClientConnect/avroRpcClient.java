@@ -19,7 +19,7 @@ import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import com.James.avroProto.Message;
 import com.James.avroProto.avrpRequestProto;
 import com.James.avroServiceRegist.avroRequestHandleRegister;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 import com.James.basic.UtilsTools.JsonConvert;
 import com.James.basic.UtilsTools.Return;
 
@@ -126,7 +126,7 @@ public class avroRpcClient {
     }catch(IOException e){
       e.printStackTrace();
       logger.error("调用nettyavro异常",e);
-      return Return.FAIL(Code.error.code,Code.error.name());
+      return Return.FAIL(BasicCode.error.code, BasicCode.error.name());
     }
 
   }

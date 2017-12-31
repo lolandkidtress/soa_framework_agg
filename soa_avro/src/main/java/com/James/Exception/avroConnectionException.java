@@ -2,7 +2,7 @@ package com.James.Exception;
 
 import java.io.IOException;
 
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 
 
 /**
@@ -14,8 +14,8 @@ public class avroConnectionException extends IOException {
 
   public avroConnectionException() {
     super();
-    this.code = Code.avro_Connection_not_available.code;
-    this.message = Code.avro_Connection_not_available.name();
+    this.code = BasicCode.avro_Connection_not_available.code;
+    this.message = BasicCode.avro_Connection_not_available.name();
   }
 
   public avroConnectionException(Integer code,String message) {

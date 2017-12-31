@@ -15,7 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.James.Exception.avroConnectionException;
-import com.James.basic.Enum.Code;
+import com.James.basic.Enum.BasicCode;
 
 
 /**
@@ -140,7 +140,7 @@ public class avroNettyClientConnectionPool {
       return;
     }
     if(registerConnections.size()>maxConnections){
-      throw new avroConnectionException(Code.avro_Connection_Max_limit.code,Code.avro_Connection_Max_limit.note);
+      throw new avroConnectionException(BasicCode.avro_Connection_Max_limit.code, BasicCode.avro_Connection_Max_limit.note);
     }
     synchronized (isBalancing){
       isBalancing.compareAndSet(false,true);
@@ -185,7 +185,7 @@ public class avroNettyClientConnectionPool {
       }catch(avroConnectionException e){
         logger.error(
             "avroConnectionPool扩容异常,已扩容到最大配置");
-        throw new avroConnectionException(Code.avro_Connection_Max_limit.code,Code.avro_Connection_Max_limit.note);
+        throw new avroConnectionException(BasicCode.avro_Connection_Max_limit.code, BasicCode.avro_Connection_Max_limit.note);
       }
       //调用初始化
       mainExecutorService.submit(new Runnable() {
@@ -198,7 +198,7 @@ public class avroNettyClientConnectionPool {
           initAvroNettyClientConnectionPool();
         }
       });
-//      throw new avroConnectionException(Code.avro_Connection_not_available.code,Code.avro_Connection_not_available.note);
+//      throw new avroConnectionException(BasicCode.avro_Connection_not_available.code,BasicCode.avro_Connection_not_available.note);
     }
     try{
       //等待1秒
@@ -232,7 +232,7 @@ public class avroNettyClientConnectionPool {
       return conn;
     }catch(Exception e){
       e.printStackTrace();
-      throw new avroConnectionException(Code.avro_Connection_not_available.code,Code.avro_Connection_not_available.note);
+      throw new avroConnectionException(BasicCode.avro_Connection_not_available.code, BasicCode.avro_Connection_not_available.note);
     }
 
   }

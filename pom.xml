@@ -38,6 +38,10 @@
 		<module>soa_rpc</module>
 		<module>soa_monitor</module>
 		<module>soa_groovy</module>
+		<module>kafkaAdminClient</module>
+		<module>soa_kafka_admin</module>
+		<module>soa_kafka_admin</module>
+		<module>soa_kafka_admin</module>
 		<!--<module>soa_demo</module>-->
 
 

@@ -26,7 +26,7 @@ public class KafkaStreamTest {
     Properties props = new Properties();
 
     props.put(StreamsConfig.APPLICATION_ID_CONFIG, "ClickStreamerGet");
-    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
     props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
     props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 

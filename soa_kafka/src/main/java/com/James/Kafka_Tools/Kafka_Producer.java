@@ -157,8 +157,7 @@ public class Kafka_Producer {
         org.apache.log4j.BasicConfigurator.configure();
         Properties properties = new Properties();
         //properties.put("zookeeper", "10.81.23.103:2181,10.81.23.104:2181,10.81.23.105:2181");
-        properties.put("kafka","47.97.7.138:9092,47.97.5.96:9092,47.97.9.120:9092");
-        //properties.put("kafka","10.81.23.100:9092,10.81.23.101:9092,10.81.23.102:9092");
+        properties.put("kafka","localhost:9092");
         properties.put("clientId","testclient");
         properties.put("group","testclient");
 

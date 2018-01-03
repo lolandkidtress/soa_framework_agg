@@ -71,7 +71,7 @@ public class RemoteAdminClient {
   public static void main(String[] args) {
 
     RemoteAdminClient rac = new RemoteAdminClient();
-    rac.init("localhost:9092");
+    rac.init("10.81.23.100:9092");
     System.out.println("ClusterId:" + rac.getClusterId());
     rac.getClusters().forEach(node->{
       System.out.println("cluster @:"+node.host());

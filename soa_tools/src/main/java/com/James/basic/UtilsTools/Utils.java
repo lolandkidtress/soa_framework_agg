@@ -7,8 +7,8 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 
@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
 public class Utils {
 
 
-    private static final Log LOGGER = LogFactory.getLog(Utils.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Utils.class.getName());
     /**
      * @param e
      *            异常类

@@ -2,8 +2,8 @@ package com.James.basic.zkTools;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.state.ConnectionState;
@@ -16,7 +16,7 @@ import org.apache.curator.retry.RetryNTimes;
  */
 public class zkWatchInstance {
 
-  private static final Log LOGGER = LogFactory.getLog(zkWatchInstance.class.getName());
+  private static final Logger LOGGER = LogManager.getLogger(zkWatchInstance.class.getName());
 
   private ConcurrentHashMap<String,zkWatchImpl> watchers = new ConcurrentHashMap();
 

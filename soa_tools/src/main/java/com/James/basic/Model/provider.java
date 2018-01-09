@@ -6,8 +6,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.James.basic.Exception.Method_Not_Found_Exception;
 import com.James.basic.HashFunction.iHashFunction;
@@ -22,7 +22,7 @@ import com.James.basic.UtilsTools.CommonConfig;
  */
 public class Provider {
 
-  private static final Log LOGGER = LogFactory.getLog(Provider.class.getName());
+  private static final Logger LOGGER = LogManager.getLogger(Provider.class.getName());
 
   public iHashFunction algo =  new MurmurHash();
 

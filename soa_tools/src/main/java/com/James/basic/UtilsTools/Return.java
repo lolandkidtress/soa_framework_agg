@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.James.basic.Enum.BasicCode;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class Return extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
-    private static final Log logger = LogFactory.getLog(Return.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Return.class.getName());
 
     public enum Return_Fields {
         success, code, note
@@ -40,7 +40,7 @@ public class Return extends HashMap<String, Object> {
                 jo.put(entry.getKey(), entry.getValue());
             }
         } catch (IOException e) {
-            logger.error("TReturn.create 解析 JSON 失败", e);
+            LOGGER.error("TReturn.create 解析 JSON 失败", e);
             return Return.FAIL(BasicCode.generate_return_error);
         }
         return jo;
@@ -112,7 +112,7 @@ public class Return extends HashMap<String, Object> {
         try {
             return JsonConvert.toJson(this);
         } catch (Exception e) {
-            logger.error("json 解析失败:", e);
+            LOGGER.error("json 解析失败:", e);
             return JsonConvert.toJson(Return.FAIL(BasicCode.generate_return_error));
         }
     }

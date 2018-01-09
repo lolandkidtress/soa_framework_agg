@@ -4,8 +4,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -26,7 +26,7 @@ import org.apache.zookeeper.ZooDefs;
  *
  */
 public class zkClientTools {
-    public static final Log LOGGER = LogFactory.getLog(zkClientTools.class.getName());
+    public static final Logger LOGGER = LogManager.getLogger(zkClientTools.class.getName());
 
     public static Charset charset = StandardCharsets.UTF_8;
 

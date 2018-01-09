@@ -8,7 +8,7 @@
         <version>V1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>${global.version}</version>
+    <version>1.7.0</version>
     <packaging>jar</packaging>
     <artifactId>soa_tools</artifactId>
 
@@ -53,28 +53,6 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <version>9.3.6.v20151106</version>
-        </dependency>
-
-        <!-- webmvc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>4.2.4.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.2.4.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>4.2.4.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>4.2.4.RELEASE</version>
         </dependency>
 
         <dependency>

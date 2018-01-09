@@ -1,7 +1,8 @@
 package com.James.basic.Model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import com.James.basic.UtilsTools.JsonConvert;
 
@@ -11,7 +12,7 @@ import com.James.basic.UtilsTools.JsonConvert;
  * 用于记录调用链的实体对象
  */
 public class TrackingChain {
-  private static final Log logger = LogFactory.getLog(TrackingChain.class.getName());
+  private static final Logger logger = LogManager.getLogger(TrackingChain.class.getName());
 
   //RPC调用时,参数中带有rackingID
   //以下是服务发起的字段

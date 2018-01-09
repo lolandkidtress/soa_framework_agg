@@ -11,13 +11,13 @@
     <groupId>com.James</groupId>
     <artifactId>soa_agent</artifactId>
     <packaging>jar</packaging>
-    <version>1.6</version>
+    <version>1.7.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.James</groupId>
             <artifactId>soa_tools</artifactId>
-            <version>${global.version}</version>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
